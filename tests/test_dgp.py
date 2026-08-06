@@ -72,6 +72,17 @@ def test_v_true_mc_stable():
     assert v1 == pytest.approx(v2, abs=0.005)
 
 
+def test_log_invariant_to_beta_eval():
+    """축 10 전제(회귀 고정): β_eval 은 rng 를 소비하지 않는다 — 같은 seed ⇒ 같은 로그.
+    (같은 로그 위에서 후보 정책들을 평가하는 factorial 설계의 성립 조건.)"""
+    d1 = make_synthetic_bandit_data(BASE._replace(beta_eval=3.0))
+    d2 = make_synthetic_bandit_data(BASE._replace(beta_eval=10.0))
+    np.testing.assert_array_equal(d1.action, d2.action)
+    np.testing.assert_allclose(d1.reward, d2.reward)
+    np.testing.assert_allclose(d1.pscore_logged, d2.pscore_logged)
+    assert not np.allclose(d1.pi_e_dist, d2.pi_e_dist)  # 평가 정책만 달라짐
+
+
 def test_v_true_invariant_to_confounding_and_noise():
     """설계 정리: v_true 는 γ·σ 와 무관 (연속형 reward — dgp.py 설계 결정)."""
     v0 = true_policy_value(BASE)

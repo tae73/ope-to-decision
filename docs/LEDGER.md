@@ -51,6 +51,10 @@ M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 
 | `m0b-sbobp` | VERDICT `GO` · 6종 estimator 전부 `match: true` | — | `results/tables/probe_obp_crossval_sbobp.json` | `M0-B` | 2026-08-06 | ENTERED |
 | `m0b-pypi` | obp latest 0.5.7 (2023-04-14) · sb-obp latest 0.5.10 (2025-08-19, requires_python >=3.8.1,<3.13) | — | `results/tables/probe_obp_pypi_check.json` | `M0-B` | 2026-08-06 | ENTERED |
 | `m1-crossval` | VERDICT `GO` · 7종 estimator(dm·ips·snips·clipped_ips·dr·switch_dr·dros) × 2트랙(obp 0.5.7 py3.9 · sb-obp py3.12) 전부 `match=True` (rel_tol=1e-8, 점추정만 게이트) | — | `results/tables/m1_obp_crossval.csv` | `M1` | 2026-08-06 | ENTERED |
+| `m2-gate` | 코어 축 01–10 figure+CSV 페어 완비 · 적대 verify 11-agent(축별 10+교차 1) 수치 재도출 일치 · 지적 9건 전부 수정 반영 | — | `results/figures/01–10_*.png` ↔ `results/tables/01–10_*.csv` | `M2` | 2026-08-06 | ENTERED |
+| `m2-08-forecast` | share_large_err(=P(상대오차>0.10)) verbatim: trust=0.045911191480811735 (n=19908) · distrust=0.1414141414141414 (n=396) · ab_fallback=0.4444444444444444 (n=36) · support arm 발화 0회 | — | `results/tables/08_diagnostics_gate_confusion.csv` | `08` | 2026-08-06 | ENTERED |
+| `m2-09-blindspot` | mean ESS/n(logged): 0.822986@γ=0 → 0.822315@γ=2.5 (사실상 평평) · bias(ips): −0.000147@0 → −0.056818@2.5 · oracle(pscore_true) ESS/n 0.8230→0.0182 (같은 공식이 진짜 pscore 를 받으면 감지 — CSV oracle_ps 행) | — | `results/tables/09_confounding_blindspot.csv` | `09` | 2026-08-06 | ENTERED |
+| `m2-04-proxy-blind` | support proxy = 0.00000 (전 δ) vs oracle 참 미지지 π_e 질량 0.0227(δ=0.1)→0.1434163(δ=0.4) — 전역 proxy 의 전면 blind 실증 | — | `results/tables/04_deficient_support.csv` · `results/tables/04_deficient_support_oracle.csv` | `04` | 2026-08-06 | ENTERED |
 
 **등재 행 비고:**
 

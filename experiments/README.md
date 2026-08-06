@@ -1,7 +1,9 @@
 # experiments — 실험 인덱스
 
-> **상태: 축 01–14 는 전부 실행 전(예정)이다.** 이 문서는 실험 ID · slug · 스윕 노브 · 산출물 규약의
-> *계약*이며, 결과 수치는 어디에도 없다. 실행이 완료된 것은 아래 M0 probe 2종뿐이다.
+> **상태(2026-08-06): 코어 축 01–10 실행 완료** — figure+CSV 페어가 `results/` 에 커밋돼 있다.
+> 실데이터 축 11–12 와 스트레치 13–14 는 실행 전(예정). 이 문서는 실험 ID · slug · 스윕 노브 ·
+> 산출물 규약의 *계약*이며, 결과 수치의 정본은 [docs/LEDGER.md](../docs/LEDGER.md) 경유로만 인용한다.
+> 그 외 실행 완료: M0 probe 2종 · M1 교차검증(m1_crossval).
 >
 > **실험 ID 는 불변.** ID 는 `results/figures|tables/NN_*` 와 docs 수치에 강결합되므로 재배열·재사용을
 > 금지한다 (mta-simulation 관례 계승). 새 축이 필요하면 뒤 번호를 추가한다.
@@ -64,7 +66,7 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 (CI 는 라이브러리별 bootstrap 구현이 상이 — 비교 제외). 수치 정본: `results/tables/m1_obp_crossval.csv`
 → [docs/LEDGER.md](../docs/LEDGER.md).
 
-## 축 01–14 예정표 (전부 미실행 — slug 는 후보, ID 는 확정)
+## 축 01–14 표 (01–10 실행 완료 · 11–14 예정 — ID 는 확정 불변)
 
 | ID | slug 후보 | 스윕 노브 | 보려는 것 | 근거 (URL) |
 |---|---|---|---|---|
@@ -77,7 +79,7 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 | 07 | `07_hyperparam_ieoe` | Switch τ · DRos λ · clip 임계값을 분포로 샘플 | IEOE 식 error-CDF — 튜닝 없는 고급 estimator 의 불안정 | [IEOE, RecSys'21](https://arxiv.org/abs/2108.13703) |
 | 08 | `08_diagnostics_gate` | 축 01–07 의 진단 로그 종합 (ESS·max-weight vs 실오차) | 진단 예보력 산점 + decision rule 종합 — **본 레포의 제안, 표준 아님** | [Eligible Actions](https://arxiv.org/pdf/2207.00632) |
 | 09 | `09_confounding_blindspot` | `dgp.confounding_strength` | 표준 진단은 동일 양호·bias 만 상이 — "진단이 못 보는 것" 대조표 (hero ③) | [Amazon Science RecSys'23](https://www.amazon.science/publications/offline-recommender-system-evaluation-under-unobserved-confounding) · [Namkoong+ NeurIPS'20](https://arxiv.org/abs/2003.05623) |
-| 10 | `10_decision_metrics` | metric 층: 잘못-배포 확률 · rank-corr (축 시나리오 재활용) | MSE 동률 estimator 가 정책 *선택* 안전성에선 갈림 | [SharpeRatio@k, ICLR'24](https://arxiv.org/abs/2311.18207) |
+| 10 | `10_decision_metrics` | regime β_log × candidate β_eval **자체 factorial**(n=2000 자체 로그 — 축 CSV 재사용 아님) | 결정 안전성은 비교 설계의 속성: 절대 게이트=오차 상속 vs 같은-로그 비교=상쇄(경계·혼합비교 예외) | [SharpeRatio@k, ICLR'24](https://arxiv.org/abs/2311.18207) · [Δ-OPE, RecSys'24](https://arxiv.org/abs/2405.10024) |
 | 11 | `11_c2b_multidataset` | classification-to-bandit 데이터셋 스윕 (optdigits · satimage · pendigits · letter) | 깨끗한 GT 의 멀티데이터셋 체계 벤치 | [c2b 변환 관례 예](https://arxiv.org/abs/1802.03493) |
 | 12 | `12_obd_small_gate` | OBD small 캠페인 × 로깅정책 쌍 | random-policy 근사 GT 로 synthetic 결론 재현 + obp 교차검증 (근사 GT 는 불확실 — bootstrap CI 병기) | [OBD 논문](https://arxiv.org/abs/2008.07146) · [ZOZO data](https://research.zozo.com/data.html) |
 | 13 | `13_action_scale_mips` [스트레치] | `dgp.n_actions` 스케일 + action embedding | 액션 폭발에서 IPS/DR 분산 붕괴와 MIPS 의 구원 | [MIPS, ICML'22](https://arxiv.org/abs/2202.06317) |

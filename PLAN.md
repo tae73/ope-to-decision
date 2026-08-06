@@ -107,6 +107,23 @@ random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가�
   설계). 수정 후 39 테스트 재green.
 - [x] LEDGER `m1-crossval` ENTERED · PLAN §2 설계 결정 반영 · M1 커밋
 
+## 4.2 M2 체크리스트 (완료 — 2026-08-06)
+
+- [x] CI 병기 규약 정밀화(CLAUDE.md §2 — 합성 MC 축=seed-ensemble band, bootstrap 은 실데이터 전용)
+- [x] SLOPE 구현(`slope_select`+`_lepski_select`) — **축 07 실험이 ladder 방향 반전 버그를 실증 적발**
+  (논문은 광폭 CI 부터 — 반대로 걸으면 고편향 rung 이 veto → clipped 30/30 최소 rung 붕괴) → 수정 +
+  회귀 테스트 고정, 수정 후 clipped p90 0.125→0.050 회복. 테스트 48 green.
+- [x] 실험 인프라: `experiments/_common.py`(RunRecord·COLUMNS·hyperparam 정책·v_true memoize) +
+  `_style.py`(entity 고정 색 — dataviz validator ALL PASS) + 축 01 exemplar 계약.
+- [x] **코어 축 01–10 전부 실행 완료** — figure+CSV 페어 10축(+companion CSV: 04 oracle·08 confusion·
+  10 metrics/thresholds). fan-out 7 agents + 집계 2축 인라인.
+- [x] 정직 보고(기대 불발 포함): 02 β=8 cliff 불발(8→16 사이)·03 DM 역전 불발(weight 유계)·
+  04 support proxy 전면 blind(0 vs oracle 0.143)·07 IEOE 불안정은 clipped 전용·10 비교형 게이트
+  상쇄(초기 null 의 원인 규명 포함) — 전부 figure·docstring 에 그대로.
+- [x] 적대 verify 11-agent(축별 10+교차 1): 전 축 수치 재도출 일치, 지적 9건(문구 한정·stale·색·
+  ylim 잘림·companion CSV) 전부 수정 반영.
+- [x] LEDGER: `m2-gate`·`m2-08-forecast`·`m2-09-blindspot`·`m2-04-proxy-blind` ENTERED · M2 커밋
+
 ## 5. 리듬 규약
 
 - **한 stage = 한 `/goal`.** M1 부터는 마일스톤(필요 시 마일스톤 내 소단계)을 `/goal` 로 잠그고 게이트 판정 후 해제.

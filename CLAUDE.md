@@ -31,7 +31,9 @@
   - `pi_e_dist` : `(n, K)` 평가 정책의 행동 분포 π_e(·|x_i)
   - `q_hat` : `(n, K)` reward 모델 예측 q̂(x_i, ·)
 - estimator 는 전부 `EstimateResult(value, weights)` 반환 — `weights`(변형 후 importance weight)는
-  diagnostics 의 입력으로 재사용된다. 모든 figure 는 점추정이 아니라 `bootstrap_ci` 구간을 병기.
+  diagnostics 의 입력으로 재사용된다. **불확실성 병기 규약(M2 정밀화)**: 합성 MC 축(01–10)은
+  **S-seed ensemble band**(mean±2·SE over seeds)로 병기하고, `bootstrap_ci` 는 **실데이터 축 11–12
+  (단일 로그·seed 반복 불가) 전용**이다 — 전면 bootstrap 은 런타임 ×1000 으로 비실용(M2 실측).
 - Hydra 는 **Compose API 로만** 로드(`@hydra.main` 금지), OmegaConf → NamedTuple 변환 후
   src 모듈에는 NamedTuple 만 전달 (mta-simulation 관례). config 루트는 `configs/config.yaml`.
 - 네이밍: 함수 verb_noun(`estimate_*`·`compute_*`·`make_*`), 상수 UPPER_SNAKE, private `_prefix`.
