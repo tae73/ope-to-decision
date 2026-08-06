@@ -39,7 +39,7 @@
 | `등재일` | `YYYY-MM-DD`. |
 | `상태` | `RESERVED`(경로만 예약, 수치 미등재) / `ENTERED`(수치 등재 완료 — NO-GO 등 실패 결과 포함) / `SUPERSEDED`(재실험으로 대체됨). |
 
-## 수치 표 (현재: M0 probe 4행 등재)
+## 수치 표 (현재: M0 probe 4행 + M1 교차검증 1행 등재)
 
 M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 동반 commit** 되어 아래와 같이
 등재되었다(등재일 2026-08-06). `수치` 필드는 각 source JSON 의 값 verbatim 이다(규칙 3 — 반올림 금지).
@@ -50,6 +50,7 @@ M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 
 | `m0b-obp-crossval` | VERDICT `GO` · `obp_version` = 0.5.7 · 6종 estimator 전부 `match: true` | — | `results/tables/probe_obp_crossval.json` | `M0-B` | 2026-08-06 | ENTERED |
 | `m0b-sbobp` | VERDICT `GO` · 6종 estimator 전부 `match: true` | — | `results/tables/probe_obp_crossval_sbobp.json` | `M0-B` | 2026-08-06 | ENTERED |
 | `m0b-pypi` | obp latest 0.5.7 (2023-04-14) · sb-obp latest 0.5.10 (2025-08-19, requires_python >=3.8.1,<3.13) | — | `results/tables/probe_obp_pypi_check.json` | `M0-B` | 2026-08-06 | ENTERED |
+| `m1-crossval` | VERDICT `GO` · 7종 estimator(dm·ips·snips·clipped_ips·dr·switch_dr·dros) × 2트랙(obp 0.5.7 py3.9 · sb-obp py3.12) 전부 `match=True` (rel_tol=1e-8, 점추정만 게이트) | — | `results/tables/m1_obp_crossval.csv` | `M1` | 2026-08-06 | ENTERED |
 
 **등재 행 비고:**
 
@@ -66,3 +67,8 @@ M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 
 - `m0b-pypi` — probe `M0-B`의 PyPI 재확인 결과: obp latest 0.5.7(2023-04-14), sb-obp latest
   0.5.10(2025-08-19, requires_python >=3.8.1,<3.13). 이로써 기존 [불확실] 표기(obp 최종 릴리스 버전
   0.5.5 vs 0.5.7 상충)는 **0.5.7 로 해소**되었다.
+- `m1-crossval` — M1 게이트(`experiments/m1_crossval/` 3단, M0-B probe 와 달리 **src 본구현** 검증):
+  같은 배열(npz float64 공유) 위에서 자기 구현 vs obp/sb-obp 7종 estimator 점추정 전부 rel_diff ≤ 1e-8.
+  switch(τ=p95(w))·clip(λ=p90(w)) **분기 발동 상태**에서의 일치이며, CI 는 라이브러리별 bootstrap 구현
+  상이로 비교 제외(게이트는 점추정만). 개별 추정값·hyperparam 이 문서에 필요해지면 CSV 에서 행 분할 등재.
+  주의: 이 표의 추정치는 산술 검증용 인공 설정(오지정 q̂ 포함)의 값 — 축 실험 결과가 아니다.

@@ -9,3 +9,4 @@ support_deficiency: 0.0
 reward_noise: 0.5
 confounding_strength: 0.0
 seed: 12345
+struct_seed: 7    # 환경 구조 rng — "같은 환경, 다른 로그" MC 반복은 seed 만 바꾼다

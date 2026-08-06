@@ -47,6 +47,23 @@ uv pip install --python .venv-sbobp/bin/python sb-obp
 
 API 함정: obp 0.5.x 의 `SwitchDoublyRobust` 임계값 인자는 `tau` 가 아니라 `lambda_` 다 (M0-B 실측).
 
+## m1_crossval — M1 게이트: src 구현 vs obp/sb-obp 교차검증 (실행 완료)
+
+M0-B probe(자체 내장 최소 구현)와 달리 **`src/ope` 본구현**을 검증한다. env 혼용 금지·numpy
+버전 격리 때문에 3단 분리: 같은 배열을 npz(float64·allow_pickle=False)로 공유해 순수 산술만 비교.
+
+```bash
+uv run python experiments/m1_crossval/run_mine.py                     # 1단: src 로 데이터·자기추정 → npz
+.venv-obp/bin/python experiments/m1_crossval/run_obp.py               # 2단: obp(py3.9) 트랙
+.venv-sbobp/bin/python experiments/m1_crossval/run_obp.py _sbobp      #      sb-obp(py3.12) 트랙
+uv run python experiments/m1_crossval/make_table.py                   # 3단: 비교표 + verdict
+```
+
+**상태:** VERDICT **GO** — 7종 estimator(clipped_ips 포함 — obp 의 `IPW(lambda_)` 가 동일 산술)
+× 두 트랙 전부 rel_diff ≤ 1e-8, switch(τ=p95)·clip(λ=p90) 분기 발동 상태에서. **점추정만 게이트**
+(CI 는 라이브러리별 bootstrap 구현이 상이 — 비교 제외). 수치 정본: `results/tables/m1_obp_crossval.csv`
+→ [docs/LEDGER.md](../docs/LEDGER.md).
+
 ## 축 01–14 예정표 (전부 미실행 — slug 는 후보, ID 는 확정)
 
 | ID | slug 후보 | 스윕 노브 | 보려는 것 | 근거 (URL) |

@@ -1,18 +1,8 @@
-"""M0 smoke — 패키지 임포트와 스텁 계약(NotImplementedError)만 확인. 본 테스트는 M1에서 property test 로 대체·확장."""
-
-import numpy as np
-import pytest
+"""패키지 임포트 smoke. 실질 검증은 property test(test_estimators·test_dgp·test_statistical 등)가 담당."""
 
 import ope
-from ope import datasets, dgp, diagnostics, estimators, policies
+from ope import datasets, dgp, diagnostics, estimators, policies  # noqa: F401
 
 
 def test_import():
     assert ope.__version__
-
-
-def test_stubs_raise_not_implemented():
-    with pytest.raises(NotImplementedError):
-        policies.softmax_policy(np.zeros((2, 3)), beta=1.0)
-    with pytest.raises(NotImplementedError):
-        estimators.estimate_ips(np.zeros(2), np.zeros(2, dtype=int), np.ones(2), np.ones((2, 3)) / 3)

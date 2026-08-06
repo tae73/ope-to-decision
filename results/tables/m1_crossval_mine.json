@@ -1,0 +1,30 @@
+{
+  "config": {
+    "n": 50000,
+    "n_actions": 10,
+    "dim_context": 5,
+    "beta_log": 1.0,
+    "beta_eval": 3.0,
+    "support_deficiency": 0.0,
+    "reward_noise": 0.5,
+    "confounding_strength": 0.0,
+    "seed": 20260806,
+    "struct_seed": 7
+  },
+  "hyperparams": {
+    "tau": 1.7666116089820088,
+    "lam_clip": 1.5978585625075445,
+    "lam_dros": 5.0,
+    "share_w_gt_tau": 0.05,
+    "share_w_gt_lam_clip": 0.1
+  },
+  "mine": {
+    "dm": 0.607785123661023,
+    "ips": 0.7122537239258908,
+    "snips": 0.7141494619897593,
+    "clipped_ips": 0.6926573240072486,
+    "dr": 0.7146195625209453,
+    "switch_dr": 0.6956283697580133,
+    "dros": 0.6786450346904056
+  }
+}

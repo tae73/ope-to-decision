@@ -33,19 +33,24 @@ DGP 노브는 `src/ope/dgp.py` 의 `DGPConfig` 필드와 1:1 대응한다(기본
 | 01 | 표본 크기 | n 로그스케일 스윕 | `n` | 소표본=IPS 분산 지배(DM 우세) ↔ 대표본=DM bias 지배 — regime 교차 ([OBP 벤치마크](https://arxiv.org/abs/2008.07146)) |
 | 02 | 로깅 stochasticity | softmax inverse-temperature 스윕 | `beta_log` | 준결정적 로깅 → overlap 축소 → weight 폭발, IPS/DR 붕괴 ([OBP docs](https://zr-obp.readthedocs.io/en/latest/)) |
 | 03 | 타깃–로깅 괴리 | 평가정책 온도 스윕(로깅 고정) | `beta_eval` | 괴리↑ → 분산 폭발·estimator 순위 역전 ([PAS-IF, AAAI'23](https://ojs.aaai.org/index.php/AAAI/article/view/26195)) |
-| 04 | deficient support | π₀(a\|x)=0 강제 비율 | `support_deficiency` | IPS 계열의 파국적(식별 불능) 실패와 진단의 한계 ([Sachdeva-Su-Joachims, KDD'20](https://arxiv.org/abs/2006.09438)) |
+| 04 | deficient support | π₀(a\|x)=0 강제 비율 | `support_deficiency` | IPS 계열의 파국적(식별 불능) 실패와 진단의 한계 ([Sachdeva-Su-Joachims, KDD'20](https://arxiv.org/abs/2006.09438)). *M1 설계: per-row 랜덤이 아닌 **구조적 mask**(컨텍스트별 하위-q ⌊δK⌋개 제거 — 랜덤 mask 는 support proxy 를 원리적으로 blind 으로 만듦); δ 스윕은 1/K 양자화 — 세밀 스윕은 K↑ 로* |
 | 05 | propensity 오지정 | p̂ 를 true→estimated→noised 로 교체 | — (estimator 입력측; `pscore_logged`/`pscore_true` 배열 활용) | IPS bias 직결; DR 은 q̂ 한쪽만 맞아도 생존, 둘 다 틀리면 실패 ([DRUnknown](https://arxiv.org/pdf/2404.01830)) |
 | 06 | reward model 오지정 | q̂ 학습기 용량·오지정 정도 | — (estimator 측; 보조 `reward_noise`) | DM bias 의 표본 불감성, DR 보정의 한계 ([MRDR](https://arxiv.org/pdf/1802.03493)) |
 | 07 | hyperparameter 민감도 | clip λ·switch τ·shrinkage 를 분포로 샘플 | — (estimator 하이퍼 층) | 튜닝 없는 고급 estimator 가 단순 estimator 보다 불안정 — IEOE error-CDF ([IEOE](https://arxiv.org/abs/2108.13703)) |
 | 08 | 진단 예보력 + 결정규칙 | 축 01–07 grid 산출 재사용 | (전 축 필드 재사용) | ESS·max-weight vs 실오차 산점 — 진단이 예보하는 축과 못 보는 축의 대비; 결정규칙은 **본 레포의 제안**으로 프레임 |
-| 09 | confounding 주입 + 대조표 | U 개입 강도(기록 pscore ≠ 진짜) | `confounding_strength` | unconfounded vs confounded 에서 ESS·max-weight 는 동일 양호, bias 만 상이 — 표준 진단이 원리적으로 blind ([RecSys'23](https://www.amazon.science/publications/offline-recommender-system-evaluation-under-unobserved-confounding) · [Namkoong+](https://arxiv.org/abs/2003.05623)) |
+| 09 | confounding 주입 + 대조표 | U 개입 강도(기록 pscore ≠ 진짜) | `confounding_strength` | unconfounded vs confounded 에서 ESS·max-weight 는 동일 양호 범위, bias 만 상이 — 표준 진단이 원리적으로 blind ([RecSys'23](https://www.amazon.science/publications/offline-recommender-system-evaluation-under-unobserved-confounding) · [Namkoong+](https://arxiv.org/abs/2003.05623)). *M1 설계: U 는 로깅 logits(γ·U·d_a)와 reward(+γ·κ·U, κ=0.5)에 동시 개입; `pscore_logged`=의도 정책 기록값·`pscore_true`=**U-조건부** 실제값(oracle-IPS 가 참값 복원하는 정의 — tests/test_statistical.py 의 대조 항등으로 검증)* |
 | 10 | 의사결정 metric | MSE 대신 잘못 배포 확률·rank-corr | (전 축 grid 재사용; metric 층) | MSE 동률 estimator 가 정책 *선택* 안전성에선 갈림 ([SharpeRatio@k, ICLR'24](https://arxiv.org/abs/2311.18207)) |
 | 11 | 실데이터 c2b 멀티데이터셋 | optdigits·satimage·pendigits·letter | — (`datasets.py`; 표준 변환 프로토콜) | 깨끗한 GT 에서 synthetic 결론의 체계 벤치 재현 ([c2b 변환 사용 예 — MRDR(Farajtabar+ 2018)](https://arxiv.org/pdf/1802.03493) — 프로토콜 계보는 POSITIONING §2.1 참조) |
 | 12 | 실데이터 OBD small 게이트 | ZOZO 2 로깅정책·실측 propensity | — (`datasets.py`) | random-policy 근사 GT 대비 재현 — bootstrap CI 병기 필수(§3.4) ([OBD](https://arxiv.org/abs/2008.07146)) |
 | 13 | [스트레치] 액션 수 + MIPS | K 스윕(10→수천) | `n_actions` | IPS/DR 분산 폭발과 MIPS 의 구원 ([Saito-Joachims, ICML'22](https://arxiv.org/abs/2202.06317)) |
 | 14 | [스트레치] Λ-sweep + breakdown Λ* | MSM Λ 스윕(축 09 DGP 재사용) | `confounding_strength` (+ estimator 층 Λ) | 정책 순위가 뒤집히는 breakdown Λ* 리포트 ([Kallus & Zhou](https://arxiv.org/pdf/1805.08593)) |
 
-비고: `dim_context`·`seed` 는 스윕 축이 아니라 통제 변수(고정)다. 축 13·14 는 독립 모듈로 격리해 drop 가능하게 만든다.
+비고: `dim_context`·`seed`·`struct_seed` 는 스윕 축이 아니라 통제 변수다 — `struct_seed`(M1 추가 필드)는
+환경 구조(θ·b·d_a)를 고정하고 `seed` 만 바꿔 "같은 환경, 다른 로그" MC 반복을 만든다(구조 rng draw 순서는
+dgp.py 에 고정·문서화 — 순서 변경 = 환경 변경). 축 13·14 는 독립 모듈로 격리해 drop 가능하게 만든다.
+**M1 reward 설계 결정**: reward 는 연속형 `r = q + γ·κ·U + σ·ε` — E[U]=E[ε]=0 이므로 v_true=E_x[Σπ_e q] 가
+γ·σ 와 무관하게 정확히 성립(테스트로 고정). binary CTR 현실성은 축 11–12 실데이터 트랙의 몫이며,
+probe M0-A(Bernoulli)와의 이탈은 dgp.py docstring 에 기록했다.
 
 ## 3. GO/NO-GO 게이트와 폴백
 
@@ -81,9 +86,26 @@ random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가�
 - [x] probe M0-A 실행 → `results/tables/probe_dgp_sanity.json`, VERDICT **GO** (상태 표기 — 수치 등재는 LEDGER, 초기 커밋 동반)
 - [x] probe M0-B 실행 → obp(py3.9)·sb-obp(py3.12) 두 트랙 모두 VERDICT **GO** (상태 표기 — 수치 등재는 LEDGER, 초기 커밋 동반) (`probe_obp_crossval.json`·`probe_obp_crossval_sbobp.json`) + PyPI 사실 확인(`probe_obp_pypi_check.json`)
 - [x] 문서 7종 작성·검증·수정: `README.md`(수치 0 스켈레톤) · `CLAUDE.md` · `PLAN.md`(본 문서) · `docs/CONCEPT.md` · `docs/POSITIONING.md`(전 주장 출처 URL) · `docs/LEDGER.md`(빈 틀+규칙) · `docs/GLOSSARY.md`
-- [ ] `experiments/README.md`(축↔ID 매핑 — 본 문서 §2 와 동일 정본)
-- [ ] `uv sync` + `pytest`(스텁 smoke) 통과 확인
+- [x] `experiments/README.md`(축↔ID 매핑 — 본 문서 §2 와 동일 정본)
+- [x] `uv sync` + `pytest` 통과 확인 (M0: 스텁 smoke → M1: property test 로 대체·확장)
 - [x] `git init` + 초기 커밋 1회(데이터 미포함 · force-push 금지) — 본 커밋(2026-08-06)
+
+## 4.1 M1 체크리스트 (완료 — 2026-08-06)
+
+- [x] `src/ope/` 본구현 4모듈: policies(안정 softmax·ε-greedy) · dgp(연속형 reward·U-조건부
+  `pscore_true`·구조적 support mask·`struct_seed` — §2 설계 결정 참조) · estimators(코어 7종 +
+  `bootstrap_ci`) · diagnostics(ESS·max-weight·support proxy + `GateThresholds`·`decision_gate`).
+  datasets.py 는 M3 스텁 유지.
+- [x] property test **39개 green** (`uv run pytest`): 정확 항등식(switch τ=∞≡DR·clipped λ=∞≡IPS·
+  DRos 극한·DR q̂=0≡IPS·SNIPS 스케일 불변) + 통계(IPS 불편·분산 순서·DR 이중강건) + **종단 on-policy
+  검산** + **confounding 대조 항등**(oracle 불편 ∧ 기록-pscore 편향) + DGP·진단·게이트 속성.
+- [x] obp/sb-obp 교차검증 표 → VERDICT **GO** (`results/tables/m1_obp_crossval.csv`, LEDGER
+  `m1-crossval` 행): 7종 × 2트랙 rel_diff ≤ 1e-8, 분기 발동 상태(τ=p95·λ=p90). 게이트 통과.
+- [x] 적대 코드리뷰(3렌즈 → 발견별 반증 검증): 발견 19건 중 **확정 2건 수정 완료**
+  (① `bootstrap_ci` alpha 무검증 fail-silent → (0,1) 강제 + 의미론 docstring, ② gate 임계값 raw dict
+  오타 키 침묵 무시 → `GateThresholds` NamedTuple 강제), 17건은 반증 기각(재현 불가·도달 불가·문서화된
+  설계). 수정 후 39 테스트 재green.
+- [x] LEDGER `m1-crossval` ENTERED · PLAN §2 설계 결정 반영 · M1 커밋
 
 ## 5. 리듬 규약
 
