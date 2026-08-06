@@ -1,0 +1,26 @@
+# data — 원본 재배포 금지(라이선스), 사용자가 직접 배치 (data/README.md 참조)
+data/*
+!data/README.md
+
+# artifacts
+*.joblib
+*.pkl
+*.npz
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# envs (본 env + obp 교차검증용 pinned env)
+.venv/
+.venv-obp/
+.venv-sbobp/
+
+# hydra/노트북 잡파일
+outputs/
+.hydra/
+notebooks/.ipynb_checkpoints/
+
+# OS
+.DS_Store

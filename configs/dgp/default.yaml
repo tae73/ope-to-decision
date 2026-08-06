@@ -1,0 +1,11 @@
+# 합성 DGP 기본값 — 각 실험 축이 필드 하나를 스윕한다 (src/ope/dgp.py DGPConfig 대응).
+# 이 값들은 설계 기본값이며 결과 수치가 아니다. 실험별 스윕 범위는 experiments/README.md 참조.
+n: 10000
+n_actions: 10
+dim_context: 5
+beta_log: 1.0
+beta_eval: 3.0
+support_deficiency: 0.0
+reward_noise: 0.5
+confounding_strength: 0.0
+seed: 12345

@@ -1,0 +1,57 @@
+{
+  "probe": "M0-A dgp_estimator_sanity",
+  "config": {
+    "d": 5,
+    "k": 10,
+    "n": 20000,
+    "n_seeds": 40,
+    "beta_log": 2.0,
+    "beta_eval": 6.0,
+    "n_mc": 500000,
+    "struct_seed": 7
+  },
+  "v_true": 0.8095278816936599,
+  "estimator_stats": {
+    "ips": {
+      "mean": 0.8088124144932263,
+      "sd": 0.00669071124983369,
+      "bias": -0.0007154672004335838,
+      "se": 0.0010578943357993167
+    },
+    "snips": {
+      "mean": 0.8095836838387115,
+      "sd": 0.003910114404967437,
+      "bias": 5.580214505163106e-05,
+      "se": 0.0006182433715765551
+    },
+    "dm_wrong": {
+      "mean": 0.6548226928277261,
+      "sd": 0.0004017411324870678,
+      "bias": -0.15470518886593376,
+      "se": 6.352085042172999e-05
+    },
+    "dr_wrong": {
+      "mean": 0.8095485968169737,
+      "sd": 0.0039751957891373015,
+      "bias": 2.0715123313808093e-05,
+      "se": 0.0006285336419392149
+    },
+    "dr_oracle": {
+      "mean": 0.8098038993293029,
+      "sd": 0.0035127054096919953,
+      "bias": 0.00027601763564299997,
+      "se": 0.0005554074921910805
+    }
+  },
+  "ess_ratio_mean": 0.6967833938274134,
+  "checks": {
+    "ips_unbiased_within_3se": true,
+    "snips_lower_sd_than_ips": true,
+    "dm_wrong_clearly_biased": true,
+    "dr_survives_wrong_q_within_3se": true,
+    "dr_oracle_sd_leq_ips_sd": true,
+    "ess_uniform_equals_n": true,
+    "ess_ratio_in_unit_interval": true
+  },
+  "verdict": "GO"
+}

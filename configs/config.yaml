@@ -1,0 +1,10 @@
+# Hydra 루트 config — experiments/NN_*.py 가 공유. CLI 오버라이드로 축별 스윕.
+defaults:
+  - dgp: default
+  - _self_
+
+n_seeds: 50          # 축 실험 기본 반복 수 (bias²·variance 분해용)
+bootstrap:
+  n_boot: 2000
+  alpha: 0.05
+results_dir: results
