@@ -1,6 +1,6 @@
 # GLOSSARY — KO/EN 용어 단일기준
 
-> **지위:** 이 표는 `ope-decision-gate` 레포의 모든 산출물(README·docs·figure 라벨·코드 docstring·발표자료)에서
+> **지위:** 이 표는 `ope-to-decision` 레포의 모든 산출물(README·docs·figure 라벨·코드 docstring·발표자료)에서
 > 사용하는 KO/EN 용어의 **단일 정본**이다. 새 용어는 이 표에 먼저 등재한 뒤 사용한다.
 > 수치는 이 문서에 등장하지 않는다 — 모든 수치는 [`docs/LEDGER.md`](LEDGER.md) 경유.
 

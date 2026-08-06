@@ -1,6 +1,6 @@
 # LEDGER — 정본 수치 단일 진실표
 
-> **지위:** 이 표는 `ope-decision-gate` 레포에 등장하는 **모든 실험 수치의 유일한 정본**이다.
+> **지위:** 이 표는 `ope-to-decision` 레포에 등장하는 **모든 실험 수치의 유일한 정본**이다.
 > README·docs·figure 캡션·발표자료의 어떤 수치도 이 표를 경유하지 않고는 존재할 수 없다.
 > 용어는 [`docs/GLOSSARY.md`](GLOSSARY.md), 마일스톤·실험 축은 `PLAN.md`를 따른다.
 

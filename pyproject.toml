@@ -1,7 +1,7 @@
 [project]
-name = "ope-decision-gate"
+name = "ope-to-decision"
 version = "0.1.0"
-description = "Multi-action logged bandit OPE benchmark + deployment-gate playbook — which off-policy estimate can you trust, and when should you fall back to an A/B test?"
+description = "From logged bandit feedback to deployment decisions — multi-action OPE benchmark + deployment-gate playbook: which off-policy estimate can you trust, and when should you fall back to an A/B test?"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }

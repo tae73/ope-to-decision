@@ -538,7 +538,7 @@ wheels = [
 ]
 
 [[package]]
-name = "ope-decision-gate"
+name = "ope-to-decision"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

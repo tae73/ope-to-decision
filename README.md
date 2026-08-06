@@ -1,4 +1,6 @@
-# ope-decision-gate
+# ope-to-decision
+
+**From logged bandit feedback to deployment decisions.**
 
 > **A/B 테스트 전에, 이미 쌓인 추천 로그만으로 새 정책의 가치를 추정하고 — 그 추정을 언제 믿으면 안 되는지까지 판정하는 multi-action OPE 벤치마크 + 배포 게이트 플레이북.**
 
@@ -85,7 +87,7 @@ SNIPS → DR → Switch-DR/DRos 로 이어지는 bias-variance 아크.
 ## Quick Start
 
 ```bash
-cd ope-decision-gate
+cd ope-to-decision
 uv sync                    # 본 env (Python 3.11+)
 uv run pytest              # M0: 패키지 임포트 + 스텁 계약 smoke
 
@@ -98,7 +100,7 @@ uv run python experiments/probes/probe_dgp_estimator_sanity.py
 ## Repository Structure
 
 ```
-ope-decision-gate/
+ope-to-decision/
 ├── src/ope/               # estimators · dgp · diagnostics · policies · datasets (M0: 스텁)
 ├── experiments/           # 실험 인덱스(README) + probes/ (축 01–14 스크립트는 M2–M3)
 ├── configs/               # Hydra: config.yaml + dgp/default.yaml (설계 기본값 — 결과 수치 아님)

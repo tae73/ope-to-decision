@@ -1,4 +1,4 @@
-# ope-decision-gate — CLAUDE.md (에이전트 작업 규약)
+# ope-to-decision — CLAUDE.md (에이전트 작업 규약)
 
 ## 1. 정체성 · 비범위
 

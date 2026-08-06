@@ -1,4 +1,4 @@
-# CONCEPT — `ope-decision-gate` (research-design Stage 0 · 1-pager)
+# CONCEPT — `ope-to-decision` (research-design Stage 0 · 1-pager)
 
 > **one-liner.** A/B 테스트를 돌리기 전에, 이미 쌓인 추천 로그만으로 새 정책의 가치를 추정하고 —
 > 더 중요하게는 **그 추정을 언제 믿으면 안 되는지**까지 판정하는 multi-action OPE 벤치마크 + 배포 게이트 플레이북.
