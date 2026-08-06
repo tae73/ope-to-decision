@@ -1,0 +1,20 @@
+name,role,value,ci_lo,ci_hi,detail
+on_policy_gt,ground_truth,0.0038,0.0027,0.0051,"random log on-policy mean click (approximate GT, own sampling error — PLAN §3.4); percentile bootstrap B=10000, alpha=0.05, seed=12"
+ips,estimator,0.0023596395168460067,0.0010344866054704887,0.004275781566896641,"uniform target 1/80 on bts log; percentile bootstrap B=2000, alpha=0.05, seed=13"
+snips,estimator,0.002333713893161734,0.0010396574057650045,0.004273131381259565,"percentile bootstrap B=2000, alpha=0.05, seed=13"
+clipped_ips,estimator,0.001692925593241263,0.0009712015697640248,0.0025202834805861394,"lam=p90(w)=1.76591 fixed across resamples; percentile bootstrap B=2000, alpha=0.05, seed=13"
+dr,estimator_reference,0.0042347595592443395,0.0027367644568330467,0.006217868020695338,"reference only — q_hat = per-(item,position) 2-fold cross-fitted mean click; clicks too sparse for informative q_hat; CI conditional on fixed q_hat; percentile bootstrap B=2000, alpha=0.05, seed=13"
+ess_ratio_raw,diagnostic,0.03403783411325947,,,uniform target on bts log
+max_weight_raw,diagnostic,277.77777777777777,,,= (1/80)/min pscore
+weight_tail_p99,diagnostic,13.091093906650375,,,
+support_proxy,diagnostic,0.0,,,pi_e mass on actions never logged (all 80 items appear -> 0)
+min_pscore_bts,diagnostic,4.5e-05,,,
+gate_verdict,gate,distrust,,,ess_ratio 0.0340 < soft floor 0.1; max_weight 277.78 > cap 100.0
+n_rounds_bts,data,10000,,,
+n_clicks_bts,data,42,,,
+n_rounds_random,data,10000,,,
+n_clicks_random,data,38,,,
+dup_timestamp_pairs_random,data,9,,,row-bootstrap independence check (docstring 한계 ①)
+dup_timestamp_pairs_bts,data,1,,,row-bootstrap independence check (docstring 한계 ①)
+gt_rel_ci_halfwidth,derived,0.31578947368421056,,,(hi-lo)/2/gt — 판별력 없음 사전 선언의 근거 수치
+top1_click_share_ips,derived,0.3300572794347611,,,max(w_i r_i)/sum(w_i r_i) — 클릭 한 건의 IPS 지배도

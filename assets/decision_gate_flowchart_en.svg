@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 690" width="1000" height="690" role="img" aria-label="OPE decision gate flowchart: log-only diagnostics flow into a three-way verdict (trust, distrust, ab-fallback), with a warning band on unobserved confounding">
+  <title>OPE decision gate — three-way verdict (this repo's proposal)</title>
+  <!-- Inline presentation attributes only (no style/filter/marker elements) for GitHub camo-safe rendering.
+       Palette = experiments/_style.py (entity-fixed figure colors); title text of DISTRUST /
+       warning band uses darkened variants of #eda100 / #e87ba4 for white-background contrast
+       (the palette originals remain the stroke colors); band background #fdf3f7 is a light
+       tint of #e87ba4. Verdict names match GateVerdict in
+       src/ope/diagnostics.py; thresholds are PROVISIONAL_THRESHOLDS verbatim. -->
+  <rect x="0" y="0" width="1000" height="690" fill="#fcfcfb"/>
+  <g font-family="Helvetica, Arial, sans-serif">
+
+    <!-- Title -->
+    <text x="30" y="36" font-size="19" font-weight="bold" fill="#33322e">OPE decision gate &#8212; three-way verdict from log-only diagnostics</text>
+    <text x="30" y="54" font-size="12.5" fill="#6f6e66">This repository's proposal (systematization of folklore practice) &#8212; not an established standard.</text>
+    <text x="30" y="70" font-size="12.5" fill="#6f6e66">Thresholds are provisional &#8212; pre-registered at M1, evaluated (not tuned) on axis 08.</text>
+
+    <!-- Node A: logged data + diagnostics -->
+    <rect x="95" y="78" width="320" height="66" rx="10" fill="#ffffff" stroke="#2a78d6" stroke-width="1.8"/>
+    <text x="255" y="101" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#2a78d6">Logged data + diagnostics</text>
+    <text x="255" y="119" text-anchor="middle" font-size="11.5" fill="#55544e">ESS/n &#183; max weight &#183; support proxy</text>
+    <text x="255" y="133" text-anchor="middle" font-size="10.5" fill="#8a897f">computed from the log alone &#8212; no ground truth needed</text>
+
+    <!-- Arrow A -> D1 -->
+    <line x1="255" y1="144" x2="255" y2="170" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="249,168 261,168 255,178" fill="#6f6e66"/>
+
+    <!-- Diamond D1: hard floor -->
+    <polygon points="255,180 415,224 255,268 95,224" fill="#ffffff" stroke="#555550" stroke-width="1.6"/>
+    <text x="255" y="221" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#33322e">ESS/n &#60; 0.01 ?</text>
+    <text x="255" y="238" text-anchor="middle" font-size="10.5" fill="#8a897f">hard floor</text>
+
+    <!-- D1 yes -> AB-FALLBACK -->
+    <line x1="415" y1="224" x2="523" y2="224" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="523,218 523,230 533,224" fill="#6f6e66"/>
+    <text x="470" y="215" text-anchor="middle" font-size="11" font-style="italic" fill="#6f6e66">yes</text>
+    <rect x="535" y="186" width="215" height="80" rx="10" fill="#ffffff" stroke="#eb6834" stroke-width="2"/>
+    <text x="642" y="210" text-anchor="middle" font-size="13" font-weight="bold" fill="#eb6834">AB-FALLBACK</text>
+    <text x="642" y="227" text-anchor="middle" font-size="10.8" fill="#55544e">the estimate itself is not reliable &#8212;</text>
+    <text x="642" y="241" text-anchor="middle" font-size="10.8" fill="#55544e">no verdict from this log;</text>
+    <text x="642" y="255" text-anchor="middle" font-size="10.8" fill="#55544e">measure online (run an A/B test)</text>
+
+    <!-- D1 no -> D2 -->
+    <line x1="255" y1="268" x2="255" y2="294" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="249,292 261,292 255,302" fill="#6f6e66"/>
+    <text x="266" y="286" font-size="11" font-style="italic" fill="#6f6e66">no</text>
+
+    <!-- Diamond D2: soft violations -->
+    <polygon points="255,300 420,356 255,412 90,356" fill="#ffffff" stroke="#555550" stroke-width="1.6"/>
+    <text x="255" y="344" text-anchor="middle" font-size="12" fill="#33322e">support proxy &#62; 0.02</text>
+    <text x="255" y="360" text-anchor="middle" font-size="12" fill="#33322e">or ESS/n &#60; 0.10 (soft)</text>
+    <text x="255" y="376" text-anchor="middle" font-size="12" fill="#33322e">or max weight &#62; 100 ?</text>
+
+    <!-- D2 yes -> DISTRUST -->
+    <line x1="420" y1="356" x2="523" y2="356" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="523,350 523,362 533,356" fill="#6f6e66"/>
+    <text x="470" y="347" text-anchor="middle" font-size="11" font-style="italic" fill="#6f6e66">yes</text>
+    <rect x="535" y="310" width="215" height="92" rx="10" fill="#ffffff" stroke="#eda100" stroke-width="2"/>
+    <text x="642" y="333" text-anchor="middle" font-size="13" font-weight="bold" fill="#a97400">DISTRUST</text>
+    <text x="642" y="350" text-anchor="middle" font-size="10.8" fill="#55544e">reject this log &#215; policy estimate</text>
+    <text x="642" y="364" text-anchor="middle" font-size="10.8" fill="#55544e">variance fix: tuned clip / switch</text>
+    <text x="642" y="378" text-anchor="middle" font-size="10.8" fill="#55544e">support fix: re-log with exploration</text>
+    <text x="642" y="393" text-anchor="middle" font-size="9.5" font-style="italic" fill="#8a897f">then re-run the gate</text>
+
+    <!-- D2 no -> TRUST, with support-proxy honesty footnote -->
+    <line x1="255" y1="412" x2="255" y2="444" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="249,442 261,442 255,452" fill="#6f6e66"/>
+    <text x="240" y="432" text-anchor="end" font-size="11" font-style="italic" fill="#6f6e66">no</text>
+    <text x="270" y="428" font-size="10" font-style="italic" fill="#8a897f">support proxy: form kept, not trusted &#8212;</text>
+    <text x="270" y="441" font-size="10" font-style="italic" fill="#8a897f">fully blind to structural deficiency (axis 04)</text>
+
+    <!-- TRUST -->
+    <rect x="95" y="454" width="320" height="62" rx="10" fill="#ffffff" stroke="#008300" stroke-width="2"/>
+    <text x="255" y="477" text-anchor="middle" font-size="13" font-weight="bold" fill="#008300">TRUST</text>
+    <text x="255" y="494" text-anchor="middle" font-size="10.8" fill="#55544e">diagnostics pass &#8212; lowest large-error share</text>
+    <text x="255" y="507" text-anchor="middle" font-size="10.8" fill="#55544e">among the three arms (axis 08)</text>
+
+    <!-- Arrow TRUST -> comparative -->
+    <line x1="255" y1="516" x2="255" y2="540" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="249,538 261,538 255,548" fill="#6f6e66"/>
+
+    <!-- Comparative decision -->
+    <rect x="95" y="550" width="320" height="58" rx="10" fill="#ffffff" stroke="#2a78d6" stroke-width="1.8"/>
+    <text x="255" y="570" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#2a78d6">Prefer a comparative decision</text>
+    <text x="255" y="586" text-anchor="middle" font-size="10.5" fill="#55544e">same log &#183; same estimator &#183; &#916; vs incumbent (axis 10);</text>
+    <text x="255" y="600" text-anchor="middle" font-size="10.5" fill="#55544e">near-boundary: use uncertainty intervals, not margins</text>
+
+    <!-- Arrow comparative -> deploy -->
+    <line x1="255" y1="608" x2="255" y2="630" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="249,628 261,628 255,638" fill="#6f6e66"/>
+
+    <!-- Deploy -->
+    <rect x="150" y="640" width="210" height="42" rx="10" fill="#ffffff" stroke="#4a3aa7" stroke-width="2"/>
+    <text x="255" y="666" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a3aa7">Deploy the policy</text>
+
+    <!-- Warning band (applies to every verdict) -->
+    <rect x="780" y="78" width="195" height="604" rx="10" fill="#fdf3f7" stroke="#e87ba4" stroke-width="2"/>
+    <text x="877" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="#c94f7c">Unobserved confounding</text>
+    <text x="877" y="132" text-anchor="middle" font-size="11.5" fill="#33322e">diagnostics are</text>
+    <text x="877" y="147" text-anchor="middle" font-size="11.5" fill="#33322e">structurally blind (axis 09)</text>
+    <text x="877" y="166" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#33322e">gate pass &#8800; innocence</text>
+    <line x1="798" y1="184" x2="957" y2="184" stroke="#e87ba4" stroke-width="1"/>
+    <text x="877" y="206" text-anchor="middle" font-size="10.3" fill="#55544e">If recorded propensities differ</text>
+    <text x="877" y="220" text-anchor="middle" font-size="10.3" fill="#55544e">from the true ones, ESS and</text>
+    <text x="877" y="234" text-anchor="middle" font-size="10.3" fill="#55544e">max weight stay flat</text>
+    <text x="877" y="248" text-anchor="middle" font-size="10.3" fill="#55544e">while bias grows.</text>
+    <text x="877" y="272" text-anchor="middle" font-size="10.3" fill="#55544e">The same formulas do detect</text>
+    <text x="877" y="286" text-anchor="middle" font-size="10.3" fill="#55544e">the problem when given the</text>
+    <text x="877" y="300" text-anchor="middle" font-size="10.3" fill="#55544e">true propensities (oracle</text>
+    <text x="877" y="314" text-anchor="middle" font-size="10.3" fill="#55544e">contrast) &#8212; the failure is in</text>
+    <text x="877" y="328" text-anchor="middle" font-size="10.3" fill="#55544e">the input, not the formula.</text>
+    <text x="877" y="352" text-anchor="middle" font-size="10.3" fill="#55544e">If logged propensities cannot</text>
+    <text x="877" y="366" text-anchor="middle" font-size="10.3" fill="#55544e">be trusted, treat any verdict</text>
+    <text x="877" y="380" text-anchor="middle" font-size="10.3" fill="#55544e">as AB-FALLBACK.</text>
+    <line x1="798" y1="398" x2="957" y2="398" stroke="#e87ba4" stroke-width="1"/>
+    <text x="877" y="420" text-anchor="middle" font-size="10.3" font-style="italic" fill="#8a897f">Correcting for confounding</text>
+    <text x="877" y="434" text-anchor="middle" font-size="10.3" font-style="italic" fill="#8a897f">(proximal, &#923;-sensitivity)</text>
+    <text x="877" y="448" text-anchor="middle" font-size="10.3" font-style="italic" fill="#8a897f">is out of scope &#8212;</text>
+    <text x="877" y="462" text-anchor="middle" font-size="10.3" font-style="italic" fill="#8a897f">research-track boundary.</text>
+
+    <!-- Dashed connector: band applies to the whole gate -->
+    <line x1="415" y1="485" x2="768" y2="485" stroke="#b3b2a9" stroke-width="1.2" stroke-dasharray="5,4"/>
+    <polygon points="768,480 768,490 777,485" fill="#b3b2a9"/>
+    <text x="592" y="477" text-anchor="middle" font-size="10" font-style="italic" fill="#8a897f">applies to every verdict, including TRUST</text>
+  </g>
+</svg>

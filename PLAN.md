@@ -124,6 +124,25 @@ random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가�
   ylim 잘림·companion CSV) 전부 수정 반영.
 - [x] LEDGER: `m2-gate`·`m2-08-forecast`·`m2-09-blindspot`·`m2-04-proxy-blind` ENTERED · M2 커밋
 
+## 4.3 M3 체크리스트 (완료 — 2026-08-06)
+
+- [x] `src/ope/datasets.py` 구현: c2b(softmax 정책 쌍 — ε-greedy 는 overlap 무스트레스로 기각·정확
+  propensity·정확 참값·비-affine 오지정 q̂) + OBD 얇은 로더(파싱 함정 처리). 테스트 52 green
+  (테스트 자체 버그 1건 교정 — 로깅행동 log-likelihood 는 확신도 지배 척도라 Brier 로 교체).
+- [x] 축 11(c2b 4 데이터셋): **DR 의 q̂-오지정 생존 4/4 재현** + 게이트 80/80 trust + bootstrap CI 의
+  bias 미포착 실증(9/28 미커버) + good-q̂ DM 압승 예상 부분 불발(pendigits·letter — 정직 보고).
+- [x] 축 12(OBD small, uniform-target 단방향): §3.4 규약 완수(GT bootstrap CI ±32% 병기·구간 비교) +
+  게이트 실로그 **DISTRUST** 판정 + 판별력 없음 사전 선언 실증 + clipped CI 하방 비겹침(정직 발견).
+  데이터는 로컬 전용(data/ gitignored·재배포 금지·라이선스 각주).
+- [x] **hero 3장 확정**: ① `assets/decision_gate_flowchart_en.svg`(플로차트 — KO twin 은 M4)
+  ② `results/figures/hero_regime_map.png`(28-cell 승자 지도 — 최대 발견: 게이트 검정력의 소표본 실종)
+  ③ `results/figures/09_confounding_blindspot.png`(진단이 못 보는 것 대조).
+- [x] `docs/PLAYBOOK.md`: LEDGER 행만 수치 인용(m2-08·09·04·10·07-slope)·"제안 — 표준 아님" 프레임·
+  비교형 게이트 우선 원칙·confounding 면책·support proxy 신뢰 금지.
+- [x] 적대 verify 4-agent: hero PASS·지적 7건(수치 범위 과대·bias 기전 명명·README 축 12 불일치·
+  provisional 마커·**calibration 과대표현 삼각 불일치**·SVG tint 주석·LEDGER 헤더) 전부 수정 반영.
+- [x] LEDGER m3 4행 + `m2-07-slope` ENTERED · M3 커밋
+
 ## 5. 리듬 규약
 
 - **한 stage = 한 `/goal`.** M1 부터는 마일스톤(필요 시 마일스톤 내 소단계)을 `/goal` 로 잠그고 게이트 판정 후 해제.

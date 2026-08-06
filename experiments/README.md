@@ -1,9 +1,9 @@
 # experiments — 실험 인덱스
 
-> **상태(2026-08-06): 코어 축 01–10 실행 완료** — figure+CSV 페어가 `results/` 에 커밋돼 있다.
-> 실데이터 축 11–12 와 스트레치 13–14 는 실행 전(예정). 이 문서는 실험 ID · slug · 스윕 노브 ·
-> 산출물 규약의 *계약*이며, 결과 수치의 정본은 [docs/LEDGER.md](../docs/LEDGER.md) 경유로만 인용한다.
-> 그 외 실행 완료: M0 probe 2종 · M1 교차검증(m1_crossval).
+> **상태(2026-08-06): 축 01–12 실행 완료**(코어 01–10 + 실데이터 11–12) — figure+CSV 페어가
+> `results/` 에 커밋돼 있다. 스트레치 13–14 는 조건부(각 1일 probe 선행). 이 문서는 실험 ID · slug ·
+> 스윕 노브 · 산출물 규약의 *계약*이며, 결과 수치의 정본은 [docs/LEDGER.md](../docs/LEDGER.md) 경유로만
+> 인용한다. 그 외 실행 완료: M0 probe 2종 · M1 교차검증(m1_crossval) · hero regime map.
 >
 > **실험 ID 는 불변.** ID 는 `results/figures|tables/NN_*` 와 docs 수치에 강결합되므로 재배열·재사용을
 > 금지한다 (mta-simulation 관례 계승). 새 축이 필요하면 뒤 번호를 추가한다.
@@ -16,7 +16,7 @@
   figure 에 실린 모든 수치는 짝 CSV 에서 재계산 가능해야 한다.
 - 문서에 인용되는 수치는 committed CSV → `docs/LEDGER.md` 경유로만 (반올림·자작 금지).
 
-## Probes — M0 (유일하게 실행 완료된 것)
+## Probes — M0 de-risk
 
 research-design Stage 3 포맷(WHAT GENERALIZES / THE RESULT / HONEST reduces_check / VERDICT).
 NO-GO 여도 세션 실패가 아니다 — 폴백 경로는 [PLAN.md](../PLAN.md) 에 기록된다.
@@ -66,7 +66,7 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 (CI 는 라이브러리별 bootstrap 구현이 상이 — 비교 제외). 수치 정본: `results/tables/m1_obp_crossval.csv`
 → [docs/LEDGER.md](../docs/LEDGER.md).
 
-## 축 01–14 표 (01–10 실행 완료 · 11–14 예정 — ID 는 확정 불변)
+## 축 01–14 표 (01–12 실행 완료 · 13–14 스트레치 — ID 는 확정 불변)
 
 | ID | slug 후보 | 스윕 노브 | 보려는 것 | 근거 (URL) |
 |---|---|---|---|---|
@@ -81,7 +81,7 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 | 09 | `09_confounding_blindspot` | `dgp.confounding_strength` | 표준 진단은 동일 양호·bias 만 상이 — "진단이 못 보는 것" 대조표 (hero ③) | [Amazon Science RecSys'23](https://www.amazon.science/publications/offline-recommender-system-evaluation-under-unobserved-confounding) · [Namkoong+ NeurIPS'20](https://arxiv.org/abs/2003.05623) |
 | 10 | `10_decision_metrics` | regime β_log × candidate β_eval **자체 factorial**(n=2000 자체 로그 — 축 CSV 재사용 아님) | 결정 안전성은 비교 설계의 속성: 절대 게이트=오차 상속 vs 같은-로그 비교=상쇄(경계·혼합비교 예외) | [SharpeRatio@k, ICLR'24](https://arxiv.org/abs/2311.18207) · [Δ-OPE, RecSys'24](https://arxiv.org/abs/2405.10024) |
 | 11 | `11_c2b_multidataset` | classification-to-bandit 데이터셋 스윕 (optdigits · satimage · pendigits · letter) | 깨끗한 GT 의 멀티데이터셋 체계 벤치 | [c2b 변환 관례 예](https://arxiv.org/abs/1802.03493) |
-| 12 | `12_obd_small_gate` | OBD small 캠페인 × 로깅정책 쌍 | random-policy 근사 GT 로 synthetic 결론 재현 + obp 교차검증 (근사 GT 는 불확실 — bootstrap CI 병기) | [OBD 논문](https://arxiv.org/abs/2008.07146) · [ZOZO data](https://research.zozo.com/data.html) |
+| 12 | `12_obd_small_gate` | OBD small 단일 프로토콜(campaign=all·BTS 로그 고정 — 스윕 아님) | uniform-target 단방향(§3.4 규약: 근사 GT bootstrap CI 병기·구간 비교) + decision gate 시연 — 판별력 없음 사전 선언(클릭 희소·GT CI ±30%대); obp 교차검증·역방향은 스코프 밖 선언 | [OBD 논문](https://arxiv.org/abs/2008.07146) · [ZOZO data](https://research.zozo.com/data.html) |
 | 13 | `13_action_scale_mips` [스트레치] | `dgp.n_actions` 스케일 + action embedding | 액션 폭발에서 IPS/DR 분산 붕괴와 MIPS 의 구원 | [MIPS, ICML'22](https://arxiv.org/abs/2202.06317) |
 | 14 | `14_lambda_sweep` [스트레치·조건부] | MSM Λ grid → breakdown Λ* | 기록 propensity 가 틀렸을 때 worst-case 구간과 정책 순위 반전점 | [Kallus & Zhou](https://arxiv.org/pdf/1805.08593) |
 

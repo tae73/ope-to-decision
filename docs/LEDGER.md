@@ -39,7 +39,7 @@
 | `등재일` | `YYYY-MM-DD`. |
 | `상태` | `RESERVED`(경로만 예약, 수치 미등재) / `ENTERED`(수치 등재 완료 — NO-GO 등 실패 결과 포함) / `SUPERSEDED`(재실험으로 대체됨). |
 
-## 수치 표 (현재: M0 probe 4행 + M1 교차검증 1행 등재)
+## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 등재)
 
 M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 동반 commit** 되어 아래와 같이
 등재되었다(등재일 2026-08-06). `수치` 필드는 각 source JSON 의 값 verbatim 이다(규칙 3 — 반올림 금지).
@@ -55,6 +55,14 @@ M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 
 | `m2-08-forecast` | share_large_err(=P(상대오차>0.10)) verbatim: trust=0.045911191480811735 (n=19908) · distrust=0.1414141414141414 (n=396) · ab_fallback=0.4444444444444444 (n=36) · support arm 발화 0회 | — | `results/tables/08_diagnostics_gate_confusion.csv` | `08` | 2026-08-06 | ENTERED |
 | `m2-09-blindspot` | mean ESS/n(logged): 0.822986@γ=0 → 0.822315@γ=2.5 (사실상 평평) · bias(ips): −0.000147@0 → −0.056818@2.5 · oracle(pscore_true) ESS/n 0.8230→0.0182 (같은 공식이 진짜 pscore 를 받으면 감지 — CSV oracle_ps 행) | — | `results/tables/09_confounding_blindspot.csv` | `09` | 2026-08-06 | ENTERED |
 | `m2-04-proxy-blind` | support proxy = 0.00000 (전 δ) vs oracle 참 미지지 π_e 질량 0.0227(δ=0.1)→0.1434163(δ=0.4) — 전역 proxy 의 전면 blind 실증 | — | `results/tables/04_deficient_support.csv` · `results/tables/04_deficient_support_oracle.csv` | `04` | 2026-08-06 | ENTERED |
+| `m2-10-comparison` | comparative gate(ε=0) false-go verbatim: weighting 계열(ips·snips·clipped) max = 0.0 (상쇄) · DM(혼합 비교) fg max = 0.15 / fs max = 0.375 (bias 부활) · DR-계열 boundary fg max = 0.225 (경계 coin-flip — 부분 상쇄) | — | `results/tables/10_decision_metrics_metrics.csv` | `10` | 2026-08-06 | ENTERED |
+| `m2-07-slope` | \|상대오차\| 분위(가혹 config β_log=8, CSV 재도출): clipped random p90 = 0.12541997032257812 → **slope p90 = 0.05030123684860422** (tail 회복) · snips fixed p90 = 0.02908100554505259 · switch_dr slope p50 = 0.005143399488432962 (전 항목 최소) · dros slope p50 = 0.009873919515252794 > random p50 = 0.00594413221900361 (강규제 선택의 median 대가 — 정직 병기) | — | `results/tables/07_hyperparam_ieoe.csv` | `07` | 2026-08-06 | ENTERED |
+| `m3-gate` | 실데이터 축 11–12 figure+CSV 페어 · 플레이북(LEDGER-only 인용) · hero 3장 확정 · 적대 verify 4-agent 지적 7건 수정 반영 | — | `results/…/11_*, 12_*, hero_regime_map*, docs/PLAYBOOK.md, assets/decision_gate_flowchart_en.svg` | `M3` | 2026-08-06 | ENTERED |
+| `m3-11-dr-robust` | DR 의 q̂-오지정 생존 4/4 재현: bias(dm, q_degraded) = −0.1605(optdigits) · −0.0261(satimage) · −0.2774(pendigits) · −0.3869(letter) vs bias(dr, q_degraded) ≤ \|0.0032\| · 게이트 80/80 trust(건강 진단과 정합) · bootstrap CI 는 구조적 bias 보유 9/28 조합에서 gt 미커버(분산만 포착 — 실데이터 교훈) | — | `results/tables/11_c2b_multidataset.csv` · `_ci.csv` | `11` | 2026-08-06 | ENTERED |
+| `m3-12-gate-demo` | uniform-target: 근사 GT = 0.0038(38 clicks/10,000) · bootstrap 95% CI (0.0027, 0.0051) — 상대 반폭 ±32% · 게이트 **DISTRUST**(ess_ratio 0.0340 < soft 0.10 · max w 277.78 > cap 100) · top1 클릭의 IPS 기여 0.3300 · clipped CI 는 GT band 하방 비겹침(clipping bias 가시화 — 정직 발견) | — | `results/tables/12_obd_small_gate.csv` · `_summary.csv` | `12` | 2026-08-06 | ENTERED |
+| `m3-hero-map` | 28-cell 승자 지도: dr 9 · switch_dr 8 · dros 11 cells, DM·IPS 계열 outright 0 · tie 21/28(사전 동률 규칙) · **게이트 검정력의 소표본 실종**: β_log=16 열에서 non-trust 다수결이 n=2000→32000 에서 24→28→30/30 인데 n=500 은 trust 21/30(그 cell IPS MSE = 승자의 70.6×) · 단일 seed 지배 최대 0.7097(8000×16) | — | `results/tables/hero_regime_map.csv` · `_summary.csv` | `M3` | 2026-08-06 | ENTERED |
+
+**M3 행 비고:** 표기 정밀도는 재도출 보고 기준 축약 — 전체 정밀도 원값은 각 source CSV 가 정본(규칙 3 의 반올림 표기 조항).
 
 **등재 행 비고:**
 
