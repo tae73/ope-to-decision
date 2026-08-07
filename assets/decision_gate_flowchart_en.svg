@@ -96,7 +96,7 @@
     <rect x="780" y="78" width="195" height="604" rx="10" fill="#fdf3f7" stroke="#e87ba4" stroke-width="2"/>
     <text x="877" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="#c94f7c">Unobserved confounding</text>
     <text x="877" y="132" text-anchor="middle" font-size="11.5" fill="#33322e">diagnostics are</text>
-    <text x="877" y="147" text-anchor="middle" font-size="11.5" fill="#33322e">structurally blind (axis 09)</text>
+    <text x="877" y="147" text-anchor="middle" font-size="11.5" fill="#33322e">blind in principle (axis 09)</text>
     <text x="877" y="166" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#33322e">gate pass &#8800; innocence</text>
     <line x1="798" y1="184" x2="957" y2="184" stroke="#e87ba4" stroke-width="1"/>
     <text x="877" y="206" text-anchor="middle" font-size="10.3" fill="#55544e">If recorded propensities differ</text>

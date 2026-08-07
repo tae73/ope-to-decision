@@ -143,6 +143,27 @@ random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가�
   provisional 마커·**calibration 과대표현 삼각 불일치**·SVG tint 주석·LEDGER 헤더) 전부 수정 반영.
 - [x] LEDGER m3 4행 + `m2-07-slope` ENTERED · M3 커밋
 
+## 4.4 M4 체크리스트 (완료 — 2026-08-07)
+
+- [x] **Stage 1** LEDGER 확정: README 인용 대상 headline 수치 전 행 ENTERED 점검(부족분 0) —
+  verify 에서 1건 적발(bts 클릭 42 미등재) → `m3-12-gate-demo` 행 확장으로 해소.
+- [x] **Stage 2** comms design 브리프: `docs/COMMS_BRIEF.md` — 아크·청중 레이어·hero 캡션 설계·
+  배지↔LEDGER 매핑·"부러지지 않은 것들" 섹션 설계. 사용자 확정: 수치 배지·고밀도 표준형·EN 은 README 만.
+- [x] **Stage 3** KO 정본 README 전면 저작(~250줄): 수치 배지 6종 → TL;DR 3줄 → hero 3장 임베드 →
+  2막 서사 → 구성요소·검증 3중 표 → 축별 발견 12줄 표(LEDGER id 병기) → **불발 6건을 본문 섹션으로
+  승격**("부러지지 않은 것들") → Quick Start → 문서 지도 → Attribution → 정직성 각주.
+- [x] **Stage 4** EN twin `README.en.md`: 자연 재작성(직역 금지)·GLOSSARY EN 열 정합·수치 0 드리프트·
+  언어 토글 상호 링크.
+- [x] **Stage 5** `assets/decision_gate_flowchart_ko.svg`: EN 판과 구조·좌표·팔레트 동일, 텍스트만
+  KO(GLOSSARY 표기), rsvg 렌더 검수 통과. KO README=ko.svg / EN=en.svg 임베드.
+- [x] 적대 verify 2렌즈(수치=LEDGER·링크·배지 / parity·렌더): 지적 10건 전부 반영 — LEDGER 미경유
+  수치(42) 등재, 표기 정밀화(|DR bias|), HTML 블록 내 백틱→`<code>`, GLOSSARY 첫등장 병기, EN SVG
+  용어 통일("blind in principle"), img alt, 메타데이터 각주.
+- [x] **publish 시점 결정 사항 기록**: 두 README 의 인접 레포 상대 링크 4종(`../dag-registry/` 등)은
+  GitHub 단독 레포에서 404 — Stage 7 publish 때 GitHub 절대 URL 로 치환하거나 코드체 레포명으로 강등
+  (하우스 관례 확인 후 일괄 적용).
+- [x] PLAN §4.4 · applied 인덱스 갱신 · M4 커밋
+
 ## 5. 리듬 규약
 
 - **한 stage = 한 `/goal`.** M1 부터는 마일스톤(필요 시 마일스톤 내 소단계)을 `/goal` 로 잠그고 게이트 판정 후 해제.

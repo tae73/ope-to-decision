@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 690" width="1000" height="690" role="img" aria-label="OPE decision gate 플로차트: 로그-단독 진단이 3-way 판정(trust, distrust, ab-fallback)으로 흐르고, 우측에 미관측 교란 경고 밴드가 있다">
+  <title>OPE decision gate — 3-way 판정 (본 레포의 제안)</title>
+  <!-- assets/decision_gate_flowchart_en.svg 의 KO twin — 구조·좌표·팔레트·화살표 동일, 텍스트만 한국어.
+       Inline presentation attributes only (no style/filter/marker elements) for GitHub camo-safe rendering.
+       Palette = experiments/_style.py (entity-fixed figure colors); title text of DISTRUST /
+       warning band uses darkened variants of #eda100 / #e87ba4 for white-background contrast
+       (the palette originals remain the stroke colors); band background #fdf3f7 is a light
+       tint of #e87ba4. Verdict names match GateVerdict in
+       src/ope/diagnostics.py; thresholds are PROVISIONAL_THRESHOLDS verbatim. -->
+  <rect x="0" y="0" width="1000" height="690" fill="#fcfcfb"/>
+  <g font-family="Helvetica, Arial, sans-serif">
+
+    <!-- Title -->
+    <text x="30" y="36" font-size="19" font-weight="bold" fill="#33322e">OPE decision gate &#8212; 로그만으로 계산한 진단의 3-way 판정</text>
+    <text x="30" y="54" font-size="12.5" fill="#6f6e66">본 레포의 제안(folklore 관행의 체계화 시도) &#8212; 확립된 표준이 아니다.</text>
+    <text x="30" y="70" font-size="12.5" fill="#6f6e66">임계값은 잠정치 &#8212; M1 사전등록, 축 08 에서 평가만 된 값(무튜닝).</text>
+
+    <!-- Node A: logged data + diagnostics -->
+    <rect x="95" y="78" width="320" height="66" rx="10" fill="#ffffff" stroke="#2a78d6" stroke-width="1.8"/>
+    <text x="255" y="101" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#2a78d6">로그 데이터 + 진단</text>
+    <text x="255" y="119" text-anchor="middle" font-size="11.5" fill="#55544e">ESS/n &#183; max weight &#183; support proxy</text>
+    <text x="255" y="133" text-anchor="middle" font-size="10.5" fill="#8a897f">로그만으로 계산 &#8212; 참값(ground truth) 불필요</text>
+
+    <!-- Arrow A -> D1 -->
+    <line x1="255" y1="144" x2="255" y2="170" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="249,168 261,168 255,178" fill="#6f6e66"/>
+
+    <!-- Diamond D1: hard floor -->
+    <polygon points="255,180 415,224 255,268 95,224" fill="#ffffff" stroke="#555550" stroke-width="1.6"/>
+    <text x="255" y="221" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#33322e">ESS/n &#60; 0.01 ?</text>
+    <text x="255" y="238" text-anchor="middle" font-size="10.5" fill="#8a897f">hard floor</text>
+
+    <!-- D1 yes -> AB-FALLBACK -->
+    <line x1="415" y1="224" x2="523" y2="224" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="523,218 523,230 533,224" fill="#6f6e66"/>
+    <text x="470" y="215" text-anchor="middle" font-size="11" font-style="italic" fill="#6f6e66">예</text>
+    <rect x="535" y="186" width="215" height="80" rx="10" fill="#ffffff" stroke="#eb6834" stroke-width="2"/>
+    <text x="642" y="210" text-anchor="middle" font-size="13" font-weight="bold" fill="#eb6834">AB-FALLBACK</text>
+    <text x="642" y="227" text-anchor="middle" font-size="10.8" fill="#55544e">추정치 자체를 신뢰할 수 없다 &#8212;</text>
+    <text x="642" y="241" text-anchor="middle" font-size="10.8" fill="#55544e">이 로그로는 판정 불가;</text>
+    <text x="642" y="255" text-anchor="middle" font-size="10.8" fill="#55544e">온라인으로 측정한다 (A/B 테스트)</text>
+
+    <!-- D1 no -> D2 -->
+    <line x1="255" y1="268" x2="255" y2="294" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="249,292 261,292 255,302" fill="#6f6e66"/>
+    <text x="266" y="286" font-size="11" font-style="italic" fill="#6f6e66">아니오</text>
+
+    <!-- Diamond D2: soft violations -->
+    <polygon points="255,300 420,356 255,412 90,356" fill="#ffffff" stroke="#555550" stroke-width="1.6"/>
+    <text x="255" y="344" text-anchor="middle" font-size="12" fill="#33322e">support proxy &#62; 0.02</text>
+    <text x="255" y="360" text-anchor="middle" font-size="12" fill="#33322e">또는 ESS/n &#60; 0.10 (soft)</text>
+    <text x="255" y="376" text-anchor="middle" font-size="12" fill="#33322e">또는 max weight &#62; 100 ?</text>
+
+    <!-- D2 yes -> DISTRUST -->
+    <line x1="420" y1="356" x2="523" y2="356" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="523,350 523,362 533,356" fill="#6f6e66"/>
+    <text x="470" y="347" text-anchor="middle" font-size="11" font-style="italic" fill="#6f6e66">예</text>
+    <rect x="535" y="310" width="215" height="92" rx="10" fill="#ffffff" stroke="#eda100" stroke-width="2"/>
+    <text x="642" y="333" text-anchor="middle" font-size="13" font-weight="bold" fill="#a97400">DISTRUST</text>
+    <text x="642" y="350" text-anchor="middle" font-size="10.8" fill="#55544e">이 로그 &#215; 정책 추정을 기각</text>
+    <text x="642" y="364" text-anchor="middle" font-size="10.8" fill="#55544e">분산측 교정: 튜닝된 clip / switch</text>
+    <text x="642" y="378" text-anchor="middle" font-size="10.8" fill="#55544e">support 교정: 탐험을 늘려 재로깅</text>
+    <text x="642" y="393" text-anchor="middle" font-size="9.5" font-style="italic" fill="#8a897f">이후 게이트 재실행</text>
+
+    <!-- D2 no -> TRUST, with support-proxy honesty footnote -->
+    <line x1="255" y1="412" x2="255" y2="444" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="249,442 261,442 255,452" fill="#6f6e66"/>
+    <text x="240" y="432" text-anchor="end" font-size="11" font-style="italic" fill="#6f6e66">아니오</text>
+    <text x="270" y="428" font-size="10" font-style="italic" fill="#8a897f">support proxy: 형식 유지&#183;신뢰 금지 &#8212;</text>
+    <text x="270" y="441" font-size="10" font-style="italic" fill="#8a897f">구조적 결핍에 전면 blind (축 04)</text>
+
+    <!-- TRUST -->
+    <rect x="95" y="454" width="320" height="62" rx="10" fill="#ffffff" stroke="#008300" stroke-width="2"/>
+    <text x="255" y="477" text-anchor="middle" font-size="13" font-weight="bold" fill="#008300">TRUST</text>
+    <text x="255" y="494" text-anchor="middle" font-size="10.8" fill="#55544e">진단 통과 &#8212; 세 판정 arm 중</text>
+    <text x="255" y="507" text-anchor="middle" font-size="10.8" fill="#55544e">대오차 비율 최저 (축 08)</text>
+
+    <!-- Arrow TRUST -> comparative -->
+    <line x1="255" y1="516" x2="255" y2="540" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="249,538 261,538 255,548" fill="#6f6e66"/>
+
+    <!-- Comparative decision -->
+    <rect x="95" y="550" width="320" height="58" rx="10" fill="#ffffff" stroke="#2a78d6" stroke-width="1.8"/>
+    <text x="255" y="570" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#2a78d6">비교형 결정을 우선한다</text>
+    <text x="255" y="586" text-anchor="middle" font-size="10.5" fill="#55544e">같은 로그 &#183; 같은 estimator &#183; incumbent 대비 &#916; (축 10);</text>
+    <text x="255" y="600" text-anchor="middle" font-size="10.5" fill="#55544e">경계 근방: margin 이 아니라 불확실성 구간으로 판정</text>
+
+    <!-- Arrow comparative -> deploy -->
+    <line x1="255" y1="608" x2="255" y2="630" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="249,628 261,628 255,638" fill="#6f6e66"/>
+
+    <!-- Deploy -->
+    <rect x="150" y="640" width="210" height="42" rx="10" fill="#ffffff" stroke="#4a3aa7" stroke-width="2"/>
+    <text x="255" y="666" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a3aa7">정책을 배포한다</text>
+
+    <!-- Warning band (applies to every verdict) -->
+    <rect x="780" y="78" width="195" height="604" rx="10" fill="#fdf3f7" stroke="#e87ba4" stroke-width="2"/>
+    <text x="877" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="#c94f7c">미관측 교란</text>
+    <text x="877" y="132" text-anchor="middle" font-size="11.5" fill="#33322e">진단은 원리적으로</text>
+    <text x="877" y="147" text-anchor="middle" font-size="11.5" fill="#33322e">blind 다 (축 09)</text>
+    <text x="877" y="166" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#33322e">게이트 통과 &#8800; 무결</text>
+    <line x1="798" y1="184" x2="957" y2="184" stroke="#e87ba4" stroke-width="1"/>
+    <text x="877" y="206" text-anchor="middle" font-size="10.3" fill="#55544e">기록 propensity 가 진짜</text>
+    <text x="877" y="220" text-anchor="middle" font-size="10.3" fill="#55544e">값과 다르면 ESS 와</text>
+    <text x="877" y="234" text-anchor="middle" font-size="10.3" fill="#55544e">max weight 는 평평한 채</text>
+    <text x="877" y="248" text-anchor="middle" font-size="10.3" fill="#55544e">bias 만 자란다.</text>
+    <text x="877" y="272" text-anchor="middle" font-size="10.3" fill="#55544e">같은 진단 공식이 진짜</text>
+    <text x="877" y="286" text-anchor="middle" font-size="10.3" fill="#55544e">propensity 를 받으면 문제를</text>
+    <text x="877" y="300" text-anchor="middle" font-size="10.3" fill="#55544e">감지한다 (oracle 대조) &#8212;</text>
+    <text x="877" y="314" text-anchor="middle" font-size="10.3" fill="#55544e">실패는 공식이 아니라</text>
+    <text x="877" y="328" text-anchor="middle" font-size="10.3" fill="#55544e">입력에 있다.</text>
+    <text x="877" y="352" text-anchor="middle" font-size="10.3" fill="#55544e">기록 propensity 를 믿을 수</text>
+    <text x="877" y="366" text-anchor="middle" font-size="10.3" fill="#55544e">없다면, 어떤 판정이든</text>
+    <text x="877" y="380" text-anchor="middle" font-size="10.3" fill="#55544e">AB-FALLBACK 으로 취급한다.</text>
+    <line x1="798" y1="398" x2="957" y2="398" stroke="#e87ba4" stroke-width="1"/>
+    <text x="877" y="420" text-anchor="middle" font-size="10.3" font-style="italic" fill="#8a897f">confounding 교정</text>
+    <text x="877" y="434" text-anchor="middle" font-size="10.3" font-style="italic" fill="#8a897f">(proximal &#183; &#923;-sensitivity) 은</text>
+    <text x="877" y="448" text-anchor="middle" font-size="10.3" font-style="italic" fill="#8a897f">범위 밖 &#8212;</text>
+    <text x="877" y="462" text-anchor="middle" font-size="10.3" font-style="italic" fill="#8a897f">연구 트랙의 경계다.</text>
+
+    <!-- Dashed connector: band applies to the whole gate -->
+    <line x1="415" y1="485" x2="768" y2="485" stroke="#b3b2a9" stroke-width="1.2" stroke-dasharray="5,4"/>
+    <polygon points="768,480 768,490 777,485" fill="#b3b2a9"/>
+    <text x="592" y="477" text-anchor="middle" font-size="10" font-style="italic" fill="#8a897f">TRUST 를 포함한 모든 판정에 적용</text>
+  </g>
+</svg>
