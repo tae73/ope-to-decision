@@ -84,7 +84,7 @@ SNIPS → DR → Switch-DR/DRos 로 이어지는 bias-variance 아크 (그림 �
 | 구성 요소 | 내용 | 검증 |
 |---|---|---|
 | estimator 7종 | DM·IPS·SNIPS·Clipped-IPS·DR·Switch-DR·DRos — 순수 numpy (`src/ope/estimators.py`) | 3중: property test 59개 + **obp(py3.9)·sb-obp(py3.12) 두 트랙 교차검증 rel_diff ≤ 1e-8**(분기 발동 상태 — LEDGER `m1-crossval`) + 손계산 항등식 |
-| 진단·게이트 | ESS·max-weight·support proxy + 3-way `decision_gate` (`src/ope/diagnostics.py`) — [dag-registry](../dag-registry/) OPE 스펙의 실행 실증 | 축 08 에서 사전등록 임계값 **평가**(무튜닝) — 예보력 실증 (LEDGER `m2-08-forecast`) |
+| 진단·게이트 | ESS·max-weight·support proxy + 3-way `decision_gate` (`src/ope/diagnostics.py`) — `dag-registry`(비공개 레포) OPE 스펙의 실행 실증 | 축 08 에서 사전등록 임계값 **평가**(무튜닝) — 예보력 실증 (LEDGER `m2-08-forecast`) |
 | SLOPE | hyperparameter 데이터 기반 선택 (Su+ ICML'20) | **축 07 실험이 구현의 ladder 방향 반전 버그를 적발** → 수정·회귀 고정 — 수정 후 clipped tail p90 0.125→0.050 회복 (LEDGER `m2-07-slope`) |
 | 합성 DGP | 참값 보유 multi-action bandit — overlap·support·오지정·confounding 노브 (`src/ope/dgp.py`) | on-policy 종단 검산·confounding 대조 항등 등 property test |
 | 실데이터 2트랙 | classification-to-bandit(UCI 4종, 정확 참값) + OBD small(ZOZO 실로그, 근사 GT+CI) | §3.4 규약: 근사 GT 에 bootstrap CI 병기·점 비교 단정 금지 |
@@ -116,7 +116,7 @@ SNIPS → DR → Switch-DR/DRos 로 이어지는 bias-variance 아크 (그림 �
 <p align="center"><img src="results/figures/15_funnel_reliability.png" width="860" alt="축 15 — funnel 신뢰도 사다리: 같은 로그에서 CTR→CVR→REV 로 갈수록 판별 한계가 가팔라진다"><br>
 <sub><b>축 15 — funnel 신뢰도 사다리.</b> 같은 로그·같은 weight, 지표만 CTR→CVR→REV 로 깊어질 때의
 판별 한계. 정량 정본은 짝 CSV(<code>results/tables/15_funnel_reliability.csv</code>) — 본 섹션의
-정량 수치는 LEDGER <code>m6-*</code> 행 등재 후 인용한다.</sub></p>
+정량 수치는 LEDGER <code>m6-15-ladder</code>·<code>m6-16-gate</code> 행 경유(원값은 짝 CSV 재도출).</sub></p>
 
 같은 로그·같은 importance weight 로 비즈니스 지표 벡터(CTR·CVR·REV — CVR 은 세션 기준,
 [GLOSSARY](docs/GLOSSARY.md) §7)를 한 번에 평가할 수 있지만, 신뢰는 지표마다 같지 않다 — funnel 이
@@ -153,14 +153,14 @@ rule 임계값은 사전등록·무튜닝 — 다른 도메인 이식은 재교�
 ## 비범위 (경계 선언)
 
 - **OPL · CATE · 정책 학습** — 범위 밖. binary-treatment 정책·CATE 는
-  [kr_segmentation_causal_targeting_dunnhumby](../kr_segmentation_causal_targeting_dunnhumby/),
-  CATE 방법 카탈로그는 [causal-inference](../causal-inference/) 소관 (상호 링크).
+  [kr_segmentation_causal_targeting_dunnhumby](https://github.com/tae73/kr_segmentation_causal_targeting_dunnhumby),
+  CATE 방법 카탈로그는 `causal-inference`(비공개 레포) 소관 (상호 링크).
 - **slate/ranking OPE (PI·IIPS·RIPS) · RL OPE (FQE·DICE)** — 범위 밖. 본 레포의 정체성은
   *multi-action single-step logged bandit* OPE 다.
 - **confounding 하 식별의 본류(proximal 등)** — 연구 트랙 소관. 본 레포는 축 09 의 "진단이 못 보는
   것" 대조(+ probe GO 시 조건부 축 14 Λ-sweep)에서 **의도적으로 멈춘다**.
-- 진단 스펙 문서 ↔ 실행 구현: [dag-registry](../dag-registry/) 와 보완 관계. 축별 실험 패턴은
-  [mta-simulation](../mta-simulation/) 하우스 스타일 계승.
+- 진단 스펙 문서 ↔ 실행 구현: `dag-registry`(비공개 레포) 와 보완 관계. 축별 실험 패턴은
+  [mta-simulation](https://github.com/tae73/mta-simulation) 하우스 스타일 계승.
 
 ## Quick Start
 

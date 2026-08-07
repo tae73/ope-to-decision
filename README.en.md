@@ -101,7 +101,7 @@ literature), not an established standard.**
 | Component | What it is | Verification |
 |---|---|---|
 | 7 estimators | DM · IPS · SNIPS · Clipped-IPS · DR · Switch-DR · DRos — pure numpy (`src/ope/estimators.py`) | Triple-checked: 59 property tests + **two-track cross-validation against obp (py3.9) and sb-obp (py3.12) with rel_diff ≤ 1e-8**, branches actually firing (LEDGER `m1-crossval`) + hand-computed identities |
-| Diagnostics & gate | ESS · max-weight · support proxy + 3-way `decision_gate` (`src/ope/diagnostics.py`) — an executable demonstration of the OPE spec in [dag-registry](../dag-registry/) | Pre-registered thresholds **evaluated** on axis 08 (no tuning) — forecasting power demonstrated (LEDGER `m2-08-forecast`) |
+| Diagnostics & gate | ESS · max-weight · support proxy + 3-way `decision_gate` (`src/ope/diagnostics.py`) — an executable demonstration of the OPE spec in `dag-registry` (private repo) | Pre-registered thresholds **evaluated** on axis 08 (no tuning) — forecasting power demonstrated (LEDGER `m2-08-forecast`) |
 | SLOPE | Data-driven hyperparameter selection (Su+ ICML'20) | **The axis-07 experiment caught a reversed-ladder bug in our implementation** → fixed and pinned with a regression test — post-fix, clipped tail p90 recovers 0.125→0.050 (LEDGER `m2-07-slope`) |
 | Synthetic DGP | Multi-action bandit with known ground truth — knobs for overlap, support, misspecification, confounding (`src/ope/dgp.py`) | On-policy end-to-end check, confounding contrast identity, and other property tests |
 | Real data, two tracks | classification-to-bandit (4 UCI datasets, exact ground truth) + OBD small (ZOZO production logs, approximate GT + CI) | §3.4 protocol: bootstrap CIs accompany every approximate-GT figure; no point-comparison claims |
@@ -134,8 +134,8 @@ are canonical for the quantitative detail.
 <p align="center"><img src="results/figures/15_funnel_reliability.png" width="860" alt="axis 15 — the funnel reliability ladder: on the same log, the detectability limit steepens from CTR to CVR to REV"><br>
 <sub><b>Axis 15 — the funnel reliability ladder.</b> Same log, same weights; only the metric deepens
 from CTR to CVR to REV. The paired CSV (<code>results/tables/15_funnel_reliability.csv</code>) is
-canonical for the quantitative detail — this section will cite numbers only once the LEDGER
-<code>m6-*</code> rows are entered.</sub></p>
+canonical for the quantitative detail — numbers flow through the entered LEDGER rows
+<code>m6-15-ladder</code> · <code>m6-16-gate</code> (raw values re-derivable from the paired CSVs).</sub></p>
 
 The same log and the same importance weights evaluate an entire vector of business metrics at once
 (CTR · CVR · REV — CVR is per-session, see [GLOSSARY](docs/GLOSSARY.md) §7), but the trust they
@@ -186,16 +186,16 @@ exhibiting the blind spot (axis 09).
 ## Out of scope (boundary declaration)
 
 - **OPL · CATE · policy learning** — out of scope. Binary-treatment policies and CATE live in
-  [kr_segmentation_causal_targeting_dunnhumby](../kr_segmentation_causal_targeting_dunnhumby/),
-  and the CATE method catalog in [causal-inference](../causal-inference/) (cross-linked).
+  [kr_segmentation_causal_targeting_dunnhumby](https://github.com/tae73/kr_segmentation_causal_targeting_dunnhumby),
+  and the CATE method catalog in `causal-inference` (private repo, cross-linked).
 - **Slate/ranking OPE (PI · IIPS · RIPS) · RL OPE (FQE · DICE)** — out of scope. This repo's
   identity is *multi-action single-step logged bandit* OPE.
 - **The mainline of identification under confounding (proximal methods and their kin)** — the
   research track's territory. This repo **deliberately stops** at the axis-09 "what diagnostics
   can't see" contrast (plus a conditional axis-14 Λ-sweep, only if its probe returns GO).
 - Diagnostics spec document ↔ executable implementation: complementary to
-  [dag-registry](../dag-registry/). The per-axis experiment pattern inherits the
-  [mta-simulation](../mta-simulation/) house style.
+  `dag-registry` (private repo). The per-axis experiment pattern inherits the
+  [mta-simulation](https://github.com/tae73/mta-simulation) house style.
 
 ## Quick Start
 

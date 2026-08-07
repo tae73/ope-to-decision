@@ -1,6 +1,6 @@
 # PLAN — 마일스톤 · 게이트 · 진행 추적
 
-> **정본 규칙.** 이 문서에는 실험 결과 수치가 없다(아직 실험이 없다). 등장하는 값은 설계 기본값(`configs/`)·
+> **정본 규칙.** 이 문서에는 실험 결과 수치가 없다(M0 작성 시점 기준 — 현재 상태는 §4 체크리스트·LEDGER 참조). 등장하는 값은 설계 기본값(`configs/`)·
 > 마일스톤 주수·출처 URL 병기 외부 인용뿐이며, 결과 수치는 실험 후 `docs/LEDGER.md` 를 단일 경유지로 한다.
 > **decision gate 규칙은 본 레포의 제안(산발적 folklore 의 체계화 시도)이지 확립된 표준이 아니다**
 > ([Eligible Actions](https://arxiv.org/pdf/2207.00632) 등에서 ESS 관행이 산발적으로만 확인됨).
@@ -187,6 +187,16 @@ random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가�
   README·CLAUDE.md 동기 — verify 2렌즈 지적 8건 전부 수정(tests 59·LEDGER 스키마 01–16·bootstrap CI
   정의 stale 등).
 - [x] LEDGER m6 4행 ENTERED · M6 커밋
+
+## 4.6 최종 마일스톤 체크리스트 (완료 — 2026-08-07)
+
+- [x] **Stage 6 전면 적대검증**(4렌즈): 수치 삼각일치(LEDGER 표본 6행 source CSV 재도출 일치 —
+  반올림 왜곡 0) · 링크/경로 무결 · KO/EN parity·렌더 · 정직성/publish 안전(비밀·데이터 누출 0).
+  지적 전부 수정: PLAYBOOK 현행화(실데이터·m6 행 인용 — pre-M3 stale 해소), README 축 15 캡션 갱신,
+  **로컬 경로 누출 2곳 제거**, stale M0 문구 3곳 frozen 주석.
+- [x] 인접 레포 링크 치환: 공개 2종 → GitHub 절대 URL, 비공개 2종(`causal-inference`·`dag-registry`)
+  → 코드체 강등. 인접 상대 링크 잔존 0.
+- [x] GitHub publish: `tae73/ope-to-decision` public, main push, 렌더 확인. tests 59 green.
 
 ## 5. 리듬 규약
 

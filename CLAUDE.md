@@ -9,7 +9,7 @@
   (→ `../kr_segmentation_causal_targeting_dunnhumby`, `../causal-inference`), slate OPE(PI/IIPS/RIPS)·
   RL OPE(FQE/DICE)도 범위 밖. **proximal 등 confounding 교정 본류는 연구 트랙(decision-frontier) 소관** —
   본 레포는 축 09 의 "진단이 못 보는 것" 대조표(+조건부 스트레치 축 14 Λ-sweep)에서 **의도적으로 멈춘다**.
-- 프로젝트 전체 설계 정본: `~/.claude/plans/off-policy-evaluation-misty-shannon.md`. 마일스톤·게이트·
+- 프로젝트 전체 설계 정본: 비공개 로컬 계획 문서(레포 외부) — 레포 내 정본은 `PLAN.md`. 마일스톤·게이트·
   진행 상태는 `PLAN.md` — 작업 완료 시마다 PLAN.md 상태를 동기화한다.
 
 ## 2. 코드 패턴 규약 (하우스 스타일 — dunnhumby·mta-simulation 계승)

@@ -10,8 +10,7 @@
 ![Decision gate flowchart (EN)](../assets/decision_gate_flowchart_en.svg)
 
 *한 장 요약: 로그만으로 계산한 진단 3종이 3-way 판정으로 흐르고, `trust` 이후에도 비교형 결정을
-우선하며(§4), 우측 경고 밴드가 전 판정에 걸리는 원리적 한계 — confounding blind(§6) — 를 상기시킨다.
-KO twin SVG 는 M4 에서 제작한다.*
+우선하며(§4), 우측 경고 밴드가 전 판정에 걸리는 원리적 한계 — confounding blind(§6) — 를 상기시킨다.*
 
 ## 1. 목적 — 추정이 아니라 판정
 
@@ -48,7 +47,8 @@ OPE 의 실무 종착점은 "V̂(π_e) 가 얼마인가"가 아니라 **"이 추
 
 ## 3. 근거 — LEDGER 행 인용
 
-본 문서가 의존하는 실험 수치는 아래 4행이 전부이며, 전부 committed CSV 에서 등재된 verbatim 값이다.
+본 문서가 의존하는 핵심 실험 수치는 아래 6행이며(§5 의 `m2-07-slope`·§8 의 `m6-15-ladder`·`m6-16-gate`
+는 해당 절에서 직접 인용), 전부 committed CSV 에서 등재된 verbatim 값이다.
 
 | LEDGER 행 | 뒷받침하는 주장 | 수치(verbatim) |
 |---|---|---|
@@ -56,6 +56,8 @@ OPE 의 실무 종착점은 "V̂(π_e) 가 얼마인가"가 아니라 **"이 추
 | `m2-09-blindspot` | confounding 하 진단 평평·bias 성장 + oracle 대조 | mean ESS/n(logged) 0.822986@γ=0 → 0.822315@γ=2.5 (사실상 평평) · bias(ips) −0.000147 → −0.056818 · oracle(pscore_true) ESS/n 0.8230 → 0.0182 |
 | `m2-04-proxy-blind` | support proxy 의 전면 blind | proxy = 0.00000 (전 δ) vs oracle 참 미지지 π_e 질량 0.0227(δ=0.1) → 0.1434163(δ=0.4) |
 | `m2-10-comparison` | 비교형 상쇄·혼합 bias 부활·경계 coin-flip | comparative gate(ε=0) false-go: weighting 계열(ips·snips·clipped) max = 0.0 (상쇄) · DM(혼합 비교) fg max = 0.15 / fs max = 0.375 (bias 부활) · DR-계열 boundary fg max = 0.225 (경계 coin-flip — 부분 상쇄) |
+| `m3-11-dr-robust` | 실데이터(c2b 4종)에서 DR 강건성 재현 + bootstrap CI 의 구조적 bias 한계 | DR 의 q̂-오지정 생존 4/4 재현: bias(dm, q_degraded) = −0.1605(optdigits) · −0.0261(satimage) · −0.2774(pendigits) · −0.3869(letter) vs bias(dr, q_degraded) ≤ \|0.0032\| · 게이트 80/80 trust(건강 진단과 정합) · bootstrap CI 는 구조적 bias 보유 9/28 조합에서 gt 미커버(분산만 포착) |
+| `m3-12-gate-demo` | ZOZO 실로그에서 게이트의 DISTRUST 정확 판정(실데이터 시연) | 게이트 DISTRUST(ess_ratio 0.0340 < soft 0.10 · max w 277.78 > cap 100) · 근사 GT = 0.0038(38 clicks/10,000) · bootstrap 95% CI (0.0027, 0.0051) — 상대 반폭 ±32% · 클릭 수 random 38 · bts 42 |
 
 읽는 법: `trust` arm 의 대형 오차율은 `ab_fallback` arm 대비 한 자릿수(order of magnitude) 낮게
 분리된다(원값은 위 행 verbatim — 파생 비율은 만들지 않는다) — 진단이
@@ -110,19 +112,30 @@ ESS/n 0.8230 → 0.0182 로 즉시 감지한다 — 문제는 공식이 아니�
   (decision-frontier) 소관이다. 본 레포는 축 09 "진단이 못 보는 것" 대조표(+조건부 스트레치 축 14
   Λ-sweep)에서 **의도적으로 멈춘다** — 여기서 교정 방법을 주장하지 않는다.
 
-## 7. 실데이터 검증 상태 (축 11–12 — 갱신 여지)
+## 7. 실데이터 검증 상태 (축 11–12 — 반영 완료)
 
-본 플레이북의 근거는 현재 **합성 축 01–10** 이다. 실데이터 이중 트랙 — 축 11(c2b 멀티데이터셋:
-정확 propensity·정확 참값) · 축 12(OBD small: 실측 propensity·근사 GT — bootstrap CI 병기 필수,
-PLAN §3.4) — 의 결과는 **M3 verify 후 LEDGER 신규 행을 경유해서만** 이 문서에 반영한다. 실데이터에서
-게이트 임계값·규칙이 수정될 수 있음을 명시적 갱신 여지로 남긴다(수정 시 본 문서와 flowchart 동기화).
+본 플레이북의 근거는 합성 축 01–10 에 더해 **실데이터 이중 트랙(축 11–12) 반영 완료**다 — 결과는
+M3 verify 후 LEDGER 행을 경유해 §3 표에 등재되었다.
+
+- **축 11 (c2b 멀티데이터셋: 정확 propensity·정확 참값 — `m3-11-dr-robust`):** DR 의 q̂-오지정 생존
+  4/4 재현(bias(dr, q_degraded) ≤ |0.0032| vs bias(dm, q_degraded) 최대 −0.3869) · 게이트 80/80
+  trust(건강 진단과 정합).
+- **축 12 (OBD small: 실측 propensity·근사 GT — `m3-12-gate-demo`):** ZOZO 실로그를 게이트가
+  **DISTRUST** 로 정확 판정 — ess_ratio 0.0340 < soft 0.10 · max w 277.78 > cap 100.
+
+**게이트 규칙·임계값은 무수정 유지(재교정 미실시)** — 실데이터 반영 후에도 `PROVISIONAL_THRESHOLDS`
+와 §2 규칙은 그대로이며, 임계값 재교정(seed-split)은 미실시다(§9 항목 2·6). 향후 재교정으로 규칙이
+수정되면 본 문서와 flowchart 를 동기화한다.
 
 ## 8. 비즈니스 번역 — 지표 벡터·funnel·guardrail (축 15·16)
 
-> **수치 지위.** 본 절은 정성 요약이다 — 축 15·16 의 정량 수치는 **LEDGER `m6-*` 행 등재 후에만**
-> 이 문서에 인용하며(등재 시 본 절을 갱신한다), 그 전까지 정량 정본은 figure ↔ CSV 페어
+> **수치 지위.** 본 절의 정량 수치는 **LEDGER `m6-15-ladder`·`m6-16-gate` 행 verbatim** 이다 —
+> funnel 신뢰도 사다리 성립(같은 로그에서 CTR→CVR→REV 판별한계 단조 악화, 3 n × 3 estimator 전부 ·
+> n=10k 에서 CTR 은 true lift 판별 가능·REV 는 불능) · 진단·게이트 verdict 는 지표 불변(trust 40/40)
+> (`m6-15-ladder`); 3-지표 Δ̂ 부호 동시 일치 0.53/0.43 vs 독립 기대 0.25(오차 군집 — Δ̂ 수준) ·
+> HHI arm 결정적(오류 0)이 S2 차단(`m6-16-gate`). 세부 분위·판별한계 원값은 figure ↔ CSV 페어
 > (`results/figures/15_funnel_reliability.png` ↔ `results/tables/15_funnel_reliability.csv` ·
-> `16_business_gate` 동형)다. 용어(CTR·CVR 세션 기준·funnel·guardrail·HHI)는
+> `16_business_gate` 동형)에서 재도출한다. 용어(CTR·CVR 세션 기준·funnel·guardrail·HHI)는
 > [`GLOSSARY.md`](GLOSSARY.md) §7 정본을 따른다.
 
 ### 8.1 funnel 신뢰도 사다리 (축 15)
@@ -180,11 +193,13 @@ weight 분산 위험의 예보이지, 깊은 지표(REV)의 판별력 보증이 
 4. **confounding 에 원리적 blind** — 게이트 통과 ≠ 무결(§6, `m2-09-blindspot`).
 5. **축 10 상쇄 실증의 구조 한계** — q̂=αq+(1−α)/2 는 rank-보존 오지정이라 Spearman 만점을 상쇄
    효과만으로 과대해석하면 안 되고, 상쇄 논리 전체가 γ=0 전제다(`m2-10-comparison` 비고).
-6. **실데이터 미검증** — 축 11–12 반영 전이며 §7 의 갱신 절차를 따른다. OBD 근사 GT 에 대한 점 비교
-   단정은 금지한다(bootstrap CI 병기 — PLAN §3.4).
+6. **실데이터 2트랙 반영 완료(단 임계값 재교정 미실시 — seed-split 필요)** — 축 11–12 는 §7 에 반영
+   완료(`m3-11-dr-robust`·`m3-12-gate-demo`), 게이트 규칙·임계값은 무수정 유지. OBD 근사 GT 에 대한
+   점 비교 단정은 금지한다(bootstrap CI 병기 — PLAN §3.4).
 7. **범위 밖 미주장** — OPL/CATE/slate OPE/RL OPE, 그리고 proximal 등 confounding 교정 방법론에 대해
    본 문서는 어떤 주장도 하지 않는다(CLAUDE.md §1 비범위).
 8. **비즈니스 층 한계** — 게이트 `trust` 는 지표-불변 판정이라 깊은 지표(REV)의 판별력을 보증하지
    않고(§8.3), guardrail 한계 g·h 는 시연값(무교정 — §8.2), 결합 게이트 오류는 지표 간 군집이라
    지표별 오류율의 곱으로 계산할 수 없으며(§8.2), 리텐션·장기 지표는 식별 불가로 범위 밖이다(§8.4).
-   축 15·16 의 정량 수치는 LEDGER `m6-*` 행 등재 전까지 이 문서에 인용하지 않는다(§8 수치 지위).
+   축 15·16 의 정량 수치는 LEDGER `m6-15-ladder`·`m6-16-gate` 행 verbatim 으로만 인용한다(§8 수치 지위 —
+   사다리 성립·지표 불변 trust 40/40·오차 군집 0.53/0.43 vs 독립 기대 0.25·HHI arm 오류 0).

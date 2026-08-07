@@ -137,7 +137,7 @@ GitHub `off-policy-evaluation` topic은 공개 레포 **36개**에 그친다(202
 
 ## 문서 관계
 
-- 상류: 승인 계획(`~/.claude/plans/off-policy-evaluation-misty-shannon.md`) — 실험 축 ID·마일스톤·게이트의 확정본. 본 문서는 그 계획의 Stage 1 근거층이다.
-- 자매: `docs/CONCEPT.md`(Stage 0 — 동기→메커니즘→검증가능 주장), `PLAN.md`(마일스톤·게이트), `docs/LEDGER.md`(정본 수치 — 현재 빈 틀; 본 문서에는 실험 수치가 없어야 정상).
-- 원자료: 11-에이전트 스윕 전문(스크래치패드 `tasks/w7e2t88o5.output`) — 본 문서에 없는 세부(estimator 난이도 평가·bridge 실현성 평가 등)는 원문 참조.
+- 상류: 승인 계획(비공개 로컬 계획 문서 — 레포 외부; 레포 내 정본은 `PLAN.md`) — 실험 축 ID·마일스톤·게이트의 확정본. 본 문서는 그 계획의 Stage 1 근거층이다.
+- 자매: `docs/CONCEPT.md`(Stage 0 — 동기→메커니즘→검증가능 주장), `PLAN.md`(마일스톤·게이트), `docs/LEDGER.md`(정본 수치 — M0 시점 빈 틀이었고 현재는 M0–M6 행 등재; 본 문서에는 실험 수치가 없어야 정상).
+- 원자료: 11-에이전트 스윕 원문은 레포 외부 비공개 기록 — 본 문서가 출처 URL 을 포함한 정리본이다(세부 — estimator 난이도 평가·bridge 실현성 평가 등 — 는 해당 기록에만 남아 있다).
 - 갱신 규칙: 외부 사실(star 수·릴리스·유지보수 상태)은 검색 시점 스냅샷이므로, publish 직전(M4) 주요 항목을 1회 재확인하고 변경 시 날짜와 함께 수정한다.
