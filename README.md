@@ -59,6 +59,7 @@ n=500 에선 trust 다수결인데 그 cell 의 IPS MSE 는 승자의 70.6× 다
 |---|---|
 | **30초** | 위 TL;DR + hero 3장 |
 | **5분** | [2막 서사](#2막-서사) → [축별 발견](#핵심-발견--축별-한-줄) → [비즈니스 임팩트로의 번역](#비즈니스-임팩트로의-번역) → [부러지지 않은 것들](#부러지지-않은-것들--기대가-틀렸던-곳) |
+| **상세 분석** | [notebooks/](notebooks/README.md) — 로그 EDA → DGP 해부 → estimator walkthrough → 진단·게이트 → 결과 심층 (5권, 실행 output 포함) |
 | **재현** | [Quick Start](#quick-start) + [experiments/README.md](experiments/README.md) |
 | **30분** | [docs/PLAYBOOK.md](docs/PLAYBOOK.md) → [docs/CONCEPT.md](docs/CONCEPT.md) → [docs/POSITIONING.md](docs/POSITIONING.md) → [docs/LEDGER.md](docs/LEDGER.md) |
 
@@ -182,12 +183,27 @@ uv run python experiments/01_sample_size.py
 실데이터: OpenML 4종은 최초 실행 시 자동 다운로드(`data/openml` 캐시), OBD small 은
 [data/README.md](data/README.md) 안내대로 로컬 배치(재배포 금지).
 
+## Notebooks — 상세 분석 (EDA → 결과 심층)
+
+README 가 큐레이션된 결론이라면 노트북은 **과정을 보여주는 층**이다 — 5권 전부 실행 output 포함.
+노트북은 파생·재현·탐색 층이며 정본 수치는 [docs/LEDGER.md](docs/LEDGER.md) 경유만
+(지위 규약: [notebooks/README.md](notebooks/README.md)).
+
+| 권 | 한 줄 |
+|---|---|
+| [00 로그 EDA](notebooks/00_log_eda.ipynb) | OPE 전에 로그부터 — OBD 실로그의 희소성·propensity 꼬리·노출 long-tail + c2b 4종 weight 기하 |
+| [01 DGP 해부](notebooks/01_dgp_anatomy.ipynb) | 벤치마크가 참값을 아는 이유 — 노브(β·δ·γ)별 weight 기하와 confounding 장치·v_true 검산 |
+| [02 estimator walkthrough](notebooks/02_estimator_walkthrough.ipynb) | 7종을 수식→코드→수치로 한 줄씩 — weight 를 길들이는 방식의 차이 + bias-variance 미니 아크 |
+| [03 진단·게이트 해부](notebooks/03_diagnostics_gate.ipynb) | ESS·max-weight·support proxy 계산 과정 + 게이트 판정 트레이스 + confounding blind spot 재현 |
+| [04 결과 심층](notebooks/04_results_deepdive.ipynb) | committed CSV 재해석 — regime map 마진·ESS 비단조·hyperparameter 꼬리·funnel 분위·Λ* 분포 |
+
 ## Repository Structure
 
 ```
 ope-to-decision/
 ├── src/ope/               # estimators(7종+SLOPE+bootstrap) · dgp · diagnostics(게이트) · policies · datasets · business(funnel 지표 벡터)
 ├── experiments/           # 축 01–12·14–16 + probes/ + m1_crossval/ + hero_regime_map (인덱스: experiments/README.md)
+├── notebooks/             # 상세 분석 5권 (00 EDA → 04 결과 심층) — 파생·재현 층 (notebooks/README.md)
 ├── results/figures|tables # 실험 산출물 — NN_* figure↔CSV 1:1 규약 (수치 정본은 docs/LEDGER.md 경유)
 ├── docs/                  # PLAYBOOK · CONCEPT · POSITIONING · LEDGER · GLOSSARY · COMMS_BRIEF
 ├── assets/                # decision-gate 플로차트 SVG (ko/en)

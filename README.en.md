@@ -72,6 +72,7 @@ failure — the blindness lives in the input, not the formula (LEDGER
 |---|---|
 | **30 sec** | The TL;DR above + the three hero figures |
 | **5 min** | [The two-act story](#the-two-act-story) → [Findings by axis](#findings-by-axis--one-line-each) → [Translating into business impact](#translating-into-business-impact) → [What didn't break](#what-didnt-break--where-our-expectations-were-wrong) |
+| **Deep dive** | [notebooks/](notebooks/README.md) — log EDA → DGP anatomy → estimator walkthrough → diagnostics & gate → results deep-dive (5 notebooks, outputs included) |
 | **Reproduce** | [Quick Start](#quick-start) + [experiments/README.md](experiments/README.md) |
 | **30 min** | [docs/PLAYBOOK.md](docs/PLAYBOOK.md) → [docs/CONCEPT.md](docs/CONCEPT.md) → [docs/POSITIONING.md](docs/POSITIONING.md) → [docs/LEDGER.md](docs/LEDGER.md) |
 
@@ -218,12 +219,27 @@ Real data: the four OpenML datasets download automatically on first run (cached 
 `data/openml`); place OBD small locally as described in [data/README.md](data/README.md)
 (no redistribution).
 
+## Notebooks — the deep-dive layer (EDA → results)
+
+If the README is the curated conclusion, the notebooks show the process — five volumes,
+committed with executed outputs. Notebooks are a derived/exploratory layer: canonical numbers
+flow only through [docs/LEDGER.md](docs/LEDGER.md) (conventions: [notebooks/README.md](notebooks/README.md)).
+
+| Volume | One line |
+|---|---|
+| [00 Log EDA](notebooks/00_log_eda.ipynb) | Look at the log before OPE — reward sparsity, propensity tails, and exposure long-tail in the OBD log + weight geometry across the four c2b datasets |
+| [01 DGP anatomy](notebooks/01_dgp_anatomy.ipynb) | Why this benchmark knows the truth — weight geometry per knob (β·δ·γ), the confounding device, and a v_true cross-check |
+| [02 Estimator walkthrough](notebooks/02_estimator_walkthrough.ipynb) | All seven estimators, formula → code → number, line by line — how each tames the weights, plus a mini bias-variance arc |
+| [03 Diagnostics & gate anatomy](notebooks/03_diagnostics_gate.ipynb) | ESS, max-weight, and support proxy computed step by step + gate verdict traces + a confounding-blind-spot reproduction |
+| [04 Results deep-dive](notebooks/04_results_deepdive.ipynb) | Re-reading the committed CSVs — regime-map margins, non-monotone ESS, hyperparameter tails, funnel quantiles, Λ* distributions |
+
 ## Repository Structure
 
 ```
 ope-to-decision/
 ├── src/ope/               # estimators (7 + SLOPE + bootstrap) · dgp · diagnostics (gate) · policies · datasets · business (funnel metric vector)
 ├── experiments/           # axes 01–12·14–16 + probes/ + m1_crossval/ + hero_regime_map (index: experiments/README.md)
+├── notebooks/             # 5-volume deep-dive layer (00 EDA → 04 results) — derived layer (notebooks/README.md)
 ├── results/figures|tables # experiment outputs — NN_* figure↔CSV 1:1 pairing (numbers flow through docs/LEDGER.md)
 ├── docs/                  # PLAYBOOK · CONCEPT · POSITIONING · LEDGER · GLOSSARY · COMMS_BRIEF
 ├── assets/                # decision-gate flowchart SVGs (ko/en)

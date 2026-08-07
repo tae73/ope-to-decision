@@ -20,6 +20,7 @@
 | **M5** (조건부 스트레치) | 축 13(액션 수+MIPS)·축 14(Λ-sweep) — **각각 1일 probe 선행** + PAS-IF 확장 | +1.5–2주 | probe GO 시에만 착수(§3.3) — **완료(2026-08-07): 판정대로 집행 — M5-13 NO-GO → 축 13 drop · M5-14 GO → 축 14 실행**(§4.7; PAS-IF 확장은 미착수·미채택) |
 | **M6** | 비즈니스 임팩트 층: funnel probe 선행 → `business.py` → 축 15(funnel 신뢰도 사다리)·16(다중 지표 guardrail+광고주 재분배) → PLAYBOOK·README KO/EN 통합 | 1–1.5주 | probe GO 게이트 + verify 지적 0 잔존 |
 | **최종** | portfolio-design Stage 6 적대검증(모든 수치 = LEDGER 삼각일치) → Stage 7 publish(GitHub) → 선택: lowellth-publish | 0.5–1주 | 검증 실패 항목 0 |
+| **M7** (publish 후 확장) | notebook 상세 분석 층 5권(00 로그 EDA → 04 결과 심층) — 파생·재현 층(정본 승격 금지), 실행 output 포함 커밋 | +0.5주 | 5권 실행 무오류 + verify(멱등·LEDGER 정합·데이터 보호) — **완료(2026-08-07, §4.8)** |
 
 **달력 정직성.** 연구(proximal OTR/DTR) 병행 파트타임이므로 달력 시간으로 **총 2–3개월**로 잡는 것이 정직하다.
 M2 종료 시점에 이미 레포가 성립하도록(부분 완성으로도 공개 가능) 설계했고, M5 는 drop 해도 코어 서사가 완결된다.
@@ -223,6 +224,23 @@ random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가�
   README KO/EN(축 표 13·14 행 + axes 배지 "01–12·14–16 executed · 13 dropped-by-probe" + tests 63) ·
   PLAYBOOK §6(Λ-sweep 감도 분석 옵션 1단락) · LEDGER M5 2행 ENTERED(헤더 행수 갱신) · PLAN §1 M5
   상태·§3.3 판정 기록.
+
+## 4.8 M7 체크리스트 (notebook 층 — 완료 2026-08-07)
+
+- [x] 인프라: pyproject dev extra 에 jupytext·nbclient·nbconvert·ipykernel 추가, 저작 파이프라인 =
+  py:percent 소스(`notebooks/_src/*.py`) → jupytext 변환 → 실행 커밋(output 포함).
+  함정 기록: `experiments/_style.py` 가 Agg 백엔드를 강제하므로 노트북은 import 직후
+  `# %matplotlib inline` 매직으로 복원해야 figure 가 실린다(모듈 백엔드 전환만으론 표시 훅 미등록).
+- [x] **지위 규약**(`notebooks/README.md`): 노트북 = 파생·재현·탐색 층 — 정본 수치는 LEDGER 경유만,
+  각 권 상단 지위 배너, canonical owner 매핑(실험=experiments/+CSV·산문=PLAYBOOK·용어=GLOSSARY).
+- [x] 5권 저작·실행: 00 로그 EDA(OBD 미배치 자동 스킵 가드·원자료 row 출력 금지 — 집계/figure 만) ·
+  01 DGP 해부 · 02 estimator walkthrough(7종 수식↔코드 assert 일치) · 03 진단·게이트 해부
+  (confounded 로그의 trust 통과 함정 트레이스) · 04 결과 CSV 심층(재시뮬 0 — committed CSV 재도출,
+  LEDGER verbatim assert 6곳).
+- [x] verify: 멱등 재실행·LEDGER 행 id 실재·자작 수치·데이터 보호·정직성 어휘·렌더 표본 검수 —
+  지적 사항 수정 반영(§아래 커밋 로그).
+- [x] 문서 동기: README KO/EN(레이어 표 행 + Notebooks 섹션 + Repository Structure) ·
+  LEDGER `m7-gate` 행 · 커밋 1회 + push.
 
 ## 5. 리듬 규약
 

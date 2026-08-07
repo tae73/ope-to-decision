@@ -16,7 +16,15 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.5"]
+dev = [
+    "pytest>=8",
+    "ruff>=0.5",
+    # notebook 층(M7): py:percent 저작 → jupytext 변환 → 실행 커밋
+    "jupytext>=1.16",
+    "nbclient>=0.10",
+    "nbconvert>=7.16",
+    "ipykernel>=6.29",
+]
 
 [build-system]
 requires = ["setuptools>=68"]
