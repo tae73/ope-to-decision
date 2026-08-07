@@ -10,8 +10,8 @@
 ![gate forecast](https://img.shields.io/badge/gate_forecast-4.6%25_trust_vs_44.4%25_fallback-2a78d6)
 ![DR robustness](https://img.shields.io/badge/DR_robustness-4%2F4_real_datasets-008300)
 ![obp crossval](https://img.shields.io/badge/obp_crossval-rel__diff%E2%89%A41e--8_(7_est_%C3%97_2_tracks)-4a3aa7)
-![axes](https://img.shields.io/badge/axes-01%E2%80%9312%C2%B715%E2%80%9316_executed-6f6e66)
-![tests](https://img.shields.io/badge/tests-59_passed-1baf7a)
+![axes](https://img.shields.io/badge/axes-01%E2%80%9312%C2%B714%E2%80%9316_executed_%C2%B7_13_dropped--by--probe-6f6e66)
+![tests](https://img.shields.io/badge/tests-63_passed-1baf7a)
 ![license](https://img.shields.io/badge/license-MIT-b3b2a9)
 
 ---
@@ -83,7 +83,7 @@ SNIPS → DR → Switch-DR/DRos 로 이어지는 bias-variance 아크 (그림 �
 
 | 구성 요소 | 내용 | 검증 |
 |---|---|---|
-| estimator 7종 | DM·IPS·SNIPS·Clipped-IPS·DR·Switch-DR·DRos — 순수 numpy (`src/ope/estimators.py`) | 3중: property test 59개 + **obp(py3.9)·sb-obp(py3.12) 두 트랙 교차검증 rel_diff ≤ 1e-8**(분기 발동 상태 — LEDGER `m1-crossval`) + 손계산 항등식 |
+| estimator 7종 | DM·IPS·SNIPS·Clipped-IPS·DR·Switch-DR·DRos — 순수 numpy (`src/ope/estimators.py`) | 3중: property test 63개 + **obp(py3.9)·sb-obp(py3.12) 두 트랙 교차검증 rel_diff ≤ 1e-8**(분기 발동 상태 — LEDGER `m1-crossval`) + 손계산 항등식 |
 | 진단·게이트 | ESS·max-weight·support proxy + 3-way `decision_gate` (`src/ope/diagnostics.py`) — `dag-registry`(비공개 레포) OPE 스펙의 실행 실증 | 축 08 에서 사전등록 임계값 **평가**(무튜닝) — 예보력 실증 (LEDGER `m2-08-forecast`) |
 | SLOPE | hyperparameter 데이터 기반 선택 (Su+ ICML'20) | **축 07 실험이 구현의 ladder 방향 반전 버그를 적발** → 수정·회귀 고정 — 수정 후 clipped tail p90 0.125→0.050 회복 (LEDGER `m2-07-slope`) |
 | 합성 DGP | 참값 보유 multi-action bandit — overlap·support·오지정·confounding 노브 (`src/ope/dgp.py`) | on-policy 종단 검산·confounding 대조 항등 등 property test |
@@ -108,6 +108,8 @@ SNIPS → DR → Switch-DR/DRos 로 이어지는 bias-variance 아크 (그림 �
 | 10 | 결정 안전성은 estimator 가 아니라 **비교 설계의 속성**: 같은-로그 비교는 오차 상쇄(fg 0.0), 혼합 비교는 bias 부활(DM fg 0.15/fs 0.375), 절대 임계는 전부 상속 | `m2-10-comparison` |
 | 11 | 실데이터(UCI 4종)에서 DR 강건성 4/4 재현 + percentile bootstrap 은 구조적 bias 를 못 잡는다(9/28 CI 가 참값 미커버) | `m3-11-dr-robust` |
 | 12 | ZOZO 실로그를 게이트가 DISTRUST 로 정확 판정(ESS/n 0.034·max w 278) — 판별력 없음(클릭 random 38건·bts 42건, GT CI ±32%)은 사전 선언 | `m3-12-gate-demo` |
+| 13 | [스트레치] **probe NO-GO — drop(정직 기록)**: 유계 logit softmax DGP 에선 K=2000 에도 max_w≈2.8 로 IPS 무붕괴 — "액션 폭발 → MIPS 구원" 서사가 본 DGP family 에서 성립 불가(축 03 유계-weight 교훈과 일관), DGP 재설계 없이 착수 금지 | `m5-probe-13` |
+| 14 | [스트레치] MSM Λ-sweep 실행 완료(probe GO 선행) — 순위 단정이 무너지는 breakdown Λ* 중앙값 ≈1.07(γ=0.5)·≈1.04(γ=1.5): 본 설정에선 confounding 이 셀수록 더 작은 감도 가정에서 순위 단정 불능. MSM bound 는 기존 published 방법(Kallus & Zhou 2018)의 **도구 시연**이며 Λ 는 데이터에서 식별되지 않는 가정 | `m5-14-lambda` |
 | 15 | 같은 로그·같은 weight 에서 지표만 CTR→CVR→REV 로 깊어지면 판별 한계가 사다리처럼 가팔라진다(이벤트 희소 + price heavy tail) — 진단은 weight 만 보는 **지표 불변**이라 게이트 trust 가 깊은 지표의 판별력을 보증하지 않는다 | [figure](results/figures/15_funnel_reliability.png) |
 | 16 | 다중 지표 guardrail 게이트(Δ̂CTR>0 ∧ Δ̂REV≥−g ∧ HHI≤h)는 비교형 원칙의 벡터 확장 — 단 중첩 지표가 같은 weight 를 공유해 결합 오류는 **군집 발생**(지표별 오류율 곱으로 낙관 금지); 광고주 노출 재분배·HHI 는 OPE 아닌 정확 계산 | [figure](results/figures/16_business_gate.png) |
 
@@ -158,7 +160,8 @@ rule 임계값은 사전등록·무튜닝 — 다른 도메인 이식은 재교�
 - **slate/ranking OPE (PI·IIPS·RIPS) · RL OPE (FQE·DICE)** — 범위 밖. 본 레포의 정체성은
   *multi-action single-step logged bandit* OPE 다.
 - **confounding 하 식별의 본류(proximal 등)** — 연구 트랙 소관. 본 레포는 축 09 의 "진단이 못 보는
-  것" 대조(+ probe GO 시 조건부 축 14 Λ-sweep)에서 **의도적으로 멈춘다**.
+  것" 대조(+ probe GO 로 실행한 축 14 Λ-sweep — 기존 published bound 의 도구 시연)에서
+  **의도적으로 멈춘다**.
 - 진단 스펙 문서 ↔ 실행 구현: `dag-registry`(비공개 레포) 와 보완 관계. 축별 실험 패턴은
   [mta-simulation](https://github.com/tae73/mta-simulation) 하우스 스타일 계승.
 
@@ -167,7 +170,7 @@ rule 임계값은 사전등록·무튜닝 — 다른 도메인 이식은 재교�
 ```bash
 cd ope-to-decision
 uv sync --extra dev        # 본 env (Python 3.11+)
-uv run pytest              # property test 59개 (항등식·통계 성질·회귀 고정)
+uv run pytest              # property test 63개 (항등식·통계 성질·회귀 고정)
 
 # 축 실험 재현 (예: 축 01 — figure + CSV 페어 재생성)
 uv run python experiments/01_sample_size.py
@@ -184,11 +187,11 @@ uv run python experiments/01_sample_size.py
 ```
 ope-to-decision/
 ├── src/ope/               # estimators(7종+SLOPE+bootstrap) · dgp · diagnostics(게이트) · policies · datasets · business(funnel 지표 벡터)
-├── experiments/           # 축 01–12·15–16 + probes/ + m1_crossval/ + hero_regime_map (인덱스: experiments/README.md)
+├── experiments/           # 축 01–12·14–16 + probes/ + m1_crossval/ + hero_regime_map (인덱스: experiments/README.md)
 ├── results/figures|tables # 실험 산출물 — NN_* figure↔CSV 1:1 규약 (수치 정본은 docs/LEDGER.md 경유)
 ├── docs/                  # PLAYBOOK · CONCEPT · POSITIONING · LEDGER · GLOSSARY · COMMS_BRIEF
 ├── assets/                # decision-gate 플로차트 SVG (ko/en)
-├── configs/  tests/       # Hydra 설계 기본값 / property test 59
+├── configs/  tests/       # Hydra 설계 기본값 / property test 63
 ├── data/                  # gitignore — 원본 재배포 금지 (data/README.md)
 └── PLAN.md  CLAUDE.md     # 마일스톤·게이트 / 에이전트 규약
 ```
@@ -224,7 +227,7 @@ ope-to-decision/
 1. **수치는 LEDGER 경유만.** 이 README 의 모든 결과 수치는 committed 산출물(`results/tables/`)에서
    만든 [docs/LEDGER.md](docs/LEDGER.md) 행을 인용한다(행 id 병기). 본문·배지의 축약 표기(4.6%·44.4%·
    −0.057 등)는 해당 행 원값 기준 반올림이다 — 원값·정밀도는 LEDGER 가 정본. 테스트 개수 등 공정
-   메타데이터(배지 tests 59)는 실험 결과 수치가 아니므로 LEDGER 범위 밖이다.
+   메타데이터(배지 tests 63)는 실험 결과 수치가 아니므로 LEDGER 범위 밖이다.
 2. **decision rule = 제안.** 게이트 규칙·임계값은 M1 에서 folklore 로 사전 등록되어 축 08 에서
    **평가만** 되었다(무튜닝·교정 아님) — 표준이 아니며, 실패 조건(축 09 blind spot·support arm 퇴화)을
    함께 전시한다.

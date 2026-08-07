@@ -1,10 +1,11 @@
 # experiments — 실험 인덱스
 
-> **상태(2026-08-07): 축 01–12·15–16 실행 완료**(코어 01–10 + 실데이터 11–12 + 비즈니스 층 15–16) —
-> figure+CSV 페어가 `results/` 에 커밋돼 있다. 스트레치 13–14 는 조건부(각 1일 probe 선행). 이 문서는
+> **상태(2026-08-07): 축 01–12·14–16 실행 완료**(코어 01–10 + 실데이터 11–12 + 스트레치 14 +
+> 비즈니스 층 15–16) — figure+CSV 페어가 `results/` 에 커밋돼 있다. **스트레치 13 은 probe M5-13
+> NO-GO 로 drop**(2026-08-07 — 아래 축 표 13 행). 이 문서는
 > 실험 ID · slug · 스윕 노브 · 산출물 규약의 *계약*이며, 결과 수치의 정본은
 > [docs/LEDGER.md](../docs/LEDGER.md) 경유로만 인용한다. 그 외 실행 완료: M0 probe 2종 ·
-> M6 probe(funnel DGP) · M1 교차검증(m1_crossval) · hero regime map.
+> M6 probe(funnel DGP) · M5 probe 2종(13 NO-GO · 14 GO) · M1 교차검증(m1_crossval) · hero regime map.
 >
 > **실험 ID 는 불변.** ID 는 `results/figures|tables/NN_*` 와 docs 수치에 강결합되므로 재배열·재사용을
 > 금지한다 (mta-simulation 관례 계승). 새 축이 필요하면 뒤 번호를 추가한다.
@@ -17,7 +18,7 @@
   figure 에 실린 모든 수치는 짝 CSV 에서 재계산 가능해야 한다.
 - 문서에 인용되는 수치는 committed CSV → `docs/LEDGER.md` 경유로만 (반올림·자작 금지).
 
-## Probes — de-risk (M0 · M6)
+## Probes — de-risk (M0 · M5 · M6)
 
 research-design Stage 3 포맷(WHAT GENERALIZES / THE RESULT / HONEST reduces_check / VERDICT).
 NO-GO 여도 세션 실패가 아니다 — 폴백 경로는 [PLAN.md](../PLAN.md) 에 기록된다.
@@ -27,8 +28,11 @@ NO-GO 여도 세션 실패가 아니다 — 폴백 경로는 [PLAN.md](../PLAN.m
 | M0-A | [`probes/probe_dgp_estimator_sanity.py`](probes/probe_dgp_estimator_sanity.py) | DGP 설계에서 참 정책가치 파이프라인 성립 + IPS 불편성 · SNIPS 분산 절감 · DM model-bias · DR 이중강건 · ESS 검산 → GO/NO-GO | `results/tables/probe_dgp_sanity.json` |
 | M0-B | [`probes/probe_obp_crossval.py`](probes/probe_obp_crossval.py) | 자기 numpy 구현 vs obp 수치 대조(적대 교차검증 전략의 실행 가능성) + obp 릴리스 버전 사실 재확인(해소 — `results/tables/probe_obp_pypi_check.json`) → GO / NO-GO / INSTALL-FAIL | `results/tables/probe_obp_crossval.json` |
 | M6 | [`probes/probe_funnel_dgp.py`](probes/probe_funnel_dgp.py) | funnel DGP 의 기저율–분리력 상충 해소 — 저기저율 CTR ∧ 정책 간 Δ 판별 가능 ∧ weight 건전(ESS)을 동시 만족하는 파라미터 존재 확인 → GO/NO-GO (축 15·16 착수 게이트) | `results/tables/probe_funnel_dgp.json` |
+| M5-13 | [`probes/probe_mips_scale.py`](probes/probe_mips_scale.py) | 축 13(액션 폭발+MIPS) 착수 게이트: K 스케일업(50→2000)에서 IPS 분산 붕괴 + MIPS 구원 서사가 본 DGP family 에서 성립하는가 → GO/NO-GO | `results/tables/probe_mips_scale.json` — **NO-GO** |
+| M5-14 | [`probes/probe_lambda_msm.py`](probes/probe_lambda_msm.py) | 축 14(Λ-sweep) 착수 게이트: MSM 정규화 bound 정렬-임계 정확해의 multi-action 수치 안정성(Λ=1 SNIPS 항등 · Λ 단조 · n=30k 안정 · oracle coverage) → GO/NO-GO | `results/tables/probe_lambda_msm.json` — **GO** |
 
-**상태:** M0-A VERDICT **GO** · M0-B 두 트랙(obp·sb-obp) 모두 VERDICT **GO** · M6 VERDICT **GO** —
+**상태:** M0-A VERDICT **GO** · M0-B 두 트랙(obp·sb-obp) 모두 VERDICT **GO** · M6 VERDICT **GO** ·
+**M5-13 VERDICT NO-GO(축 13 drop — 정직 기록)** · **M5-14 VERDICT GO(축 14 실행 완료)** —
 여기는 상태 표기만, 수치 정본은 [docs/LEDGER.md](../docs/LEDGER.md).
 
 M0-B 는 obp 의 의존성 핀 때문에 **별도 pinned Python 3.9 env** 안에서 실행한다(본 env 아님).
@@ -68,7 +72,7 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 (CI 는 라이브러리별 bootstrap 구현이 상이 — 비교 제외). 수치 정본: `results/tables/m1_obp_crossval.csv`
 → [docs/LEDGER.md](../docs/LEDGER.md).
 
-## 축 01–16 표 (01–12·15–16 실행 완료 · 13–14 스트레치 — ID 는 확정 불변)
+## 축 01–16 표 (01–12·14–16 실행 완료 · 13 은 probe NO-GO 로 drop — ID 는 확정 불변)
 
 | ID | slug 후보 | 스윕 노브 | 보려는 것 | 근거 (URL) |
 |---|---|---|---|---|
@@ -84,14 +88,15 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 | 10 | `10_decision_metrics` | regime β_log × candidate β_eval **자체 factorial**(n=2000 자체 로그 — 축 CSV 재사용 아님) | 결정 안전성은 비교 설계의 속성: 절대 게이트=오차 상속 vs 같은-로그 비교=상쇄(경계·혼합비교 예외) | [SharpeRatio@k, ICLR'24](https://arxiv.org/abs/2311.18207) · [Δ-OPE, RecSys'24](https://arxiv.org/abs/2405.10024) |
 | 11 | `11_c2b_multidataset` | classification-to-bandit 데이터셋 스윕 (optdigits · satimage · pendigits · letter) | 깨끗한 GT 의 멀티데이터셋 체계 벤치 | [c2b 변환 관례 예](https://arxiv.org/abs/1802.03493) |
 | 12 | `12_obd_small_gate` | OBD small 단일 프로토콜(campaign=all·BTS 로그 고정 — 스윕 아님) | uniform-target 단방향(§3.4 규약: 근사 GT bootstrap CI 병기·구간 비교) + decision gate 시연 — 판별력 없음 사전 선언(클릭 희소·GT CI ±30%대); obp 교차검증·역방향은 스코프 밖 선언 | [OBD 논문](https://arxiv.org/abs/2008.07146) · [ZOZO data](https://research.zozo.com/data.html) |
-| 13 | `13_action_scale_mips` [스트레치] | `dgp.n_actions` 스케일 + action embedding | 액션 폭발에서 IPS/DR 분산 붕괴와 MIPS 의 구원 | [MIPS, ICML'22](https://arxiv.org/abs/2202.06317) |
-| 14 | `14_lambda_sweep` [스트레치·조건부] | MSM Λ grid → breakdown Λ* | 기록 propensity 가 틀렸을 때 worst-case 구간과 정책 순위 반전점 | [Kallus & Zhou](https://arxiv.org/pdf/1805.08593) |
+| 13 | `13_action_scale_mips` [스트레치] | `dgp.n_actions` 스케일 + action embedding (미착수) | **probe M5-13 NO-GO 로 drop (2026-08-07)** — 유계 logit softmax DGP 에선 K=2000 에도 max_w≈2.8 로 IPS 무붕괴(`results/tables/probe_mips_scale.json` — 축 03 유계-weight 교훈과 일관). "액션 폭발에서 IPS 붕괴 → MIPS 구원" 서사는 본 DGP family 에서 성립 불가 — **DGP 재설계 없이 착수 금지** (정직 기록: 수치는 LEDGER `m5-probe-13`) | [MIPS, ICML'22](https://arxiv.org/abs/2202.06317) |
+| 14 | `14_lambda_sweep` [스트레치 — **probe GO 후 실행 완료**] | MSM Λ grid(1→8 기하) × γ∈{0.5,1.5} × 정책 후보 2(β_eval∈{3,5}) → breakdown Λ*(순위 단정 불능점) — probe M5-14 GO 선행(`results/tables/probe_lambda_msm.json`) | 기록 propensity 왜곡의 worst-case 구간(정규화 SNIPS형 bound)과 순위 단정이 무너지는 감도 수준 Λ* — **기존 published 방법의 도구 시연**(본 레포 제안 아님·식별 본류는 범위 밖); 자체 스키마 CSV 2본(long+breakdown — 스크립트 docstring 정본), 수치는 LEDGER `m5-14-lambda` | [Kallus & Zhou](https://arxiv.org/pdf/1805.08593) |
 | 15 | `15_funnel_reliability` | 지표 벡터(CTR·CVR·REV) × `n` 스윕 — 같은 로그·같은 weight(`FunnelConfig`, `src/ope/business.py`) | funnel 신뢰도 사다리: 깊은 지표일수록 이벤트 희소(+price heavy tail)로 판별 한계 급증 · **진단은 지표 불변**(게이트 trust ≠ 깊은 지표 판별력) · seed-ensemble band+p90 병기·이벤트 수 컬럼(0-이벤트 퇴화 정직 기록) — 리텐션 단은 의도적 부재(RL OPE 소관, PLAYBOOK §8.4) | probe M6 GO (`results/tables/probe_funnel_dgp.json`) · CVR 세션 기준([GLOSSARY §7](../docs/GLOSSARY.md)) |
 | 16 | `16_business_gate` | 트레이드오프 시나리오(저가 액션 쏠림 등) × guardrail 게이트(Δ̂CTR>0 ∧ Δ̂REV≥−g ∧ HHI≤h) — 비교형 vs 절대형 | 다중 지표 guardrail: 중첩 지표의 같은-weight 공유로 결합 게이트 오류 **군집**(지표별 곱 아님 — seed 단위 기록) · 광고주 노출 재분배·HHI 는 정확 계산(OPE 아님) · subgroup 매출 OPE 는 임계 미달 시 not-estimable 정직 반환 · g·h 는 시연값(무교정) | [Δ-OPE, RecSys'24](https://arxiv.org/abs/2405.10024) 비교형 원리의 벡터 확장 |
 
 ## 게이트 메모
 
-- 코어 = 01–12(+ 비즈니스 층 15–16 — M6, probe 선행 GO). 스트레치 13·14 는 각각 **착수 전 1일 probe 선행** 후 GO/NO-GO — 특히 14 는
-  Λ-최적화의 multi-action 수치 안정성이 미검증(불확실)이라 probe GO 시에만 진입 ([PLAN.md](../PLAN.md)).
+- 코어 = 01–12(+ 비즈니스 층 15–16 — M6, probe 선행 GO). 스트레치 13·14 는 각각 **착수 전 1일 probe 선행** 후 GO/NO-GO —
+  **판정 완료(2026-08-07): M5-13 NO-GO → 축 13 drop · M5-14 GO → 축 14 실행 완료** ([PLAN.md](../PLAN.md) §4.7).
+  14 의 사전 [불확실] 항목(Λ-최적화의 multi-action 수치 안정성)은 probe M5-14 로 해소되었다.
 - 축 09 에서 멈추는 것은 의도된 경계다 — confounding 하 식별의 본류(proximal 등)는 연구 레포 소관
   (README [비범위](../README.md#비범위-경계-선언) 참조).

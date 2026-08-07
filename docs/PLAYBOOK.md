@@ -47,8 +47,8 @@ OPE 의 실무 종착점은 "V̂(π_e) 가 얼마인가"가 아니라 **"이 추
 
 ## 3. 근거 — LEDGER 행 인용
 
-본 문서가 의존하는 핵심 실험 수치는 아래 6행이며(§5 의 `m2-07-slope`·§8 의 `m6-15-ladder`·`m6-16-gate`
-는 해당 절에서 직접 인용), 전부 committed CSV 에서 등재된 verbatim 값이다.
+본 문서가 의존하는 핵심 실험 수치는 아래 6행이며(§5 의 `m2-07-slope`·§6 의 `m5-14-lambda`·§8 의
+`m6-15-ladder`·`m6-16-gate` 는 해당 절에서 직접 인용), 전부 committed 산출물에서 등재된 verbatim 값이다.
 
 | LEDGER 행 | 뒷받침하는 주장 | 수치(verbatim) |
 |---|---|---|
@@ -108,9 +108,18 @@ ESS/n 0.8230 → 0.0182 로 즉시 감지한다 — 문제는 공식이 아니�
 
 - **운영 함의**: 기록 propensity 를 신뢰할 수 없는 로그(수기 개입·규칙 오버라이드·미기록 개인화가
   의심되는 시스템)에서는 게이트 판정과 무관하게 `ab_fallback` 취급을 권고한다.
-- **경계 재선언**: confounding 의 교정 본류(proximal 식별·Λ-sensitivity 등)는 연구 트랙
-  (decision-frontier) 소관이다. 본 레포는 축 09 "진단이 못 보는 것" 대조표(+조건부 스트레치 축 14
-  Λ-sweep)에서 **의도적으로 멈춘다** — 여기서 교정 방법을 주장하지 않는다.
+- **감도 분석 옵션(축 14 — 기존 published 방법의 도구 시연)**: 게이트가 못 보는 이 왜곡에 대해,
+  MSM(Marginal Sensitivity Model) Λ bound — Kallus & Zhou 2018
+  ([arXiv:1805.08593](https://arxiv.org/abs/1805.08593)), 본 레포의 제안이 아님 — 로
+  **"결론(정책 순위)이 뒤집히려면 기록 propensity 가 얼마나 왜곡돼 있어야 하는가"** 를 정량화할 수
+  있다(`msm_snips_bounds`, 정규화 SNIPS형). 축 14 시연에선 두 후보의 worst-case bound 가 겹치기
+  시작하는 breakdown Λ* 중앙값이 γ=0.5 에서 ≈1.07, γ=1.5 에서 ≈1.04 — 본 설정에선 confounding 이
+  셀수록 더 작은 감도 가정에서 순위 단정이 무너졌다(LEDGER `m5-14-lambda` 행 verbatim — 원값·분포는
+  `results/tables/14_lambda_sweep*.csv` 재도출). **단 Λ 는 데이터에서 식별되지 않는 분석가의 감도
+  가정**이다 — bound 는 본 면책 조항을 대체하지 못하며, `trust` 판정을 복권시키지도 않는다.
+- **경계 재선언**: confounding 의 교정 본류(proximal 식별·Λ-sensitivity 의 방법론적 발전 등)는 연구
+  트랙(decision-frontier) 소관이다. 본 레포는 축 09 "진단이 못 보는 것" 대조표(+축 14 Λ-sweep —
+  기존 bound 의 도구 시연)에서 **의도적으로 멈춘다** — 여기서 교정 방법을 주장하지 않는다.
 
 ## 7. 실데이터 검증 상태 (축 11–12 — 반영 완료)
 

@@ -73,8 +73,8 @@
 | decision gate | decision gate (영어 유지) | 진단(ESS·max-weight·support) → 기각 → estimator 선택 → "믿는다 / 못 믿는다 / A/B로 보낸다" 판정 절차 — **본 레포의 제안(문헌에 산발적으로 존재하는 folklore의 체계화 시도)이며 확립된 표준이 아니다** (관행의 산발성: https://arxiv.org/pdf/2207.00632). 축 08. |
 | unobserved confounding | 미관측 교란(unobserved confounding) → 이후 "confounding" 허용 | 로깅 정책의 action 선택과 reward에 동시에 영향을 주지만 로그에 기록되지 않은 변수 U의 존재; 기록 propensity ≠ 진짜 propensity가 되어 표준 진단이 원리적으로 탐지 불능(blind) (RecSys 2023, https://www.amazon.science/publications/offline-recommender-system-evaluation-under-unobserved-confounding). 축 09. |
 | sensitivity analysis | 민감도 분석(sensitivity analysis) | 미관측 교란의 세기를 가정 파라미터로 두고, 그 가정 아래 결론이 유지되는 범위를 계산하는 분석 틀. |
-| marginal sensitivity model (MSM) Λ | MSM Λ (영어 유지) — 조건부 스트레치(축 14, probe GO 시) | 기록 propensity와 진짜 propensity의 odds ratio가 Λ 이내라는 가정 하에 policy value의 worst-case 구간을 계산하는 모형 (Kallus & Zhou, https://arxiv.org/pdf/1805.08593). |
-| breakdown Λ\* | breakdown Λ\* (영어 유지) — 조건부 스트레치(축 14) | 정책 순위(또는 gate 판정)가 뒤집히는 최소 Λ; "이 결론이 뒤집히려면 얼마나 큰 confounding이 필요한가"라는 robustness certificate 언어. |
+| marginal sensitivity model (MSM) Λ | MSM Λ (영어 유지) — 스트레치(축 14 — probe M5-14 GO 후 실행 완료) | 기록 propensity와 진짜 propensity의 odds ratio가 Λ 이내라는 가정 하에 policy value의 worst-case 구간을 계산하는 모형 (Kallus & Zhou, https://arxiv.org/pdf/1805.08593). |
+| breakdown Λ\* | breakdown Λ\* (영어 유지) — 스트레치(축 14 — 실행 완료) | 정책 순위(또는 gate 판정)가 뒤집히는 최소 Λ; "이 결론이 뒤집히려면 얼마나 큰 confounding이 필요한가"라는 robustness certificate 언어. |
 | negative control | negative control (영어 유지; 뜻풀이 "음성 대조") — 미채택(참고 개념 — 본 레포의 확정 축 01–14 에 대응 실험 없음; 연구 브릿지 조사에서 검토된 선택 훅) | 인과 효과가 없음을 아는 action/outcome에서 nonzero 효과가 잡히면 confounding 알람으로 쓰는 진단 — A/A test와 유사한 sanity check. |
 
 ## 6. 데이터·ground truth

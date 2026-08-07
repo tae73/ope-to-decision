@@ -20,6 +20,7 @@
    추가한다(이력 보존).
 6. **실험 ID 불변.** `생성 실험 ID` 는 `PLAN.md`의 확정 축 ID를 그대로 쓴다:
    probe `M0-A`(DGP·estimator sanity) / probe `M0-B`(obp 교차검증) / probe `M6`(funnel DGP) /
+   probe `M5-13`(MIPS 액션 스케일 — 축 13 착수 게이트) / probe `M5-14`(Λ-MSM 수치 안정성 — 축 14 착수 게이트) /
    `01` 표본 n / `02` 로깅 β / `03` 타깃-로깅 괴리 / `04` deficient support / `05` propensity 오지정 /
    `06` reward model 오지정 / `07` hyperparameter 민감도(IEOE) / `08` 진단 예보력+결정규칙 /
    `09` confounding 주입+대조표 / `10` 의사결정 metric / `11` c2b 멀티데이터셋 / `12` OBD small 게이트 /
@@ -40,7 +41,7 @@
 | `등재일` | `YYYY-MM-DD`. |
 | `상태` | `RESERVED`(경로만 예약, 수치 미등재) / `ENTERED`(수치 등재 완료 — NO-GO 등 실패 결과 포함) / `SUPERSEDED`(재실험으로 대체됨). |
 
-## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 · M6 4행 등재)
+## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 · M6 4행 · M5 2행 등재)
 
 M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 동반 commit** 되어 아래와 같이
 등재되었다(등재일 2026-08-06). `수치` 필드는 각 source JSON 의 값 verbatim 이다(규칙 3 — 반올림 금지).
@@ -73,6 +74,20 @@ M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 
 | `m6-gate` | 축 15·16 figure+CSV 페어(+companion: events·gates·advertiser) 완비 · verify 2렌즈 지적 8건 전부 수정 반영 · 59 tests green | — | `results/…/15_*, 16_*` | `M6` | 2026-08-07 | ENTERED |
 | `m6-15-ladder` | funnel 신뢰도 사다리 성립: 같은 로그에서 CTR→CVR→REV 판별한계 단조 악화(3 n × 3 estimator 전부) — n=10k 에서 CTR 은 true lift 판별 가능·REV 는 불능 · 진단·게이트 verdict 는 지표 불변(trust 40/40) — 세부 분위·판별한계 원값은 source CSV 재도출 | — | `results/tables/15_funnel_reliability.csv` · `_events.csv` | `15` | 2026-08-07 | ENTERED |
 | `m6-16-gate` | 비교형 상쇄는 arm 조건부(REV boundary arm 0.225→0.000 개선·S2 REV 반례 병기) · 3-지표 Δ̂ 부호 동시 일치 0.53/0.43 vs 독립 기대 0.25(오차 군집 — Δ̂ 수준) · 게이트 수준 군집은 CTR 마진 과대로 불발(정직 기록) · HHI arm 결정적(오류 0)이 S2 차단 · price 벡터·노출 점유율은 advertiser CSV(action-level 행) 정본 | — | `results/tables/16_business_gate_gates.csv` · `_advertiser.csv` | `16` | 2026-08-07 | ENTERED |
+
+### M5 행 (조건부 스트레치 — probe 판정·축 14 — 2026-08-07)
+
+| id | 수치 | 단위 | source 파일 경로 | 생성 실험 ID | 등재일 | 상태 |
+|---|---|---|---|---|---|---|
+| `m5-probe-13` | VERDICT **`NO-GO`** (규칙 4 — 실패 등재) · K 스윕 {50, 500, 2000}(η=0.05): K=2000 에서 mse_ips = 3.264955163265376e-05 vs mse_mips = 3.3073055439115e-05 (MIPS 구원 없음 — bias_mips = −0.0008749559889649206) · max_w_ips = 2.772490448627906(K=50) → 2.8030183142524976(K=2000) — 액션 폭발에도 weight 무붕괴 · checks 3종(`mips_5x_at_large_k`·`mips_wins_everywhere`·`bias_within_var_savings`) 전부 `false` → **축 13 drop 결정**(유계 logit softmax DGP family 에선 MIPS 서사 성립 불가 — 재설계 없이 착수 금지) | — | `results/tables/probe_mips_scale.json` | `M5-13` | 2026-08-07 | ENTERED |
+| `m5-14-lambda` | probe VERDICT **`GO`** (4/4 checks: `lam1_is_snips`·`monotone`·`stable`·`coverage` · 실측 per-sample 왜곡 max 범위 125.55659841530827–562.4316139126861 — γ=1.5 극단 tail) + 축 14 breakdown Λ*(S=20/γ, breakdown CSV `lam_star` 열 재도출): **γ=0.5 min/median/max = 1.0709415645333935 / 1.0740359460407822 / 1.0769822131366635 · γ=1.5 = 1.0350266189592892 / 1.0371960085826841 / 1.0401568865134891** · censored 0/40 · snips_rank_correct 40/40 · v_true β3 = 0.7153918288961995 · β5 = 0.7873211250025399 (true_rank_gap = 0.0719292961063404) · true_viol_p99 범위: γ=0.5 [3.161038102213287, 3.3320388900436315] · γ=1.5 [6.246776895661581, 7.568897363355282] (Λ* 와 자릿수 다른 참조 스케일 — max 는 극단 tail) | — | `results/tables/14_lambda_sweep.csv` · `results/tables/14_lambda_sweep_breakdown.csv` · `results/tables/probe_lambda_msm.json` | `14` | 2026-08-07 | ENTERED |
+
+**M5 행 비고:** `m5-14-lambda` 의 min/median/max·범위 표기는 committed breakdown CSV 의 per-seed
+verbatim 값(40행)에서 재도출한 요약 통계다(`m3-hero-map`·`m2-07-slope` 재도출 선례) — 문서 본문의
+축약 표기(≈1.07 / ≈1.04 등)는 이 행 원값 기준 반올림(규칙 3 반올림 조항). breakdown Λ* 는 두 후보
+정책의 정규화 MSM bound 구간이 겹치기 시작하는 최소 Λ(log-bisection — grid 겹침 패턴과 정합 검증,
+스크립트 stdout PATTERN)다. MSM bound 는 기존 published 방법(Kallus & Zhou 2018)의 도구 시연이며
+본 레포의 제안이 아니다.
 
 **등재 행 비고:**
 

@@ -1,4 +1,4 @@
-"""OPE estimator 코어 7종 + bootstrap CI — 전부 순수 numpy 함수.
+"""OPE estimator 코어 7종 + bootstrap CI + MSM 정규화 bound — 전부 순수 numpy 함수.
 
 공통 표기 (shape 규약):
     reward        : (n,)   관측 보상 r_i
@@ -10,7 +10,7 @@
 수치 검산 3중: probe M0-A(sanity) → probe M0-B + experiments/m1_crossval(obp/sb-obp 산술 일치)
 → tests/ property test. 공식 출처: DM/IPS/DR Dudík-Langford-Li 2011(arXiv:1103.4601),
 SNIPS Swaminathan-Joachims 2015, Switch-DR Wang-Agarwal-Dudík 2017(arXiv:1612.01205),
-DRos Su+ 2020(arXiv:1907.09623).
+DRos Su+ 2020(arXiv:1907.09623), MSM 정규화 bound Kallus-Zhou 2018(arXiv:1805.08593).
 """
 
 from typing import NamedTuple
@@ -104,6 +104,49 @@ def estimate_dros(reward: np.ndarray, action: np.ndarray, pscore: np.ndarray,
     dm = (pi_e_dist * q_hat).sum(axis=1).mean()
     resid = reward - q_hat[np.arange(len(action)), action]
     return EstimateResult(value=float(dm + (w_shrink * resid).mean()), weights=w_shrink)
+
+
+def msm_snips_bounds(reward: np.ndarray, action: np.ndarray, pscore: np.ndarray,
+                     pi_e_dist: np.ndarray, lam: float) -> tuple[float, float]:
+    """MSM(Marginal Sensitivity Model) 정규화(SNIPS형) worst-case bound — 축 14 Λ-sweep 도구.
+
+    **기존 published 방법**(Kallus & Zhou 2018, arXiv:1805.08593 — MSM sensitivity 계열)의
+    정규화 bound 구현이다. 본 레포의 제안이 아니며(도구 시연), confounding 하 식별 본류는
+    연구 트랙 소관으로 범위 밖(CLAUDE.md §1 — 연구 경계 유지).
+
+    가정: 기록 propensity 가 미관측 U 로 왜곡될 수 있고, 그 왜곡이 per-sample 배율
+    u_i ∈ [1/Λ, Λ] 로 유계라는 감도 가정(Λ≥1) 아래 worst case 를 계산한다:
+
+        V±(Λ) = extremize_{u ∈ [1/Λ,Λ]^n}  Σ_i u_i w_i r_i / Σ_i u_i w_i,
+        w_i = π_e(a_i|x_i)/π_0(a_i|x_i)  (기록 pscore 기준 raw weight).
+
+    목적함수는 u 에 대해 fractional-linear → 극점은 u_i ∈ {1/Λ, Λ} 꼴이고, 최적 배분은
+    r 정렬 후 "상위 r 에 Λ(상한)/1/Λ(하한), 나머지는 반대" 임계 형태다 — 전 임계 cumsum 스캔
+    O(n log n) **정확해** (probe M5-14 GO: Λ=1 SNIPS 항등·Λ 단조 확장·n=30k 안정·coverage —
+    `results/tables/probe_lambda_msm.json`). Λ=1 이면 (lo, hi) 는 SNIPS 점추정과 일치한다.
+
+    한계(명시): ① **정규화(SNIPS형) bound 만** 구현 — 비정규화 IPS bound·표본 불확실성(CI)
+    동반 bound 는 범위 밖(probe HONEST reduces_check 동일). ② Λ 는 분석가의 감도 가정이며
+    데이터에서 식별되지 않는다. λ≥1 검증(ValueError).
+    """
+    if lam < 1.0:
+        raise ValueError(f"lam must be >= 1 (Lambda=1 recovers SNIPS), got {lam}")
+    w = _raw_weights(action, pscore, pi_e_dist)
+    if w.sum() <= 0.0:
+        raise ValueError("sum of importance weights is zero — pi_e has no mass on logged actions")
+    order = np.argsort(-reward)
+    ws, rs = w[order], reward[order]
+    cw, cwr = np.cumsum(ws), np.cumsum(ws * rs)
+    tw, twr = ws.sum(), (ws * rs).sum()
+    # 상한: r 내림차순 상위 k 개에 u=Λ, 나머지 u=1/Λ — k=0..n 전 임계 스캔 (k=0 항 = SNIPS)
+    num_hi = lam * cwr + (twr - cwr) / lam
+    den_hi = lam * cw + (tw - cw) / lam
+    hi = float(np.concatenate([[twr / tw], num_hi / den_hi]).max())
+    # 하한: 상위 k 개에 u=1/Λ, 나머지 u=Λ
+    num_lo = cwr / lam + (twr - cwr) * lam
+    den_lo = cw / lam + (tw - cw) * lam
+    lo = float(np.concatenate([[twr / tw], num_lo / den_lo]).min())
+    return lo, hi
 
 
 class SlopeResult(NamedTuple):

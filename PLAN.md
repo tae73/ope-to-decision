@@ -17,7 +17,7 @@
 | **M2** | 코어 축 01–10 실험 + figure + 진단(ESS·max-weight·support) 배선 + SLOPE 구현(축 07 hyperparameter 민감도와 함께) | 2–3주 | 축별 figure+CSV 페어 완비 — **publishable 최소선** |
 | **M3** | 실데이터 이중 트랙(축 11–12) + decision-gate 플레이북 + hero 3장 확정 | 1.5–2.5주 | OBD 근사 GT 규약 준수(§3.4) |
 | **M4** | portfolio-design Stage 1–5: LEDGER 확정 → comms design 브리프 → KO 정본 README → EN twin(GLOSSARY 정합) → SVG | 1–1.5주 | LEDGER 확정 전 README 수치 저작 금지 |
-| **M5** (조건부 스트레치) | 축 13(액션 수+MIPS)·축 14(Λ-sweep) — **각각 1일 probe 선행** + PAS-IF 확장 | +1.5–2주 | probe GO 시에만 착수(§3.3) |
+| **M5** (조건부 스트레치) | 축 13(액션 수+MIPS)·축 14(Λ-sweep) — **각각 1일 probe 선행** + PAS-IF 확장 | +1.5–2주 | probe GO 시에만 착수(§3.3) — **완료(2026-08-07): 판정대로 집행 — M5-13 NO-GO → 축 13 drop · M5-14 GO → 축 14 실행**(§4.7; PAS-IF 확장은 미착수·미채택) |
 | **M6** | 비즈니스 임팩트 층: funnel probe 선행 → `business.py` → 축 15(funnel 신뢰도 사다리)·16(다중 지표 guardrail+광고주 재분배) → PLAYBOOK·README KO/EN 통합 | 1–1.5주 | probe GO 게이트 + verify 지적 0 잔존 |
 | **최종** | portfolio-design Stage 6 적대검증(모든 수치 = LEDGER 삼각일치) → Stage 7 publish(GitHub) → 선택: lowellth-publish | 0.5–1주 | 검증 실패 항목 0 |
 
@@ -83,6 +83,8 @@ bandit OPE 식별 불가로 범위 밖(RL OPE 소관 — PLAYBOOK §8.4 경계 �
 축 14 착수 전 **1일 probe**: multi-action per-sample weight 최적화(정렬 해/소형 LP)의 수치 안정성은 문헌 조사만으로
 미확인이다. probe NO-GO 시 축 14 를 drop 하고 **축 09 는 대조표만으로 완결**한다 — 대조표가 코어 축이므로
 hero ③("진단이 못 보는 것")과 decision-gate 서사는 훼손되지 않는다. 축 13 도 동일하게 1일 probe 선행.
+**판정 완료(2026-08-07, §4.7):** M5-14 **GO**(4/4 checks — [불확실] 해소, 축 14 실행) ·
+M5-13 **NO-GO**(축 13 drop — 폴백대로 코어 서사 무손상, LEDGER `m5-probe-13`).
 
 ### 3.4 OBD small 근사 ground truth 규약 (M3)
 random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가진다(근사 정밀도 수치는 **[불확실]** — 축 12 에서
@@ -197,6 +199,30 @@ random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가�
 - [x] 인접 레포 링크 치환: 공개 2종 → GitHub 절대 URL, 비공개 2종(`causal-inference`·`dag-registry`)
   → 코드체 강등. 인접 상대 링크 잔존 0.
 - [x] GitHub publish: `tae73/ope-to-decision` public, main push, 렌더 확인. tests 59 green.
+
+## 4.7 M5 체크리스트 (조건부 스트레치 — 완료 2026-08-07)
+
+- [x] **probe M5-13**(`experiments/probes/probe_mips_scale.py` — 축 13 착수 게이트) → VERDICT
+  **NO-GO**: 유계 logit softmax DGP 에선 K=2000 에도 max_w≈2.8·IPS 무붕괴, checks 3종 전부 불성립
+  (LEDGER `m5-probe-13`). **축 13 drop** — §3.3 게이트 판정대로 집행(축 03 유계-weight 교훈과 일관;
+  MIPS 서사는 본 DGP family 에서 성립 불가 — DGP 재설계 없이 착수 금지). 정직 기록:
+  experiments/README 축 표 13 행 + README KO/EN 축 표 + probes 표.
+- [x] **probe M5-14**(`experiments/probes/probe_lambda_msm.py` — 축 14 착수 게이트) → VERDICT
+  **GO**(4/4 checks: Λ=1 SNIPS 항등·단조·n=30k 안정·oracle coverage) — §3.3 의 [불확실] 항목
+  (multi-action 수치 안정성) 해소, 축 14 진입.
+- [x] `msm_snips_bounds` 구현(`src/ope/estimators.py` — Kallus & Zhou 2018 정규화 SNIPS형 bound,
+  정렬-임계 cumsum O(n log n) 정확해·**기존 published 방법 도구 시연 프레임 고정**) + property test
+  4종(`tests/test_msm.py`: Λ=1 ⇒ SNIPS 정확 항등 · Λ 단조 확장 · n=8 극점 전수 2⁸=256 조합
+  brute-force 정확 일치 · Λ<1 ValueError). **테스트 63 green**.
+- [x] **축 14 실행 완료**: figure+CSV 페어(`results/figures/14_lambda_sweep.png` ↔
+  `results/tables/14_lambda_sweep.csv` + `_breakdown.csv` companion — 자체 스키마는 스크립트
+  docstring 정본, 축 10 선례). breakdown Λ* 전 seed 산출(censored 0/40)·SNIPS 순위 정합 40/40·
+  bound 단조·coverage@Λ=8 전 조합 1.00·bisection Λ* 와 grid 겹침 패턴 정합(stdout PATTERN) —
+  수치는 LEDGER `m5-14-lambda`.
+- [x] **문서 동기**: experiments/README(상태줄·probes 표 M5 2행·축 표 13 drop/14 완료·게이트 메모) ·
+  README KO/EN(축 표 13·14 행 + axes 배지 "01–12·14–16 executed · 13 dropped-by-probe" + tests 63) ·
+  PLAYBOOK §6(Λ-sweep 감도 분석 옵션 1단락) · LEDGER M5 2행 ENTERED(헤더 행수 갱신) · PLAN §1 M5
+  상태·§3.3 판정 기록.
 
 ## 5. 리듬 규약
 

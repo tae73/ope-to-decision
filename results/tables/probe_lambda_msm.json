@@ -1,0 +1,22 @@
+{
+  "probe": "M5-14 lambda_msm",
+  "v_true": 0.7153918288961995,
+  "lam_emp_range": [
+    125.55659841530827,
+    562.4316139126861
+  ],
+  "coverage_per_seed": [
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "checks": {
+    "lam1_is_snips": true,
+    "monotone": true,
+    "stable": true,
+    "coverage": true
+  },
+  "verdict": "GO"
+}

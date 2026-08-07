@@ -11,8 +11,8 @@
 ![gate forecast](https://img.shields.io/badge/gate_forecast-4.6%25_trust_vs_44.4%25_fallback-2a78d6)
 ![DR robustness](https://img.shields.io/badge/DR_robustness-4%2F4_real_datasets-008300)
 ![obp crossval](https://img.shields.io/badge/obp_crossval-rel__diff%E2%89%A41e--8_(7_est_%C3%97_2_tracks)-4a3aa7)
-![axes](https://img.shields.io/badge/axes-01%E2%80%9312%C2%B715%E2%80%9316_executed-6f6e66)
-![tests](https://img.shields.io/badge/tests-59_passed-1baf7a)
+![axes](https://img.shields.io/badge/axes-01%E2%80%9312%C2%B714%E2%80%9316_executed_%C2%B7_13_dropped--by--probe-6f6e66)
+![tests](https://img.shields.io/badge/tests-63_passed-1baf7a)
 ![license](https://img.shields.io/badge/license-MIT-b3b2a9)
 
 ---
@@ -100,7 +100,7 @@ literature), not an established standard.**
 
 | Component | What it is | Verification |
 |---|---|---|
-| 7 estimators | DM · IPS · SNIPS · Clipped-IPS · DR · Switch-DR · DRos — pure numpy (`src/ope/estimators.py`) | Triple-checked: 59 property tests + **two-track cross-validation against obp (py3.9) and sb-obp (py3.12) with rel_diff ≤ 1e-8**, branches actually firing (LEDGER `m1-crossval`) + hand-computed identities |
+| 7 estimators | DM · IPS · SNIPS · Clipped-IPS · DR · Switch-DR · DRos — pure numpy (`src/ope/estimators.py`) | Triple-checked: 63 property tests + **two-track cross-validation against obp (py3.9) and sb-obp (py3.12) with rel_diff ≤ 1e-8**, branches actually firing (LEDGER `m1-crossval`) + hand-computed identities |
 | Diagnostics & gate | ESS · max-weight · support proxy + 3-way `decision_gate` (`src/ope/diagnostics.py`) — an executable demonstration of the OPE spec in `dag-registry` (private repo) | Pre-registered thresholds **evaluated** on axis 08 (no tuning) — forecasting power demonstrated (LEDGER `m2-08-forecast`) |
 | SLOPE | Data-driven hyperparameter selection (Su+ ICML'20) | **The axis-07 experiment caught a reversed-ladder bug in our implementation** → fixed and pinned with a regression test — post-fix, clipped tail p90 recovers 0.125→0.050 (LEDGER `m2-07-slope`) |
 | Synthetic DGP | Multi-action bandit with known ground truth — knobs for overlap, support, misspecification, confounding (`src/ope/dgp.py`) | On-policy end-to-end check, confounding contrast identity, and other property tests |
@@ -126,6 +126,8 @@ are canonical for the quantitative detail.
 | 10 | Decision safety is a property of the **comparison design**, not the estimator: same-log comparisons cancel errors (fg 0.0), mixed comparisons revive the bias (DM fg 0.15 / fs 0.375), and absolute thresholds inherit all of it | `m2-10-comparison` |
 | 11 | On real data (4 UCI datasets) DR robustness reproduces 4/4 + the percentile bootstrap cannot catch structural bias (9/28 CIs fail to cover the truth) | `m3-11-dr-robust` |
 | 12 | The gate correctly rules the ZOZO production logs DISTRUST (ESS/n 0.034 · max w 278) — the lack of discriminative power (38 random / 42 bts clicks · GT CI ±32%) was declared up front | `m3-12-gate-demo` |
+| 13 | [stretch] **Probe returned NO-GO — dropped (recorded honestly)**: under this bounded-logit softmax DGP, even K=2000 leaves max_w≈2.8 and IPS uncollapsed — the "action explosion → MIPS to the rescue" story cannot arise in this DGP family (consistent with the bounded-weight lesson of axis 03); no restart without a DGP redesign | `m5-probe-13` |
+| 14 | [stretch] The MSM Λ-sweep, executed after its probe returned GO — the breakdown Λ* where policy ranking becomes undecidable has median ≈1.07 (γ=0.5) and ≈1.04 (γ=1.5): in this setup, the stronger the confounding, the smaller the assumed distortion that already breaks the ranking. The MSM bound is an existing published method (Kallus & Zhou 2018), shown as a **tool demonstration** — Λ is an analyst's assumption, not identifiable from data | `m5-14-lambda` |
 | 15 | Same log, same weights — but as the metric deepens from CTR to CVR to REV, the detectability limit climbs like a ladder (events get sparse, price adds a heavy tail); and since the diagnostics only look at weights, they are **metric-invariant**: a gate trust verdict is no guarantee of discriminative power on deep metrics | [figure](results/figures/15_funnel_reliability.png) |
 | 16 | The multi-metric guardrail gate (Δ̂CTR>0 ∧ Δ̂REV≥−g ∧ HHI≤h) is the vector extension of the comparative-first principle — but overlapping metrics share the same weights, so joint-gate errors arrive in **clusters** (never multiply per-metric error rates); advertiser exposure shares and HHI are computed exactly, no OPE involved | [figure](results/figures/16_business_gate.png) |
 
@@ -192,7 +194,8 @@ exhibiting the blind spot (axis 09).
   identity is *multi-action single-step logged bandit* OPE.
 - **The mainline of identification under confounding (proximal methods and their kin)** — the
   research track's territory. This repo **deliberately stops** at the axis-09 "what diagnostics
-  can't see" contrast (plus a conditional axis-14 Λ-sweep, only if its probe returns GO).
+  can't see" contrast (plus the axis-14 Λ-sweep, executed after its probe returned GO — a tool
+  demonstration of an existing published bound).
 - Diagnostics spec document ↔ executable implementation: complementary to
   `dag-registry` (private repo). The per-axis experiment pattern inherits the
   [mta-simulation](https://github.com/tae73/mta-simulation) house style.
@@ -202,7 +205,7 @@ exhibiting the blind spot (axis 09).
 ```bash
 cd ope-to-decision
 uv sync --extra dev        # main env (Python 3.11+)
-uv run pytest              # 59 property tests (identities, statistical properties, regression pins)
+uv run pytest              # 63 property tests (identities, statistical properties, regression pins)
 
 # Reproduce an axis experiment (e.g. axis 01 — regenerates the figure + CSV pair)
 uv run python experiments/01_sample_size.py
@@ -220,11 +223,11 @@ Real data: the four OpenML datasets download automatically on first run (cached 
 ```
 ope-to-decision/
 ├── src/ope/               # estimators (7 + SLOPE + bootstrap) · dgp · diagnostics (gate) · policies · datasets · business (funnel metric vector)
-├── experiments/           # axes 01–12·15–16 + probes/ + m1_crossval/ + hero_regime_map (index: experiments/README.md)
+├── experiments/           # axes 01–12·14–16 + probes/ + m1_crossval/ + hero_regime_map (index: experiments/README.md)
 ├── results/figures|tables # experiment outputs — NN_* figure↔CSV 1:1 pairing (numbers flow through docs/LEDGER.md)
 ├── docs/                  # PLAYBOOK · CONCEPT · POSITIONING · LEDGER · GLOSSARY · COMMS_BRIEF
 ├── assets/                # decision-gate flowchart SVGs (ko/en)
-├── configs/  tests/       # Hydra design defaults / 59 property tests
+├── configs/  tests/       # Hydra design defaults / 63 property tests
 ├── data/                  # gitignored — no redistribution of source data (data/README.md)
 └── PLAN.md  CLAUDE.md     # milestones & gates / agent working agreement
 ```
