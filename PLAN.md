@@ -18,6 +18,7 @@
 | **M3** | 실데이터 이중 트랙(축 11–12) + decision-gate 플레이북 + hero 3장 확정 | 1.5–2.5주 | OBD 근사 GT 규약 준수(§3.4) |
 | **M4** | portfolio-design Stage 1–5: LEDGER 확정 → comms design 브리프 → KO 정본 README → EN twin(GLOSSARY 정합) → SVG | 1–1.5주 | LEDGER 확정 전 README 수치 저작 금지 |
 | **M5** (조건부 스트레치) | 축 13(액션 수+MIPS)·축 14(Λ-sweep) — **각각 1일 probe 선행** + PAS-IF 확장 | +1.5–2주 | probe GO 시에만 착수(§3.3) |
+| **M6** | 비즈니스 임팩트 층: funnel probe 선행 → `business.py` → 축 15(funnel 신뢰도 사다리)·16(다중 지표 guardrail+광고주 재분배) → PLAYBOOK·README KO/EN 통합 | 1–1.5주 | probe GO 게이트 + verify 지적 0 잔존 |
 | **최종** | portfolio-design Stage 6 적대검증(모든 수치 = LEDGER 삼각일치) → Stage 7 publish(GitHub) → 선택: lowellth-publish | 0.5–1주 | 검증 실패 항목 0 |
 
 **달력 정직성.** 연구(proximal OTR/DTR) 병행 파트타임이므로 달력 시간으로 **총 2–3개월**로 잡는 것이 정직하다.
@@ -44,6 +45,8 @@ DGP 노브는 `src/ope/dgp.py` 의 `DGPConfig` 필드와 1:1 대응한다(기본
 | 12 | 실데이터 OBD small 게이트 | ZOZO 2 로깅정책·실측 propensity | — (`datasets.py`) | random-policy 근사 GT 대비 재현 — bootstrap CI 병기 필수(§3.4) ([OBD](https://arxiv.org/abs/2008.07146)) |
 | 13 | [스트레치] 액션 수 + MIPS | K 스윕(10→수천) | `n_actions` | IPS/DR 분산 폭발과 MIPS 의 구원 ([Saito-Joachims, ICML'22](https://arxiv.org/abs/2202.06317)) |
 | 14 | [스트레치] Λ-sweep + breakdown Λ* | MSM Λ 스윕(축 09 DGP 재사용) | `confounding_strength` (+ estimator 층 Λ) | 정책 순위가 뒤집히는 breakdown Λ* 리포트 ([Kallus & Zhou](https://arxiv.org/pdf/1805.08593)) |
+| 15 | funnel 신뢰도 사다리 (비즈니스 층) | 지표 벡터(CTR·CVR·REV) × n 스윕 — 같은 로그·같은 weight | — (`src/ope/business.py` `FunnelConfig` — 코어 DGP 아님) | 깊은 지표일수록 이벤트 희소(+price heavy tail)로 판별 한계 급증 · 진단은 지표 불변(게이트 trust ≠ 깊은 지표 판별력) · 리텐션 단 의도적 부재(RL OPE 소관) — probe M6 GO 선행(`results/tables/probe_funnel_dgp.json`) |
+| 16 | 다중 지표 비즈니스 게이트 (비즈니스 층) | 트레이드오프 시나리오 × guardrail(Δ̂CTR>0 ∧ Δ̂REV≥−g ∧ HHI≤h) 비교형 vs 절대형 | — (`FunnelConfig`; 광고주 매핑은 구조 rng) | 중첩 지표의 같은-weight 공유 → 결합 게이트 오류 군집(독립 곱 아님) · 노출 재분배·HHI 는 정확 계산(OPE 아님) · subgroup 매출 OPE 희소 시 not-estimable 정직 반환 — 비교형 원칙([Δ-OPE, RecSys'24](https://arxiv.org/abs/2405.10024))의 벡터 확장 |
 
 비고: `dim_context`·`seed`·`struct_seed` 는 스윕 축이 아니라 통제 변수다 — `struct_seed`(M1 추가 필드)는
 환경 구조(θ·b·d_a)를 고정하고 `seed` 만 바꿔 "같은 환경, 다른 로그" MC 반복을 만든다(구조 rng draw 순서는
@@ -51,6 +54,12 @@ dgp.py 에 고정·문서화 — 순서 변경 = 환경 변경). 축 13·14 는 
 **M1 reward 설계 결정**: reward 는 연속형 `r = q + γ·κ·U + σ·ε` — E[U]=E[ε]=0 이므로 v_true=E_x[Σπ_e q] 가
 γ·σ 와 무관하게 정확히 성립(테스트로 고정). binary CTR 현실성은 축 11–12 실데이터 트랙의 몫이며,
 probe M0-A(Bernoulli)와의 이탈은 dgp.py docstring 에 기록했다.
+**M6 설계 결정**: 축 15·16 은 코어 `DGPConfig` 가 아니라 `src/ope/business.py` 의
+`FunnelConfig`(funnel DGP: click~Bern(p_c)·conv|click~Bern(p_v)·revenue=click·conv·price_a — 정책은
+relevance 스코어 위 softmax, 기저율과 분리력을 구조적으로 분리) 위에서 돈다. CVR 은 **세션 기준**
+(click·conv — 업계 click-조건부와 다름, GLOSSARY §7), γ(confounding) 노브는 Bernoulli 비선형에서
+정확-GT 정리가 깨져 **영구 금지**(confounding 은 축 09 소관 경계), 리텐션·세션 간 지표는 single-step
+bandit OPE 식별 불가로 범위 밖(RL OPE 소관 — PLAYBOOK §8.4 경계 선언, 세션 내 proxy 미채택).
 
 ## 3. GO/NO-GO 게이트와 폴백
 
@@ -163,6 +172,21 @@ random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가�
   GitHub 단독 레포에서 404 — Stage 7 publish 때 GitHub 절대 URL 로 치환하거나 코드체 레포명으로 강등
   (하우스 관례 확인 후 일괄 적용).
 - [x] PLAN §4.4 · applied 인덱스 갱신 · M4 커밋
+
+## 4.5 M6 체크리스트 (완료 — 2026-08-07)
+
+- [x] probe M6(funnel DGP) **GO** — 기저율-분리력 상충을 relevance 스코어 분리 설계로 해소
+  (LEDGER `m6-probe-funnel`).
+- [x] `src/ope/business.py`: funnel DGP(지표 3종 정확 GT — CVR 은 **세션 기준**)·노출/HHI **정확 계산**
+  (OPE 아님)·subgroup 매출 IPS(not-estimable 정직 반환)·**γ 노브 영구 금지**(테스트 고정). tests 59 green.
+- [x] 축 15: funnel 신뢰도 사다리 성립 + **진단은 지표 불변**(게이트 trust ≠ 깊은 지표 판별력) —
+  리텐션 단은 의도적 부재(RL OPE 소관·세션내 proxy 미채택 — 사용자 확정) (LEDGER `m6-15-ladder`).
+- [x] 축 16: 비교형 상쇄의 조건부성(arm 별)·지표 간 오차 군집(Δ̂ 수준 성립·게이트 수준 불발 정직 기록)·
+  HHI 결정적 arm·시연값 무교정 프레임 (LEDGER `m6-16-gate`).
+- [x] 문서 통합: PLAYBOOK §8 비즈니스 번역·README KO/EN 섹션+축 표+배지·GLOSSARY §7·experiments/
+  README·CLAUDE.md 동기 — verify 2렌즈 지적 8건 전부 수정(tests 59·LEDGER 스키마 01–16·bootstrap CI
+  정의 stale 등).
+- [x] LEDGER m6 4행 ENTERED · M6 커밋
 
 ## 5. 리듬 규약
 

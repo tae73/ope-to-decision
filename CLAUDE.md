@@ -31,7 +31,7 @@
   - `pi_e_dist` : `(n, K)` 평가 정책의 행동 분포 π_e(·|x_i)
   - `q_hat` : `(n, K)` reward 모델 예측 q̂(x_i, ·)
 - estimator 는 전부 `EstimateResult(value, weights)` 반환 — `weights`(변형 후 importance weight)는
-  diagnostics 의 입력으로 재사용된다. **불확실성 병기 규약(M2 정밀화)**: 합성 MC 축(01–10)은
+  diagnostics 의 입력으로 재사용된다. **불확실성 병기 규약(M2 정밀화)**: 합성 MC 축(01–10·15–16)은
   **S-seed ensemble band**(mean±2·SE over seeds)로 병기하고, `bootstrap_ci` 는 **실데이터 축 11–12
   (단일 로그·seed 반복 불가) 전용**이다 — 전면 bootstrap 은 런타임 ×1000 으로 비실용(M2 실측).
 - Hydra 는 **Compose API 로만** 로드(`@hydra.main` 금지), OmegaConf → NamedTuple 변환 후
@@ -48,6 +48,7 @@
 | `estimators.py` | 코어 7종 DM·IPS·SNIPS·Clipped-IPS·DR·Switch-DR·DRos + `bootstrap_ci` — 배열만 받는 leaf | 없음 (numpy 만) |
 | `diagnostics.py` | ESS·max-weight·support 진단(`DiagnosticsReport`) + `decision_gate` 3-way 판정(`GateVerdict`) | 없음 (numpy 만) |
 | `datasets.py` | 실데이터 2트랙 로더: classification-to-bandit(OpenML)·OBD small(ZOZO) | 없음 (numpy/sklearn) |
+| `business.py` | 비즈니스 층(M6): funnel DGP·지표 벡터(CTR/CVR/REV)·노출/HHI 정확 계산·subgroup 매출 IPS — **γ(confounding) 노브 영구 금지** | `policies`·`dgp`(`_stable_sigmoid`) |
 
 - 조립(데이터 → estimator → 진단 → figure)은 **`experiments/` 스크립트에서만** 한다.
   src 모듈은 결과 파일을 직접 쓰지 않는다(입출력 없음·순수 계산).
@@ -62,6 +63,7 @@
     08 진단 예보력+결정규칙 / 09 confounding 주입+대조표 / 10 의사결정 metric /
     11 c2b 멀티데이터셋 / 12 OBD small 게이트
   - 스트레치(조건부): 13 액션 수+MIPS / 14 Λ-sweep — 각각 1일 probe GO 시에만 착수
+  - 비즈니스 층 15–16(M6, probe 선행): 15 funnel 신뢰도 사다리 / 16 다중 지표 비즈니스 게이트
 - `experiments/probes/` 는 **self-contained**(src 미의존, 단독 실행 가능) — research-design Stage 3
   포맷(WHAT GENERALIZES / THE RESULT boxed / HONEST reduces_check / VERDICT) + JSON 산출 유지.
 - 결과 경로 규약: figure → `results/figures/NN_*.{png,svg}`, 수치 → `results/tables/NN_*.{json,csv}`

@@ -19,11 +19,12 @@
 5. **행은 삭제하지 않는다.** 재실험으로 수치가 바뀌면 기존 행의 상태를 `SUPERSEDED`로 바꾸고 새 행을
    추가한다(이력 보존).
 6. **실험 ID 불변.** `생성 실험 ID` 는 `PLAN.md`의 확정 축 ID를 그대로 쓴다:
-   probe `M0-A`(DGP·estimator sanity) / probe `M0-B`(obp 교차검증) /
+   probe `M0-A`(DGP·estimator sanity) / probe `M0-B`(obp 교차검증) / probe `M6`(funnel DGP) /
    `01` 표본 n / `02` 로깅 β / `03` 타깃-로깅 괴리 / `04` deficient support / `05` propensity 오지정 /
    `06` reward model 오지정 / `07` hyperparameter 민감도(IEOE) / `08` 진단 예보력+결정규칙 /
    `09` confounding 주입+대조표 / `10` 의사결정 metric / `11` c2b 멀티데이터셋 / `12` OBD small 게이트 /
-   `13`[스트레치] 액션 수+MIPS / `14`[스트레치] Λ-sweep.
+   `13`[스트레치] 액션 수+MIPS / `14`[스트레치] Λ-sweep / `15` funnel 신뢰도 사다리(비즈니스 층) /
+   `16` 다중 지표 비즈니스 게이트(비즈니스 층).
 7. **VERDICT 는 수치가 아니다.** VERDICT 문자열(GO/NO-GO/INSTALL-FAIL)은 수치가 아닌 상태 표기로서,
    `PLAN.md` 등 진행 문서가 LEDGER 등재 전에도 인용할 수 있다(수치 인용은 불가).
 
@@ -35,11 +36,11 @@
 | `수치` | source 파일의 값 verbatim. 미등재 시 `(미등재)`. |
 | `단위` | 물리/논리 단위. 무차원 추정치는 `—`. |
 | `source 파일 경로` | 레포 루트 기준 committed 산출물 경로 (`results/tables/...` 등). |
-| `생성 실험 ID` | 위 규칙 6의 확정 ID (`M0-A`/`M0-B`/`01`–`14`). |
+| `생성 실험 ID` | 위 규칙 6의 확정 ID (`M0-A`/`M0-B`/`M6`(probe)/`01`–`16` + 마일스톤 게이트 `M1`/`M2`/`M3`/`M6`). |
 | `등재일` | `YYYY-MM-DD`. |
 | `상태` | `RESERVED`(경로만 예약, 수치 미등재) / `ENTERED`(수치 등재 완료 — NO-GO 등 실패 결과 포함) / `SUPERSEDED`(재실험으로 대체됨). |
 
-## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 등재)
+## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 · M6 4행 등재)
 
 M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 동반 commit** 되어 아래와 같이
 등재되었다(등재일 2026-08-06). `수치` 필드는 각 source JSON 의 값 verbatim 이다(규칙 3 — 반올림 금지).
@@ -63,6 +64,15 @@ M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 
 | `m3-hero-map` | 28-cell 승자 지도: dr 9 · switch_dr 8 · dros 11 cells, DM·IPS 계열 outright 0 · tie 21/28(사전 동률 규칙) · **게이트 검정력의 소표본 실종**: β_log=16 열에서 non-trust 다수결이 n=2000→32000 에서 24→28→30/30 인데 n=500 은 trust 21/30(그 cell IPS MSE = 승자의 70.6×) · 단일 seed 지배 최대 0.7097(8000×16) | — | `results/tables/hero_regime_map.csv` · `_summary.csv` | `M3` | 2026-08-06 | ENTERED |
 
 **M3 행 비고:** 표기 정밀도는 재도출 보고 기준 축약 — 전체 정밀도 원값은 각 source CSV 가 정본(규칙 3 의 반올림 표기 조항).
+
+### M6 행 (비즈니스 임팩트 층 — 2026-08-07)
+
+| id | 수치 | 단위 | source 파일 경로 | 생성 실험 ID | 등재일 | 상태 |
+|---|---|---|---|---|---|---|
+| `m6-probe-funnel` | VERDICT `GO` (4/4 checks) · V_ctr(π0) = 0.0497 · Δ_true = 0.0089 vs sd(Δ̂) = 0.0018 · ESS ratio mean = 0.699 · conv 이벤트 min = 74 — 기저율-분리력 상충 해소(relevance 스코어 분리 설계) | — | `results/tables/probe_funnel_dgp.json` | `M6` | 2026-08-07 | ENTERED |
+| `m6-gate` | 축 15·16 figure+CSV 페어(+companion: events·gates·advertiser) 완비 · verify 2렌즈 지적 8건 전부 수정 반영 · 59 tests green | — | `results/…/15_*, 16_*` | `M6` | 2026-08-07 | ENTERED |
+| `m6-15-ladder` | funnel 신뢰도 사다리 성립: 같은 로그에서 CTR→CVR→REV 판별한계 단조 악화(3 n × 3 estimator 전부) — n=10k 에서 CTR 은 true lift 판별 가능·REV 는 불능 · 진단·게이트 verdict 는 지표 불변(trust 40/40) — 세부 분위·판별한계 원값은 source CSV 재도출 | — | `results/tables/15_funnel_reliability.csv` · `_events.csv` | `15` | 2026-08-07 | ENTERED |
+| `m6-16-gate` | 비교형 상쇄는 arm 조건부(REV boundary arm 0.225→0.000 개선·S2 REV 반례 병기) · 3-지표 Δ̂ 부호 동시 일치 0.53/0.43 vs 독립 기대 0.25(오차 군집 — Δ̂ 수준) · 게이트 수준 군집은 CTR 마진 과대로 불발(정직 기록) · HHI arm 결정적(오류 0)이 S2 차단 · price 벡터·노출 점유율은 advertiser CSV(action-level 행) 정본 | — | `results/tables/16_business_gate_gates.csv` · `_advertiser.csv` | `16` | 2026-08-07 | ENTERED |
 
 **등재 행 비고:**
 

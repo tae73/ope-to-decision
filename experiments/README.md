@@ -1,9 +1,10 @@
 # experiments — 실험 인덱스
 
-> **상태(2026-08-06): 축 01–12 실행 완료**(코어 01–10 + 실데이터 11–12) — figure+CSV 페어가
-> `results/` 에 커밋돼 있다. 스트레치 13–14 는 조건부(각 1일 probe 선행). 이 문서는 실험 ID · slug ·
-> 스윕 노브 · 산출물 규약의 *계약*이며, 결과 수치의 정본은 [docs/LEDGER.md](../docs/LEDGER.md) 경유로만
-> 인용한다. 그 외 실행 완료: M0 probe 2종 · M1 교차검증(m1_crossval) · hero regime map.
+> **상태(2026-08-07): 축 01–12·15–16 실행 완료**(코어 01–10 + 실데이터 11–12 + 비즈니스 층 15–16) —
+> figure+CSV 페어가 `results/` 에 커밋돼 있다. 스트레치 13–14 는 조건부(각 1일 probe 선행). 이 문서는
+> 실험 ID · slug · 스윕 노브 · 산출물 규약의 *계약*이며, 결과 수치의 정본은
+> [docs/LEDGER.md](../docs/LEDGER.md) 경유로만 인용한다. 그 외 실행 완료: M0 probe 2종 ·
+> M6 probe(funnel DGP) · M1 교차검증(m1_crossval) · hero regime map.
 >
 > **실험 ID 는 불변.** ID 는 `results/figures|tables/NN_*` 와 docs 수치에 강결합되므로 재배열·재사용을
 > 금지한다 (mta-simulation 관례 계승). 새 축이 필요하면 뒤 번호를 추가한다.
@@ -16,7 +17,7 @@
   figure 에 실린 모든 수치는 짝 CSV 에서 재계산 가능해야 한다.
 - 문서에 인용되는 수치는 committed CSV → `docs/LEDGER.md` 경유로만 (반올림·자작 금지).
 
-## Probes — M0 de-risk
+## Probes — de-risk (M0 · M6)
 
 research-design Stage 3 포맷(WHAT GENERALIZES / THE RESULT / HONEST reduces_check / VERDICT).
 NO-GO 여도 세션 실패가 아니다 — 폴백 경로는 [PLAN.md](../PLAN.md) 에 기록된다.
@@ -25,9 +26,10 @@ NO-GO 여도 세션 실패가 아니다 — 폴백 경로는 [PLAN.md](../PLAN.m
 |---|---|---|---|
 | M0-A | [`probes/probe_dgp_estimator_sanity.py`](probes/probe_dgp_estimator_sanity.py) | DGP 설계에서 참 정책가치 파이프라인 성립 + IPS 불편성 · SNIPS 분산 절감 · DM model-bias · DR 이중강건 · ESS 검산 → GO/NO-GO | `results/tables/probe_dgp_sanity.json` |
 | M0-B | [`probes/probe_obp_crossval.py`](probes/probe_obp_crossval.py) | 자기 numpy 구현 vs obp 수치 대조(적대 교차검증 전략의 실행 가능성) + obp 릴리스 버전 사실 재확인(해소 — `results/tables/probe_obp_pypi_check.json`) → GO / NO-GO / INSTALL-FAIL | `results/tables/probe_obp_crossval.json` |
+| M6 | [`probes/probe_funnel_dgp.py`](probes/probe_funnel_dgp.py) | funnel DGP 의 기저율–분리력 상충 해소 — 저기저율 CTR ∧ 정책 간 Δ 판별 가능 ∧ weight 건전(ESS)을 동시 만족하는 파라미터 존재 확인 → GO/NO-GO (축 15·16 착수 게이트) | `results/tables/probe_funnel_dgp.json` |
 
-**상태:** M0-A VERDICT **GO** · M0-B 두 트랙(obp·sb-obp) 모두 VERDICT **GO** — 여기는 상태 표기만,
-수치 정본은 [docs/LEDGER.md](../docs/LEDGER.md).
+**상태:** M0-A VERDICT **GO** · M0-B 두 트랙(obp·sb-obp) 모두 VERDICT **GO** · M6 VERDICT **GO** —
+여기는 상태 표기만, 수치 정본은 [docs/LEDGER.md](../docs/LEDGER.md).
 
 M0-B 는 obp 의 의존성 핀 때문에 **별도 pinned Python 3.9 env** 안에서 실행한다(본 env 아님).
 설치 실패는 NO-GO 가 아니라 INSTALL-FAIL 로 구분 기록하고, 소스 설치 → sb-obp → 수기 검산·property
@@ -66,7 +68,7 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 (CI 는 라이브러리별 bootstrap 구현이 상이 — 비교 제외). 수치 정본: `results/tables/m1_obp_crossval.csv`
 → [docs/LEDGER.md](../docs/LEDGER.md).
 
-## 축 01–14 표 (01–12 실행 완료 · 13–14 스트레치 — ID 는 확정 불변)
+## 축 01–16 표 (01–12·15–16 실행 완료 · 13–14 스트레치 — ID 는 확정 불변)
 
 | ID | slug 후보 | 스윕 노브 | 보려는 것 | 근거 (URL) |
 |---|---|---|---|---|
@@ -84,10 +86,12 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 | 12 | `12_obd_small_gate` | OBD small 단일 프로토콜(campaign=all·BTS 로그 고정 — 스윕 아님) | uniform-target 단방향(§3.4 규약: 근사 GT bootstrap CI 병기·구간 비교) + decision gate 시연 — 판별력 없음 사전 선언(클릭 희소·GT CI ±30%대); obp 교차검증·역방향은 스코프 밖 선언 | [OBD 논문](https://arxiv.org/abs/2008.07146) · [ZOZO data](https://research.zozo.com/data.html) |
 | 13 | `13_action_scale_mips` [스트레치] | `dgp.n_actions` 스케일 + action embedding | 액션 폭발에서 IPS/DR 분산 붕괴와 MIPS 의 구원 | [MIPS, ICML'22](https://arxiv.org/abs/2202.06317) |
 | 14 | `14_lambda_sweep` [스트레치·조건부] | MSM Λ grid → breakdown Λ* | 기록 propensity 가 틀렸을 때 worst-case 구간과 정책 순위 반전점 | [Kallus & Zhou](https://arxiv.org/pdf/1805.08593) |
+| 15 | `15_funnel_reliability` | 지표 벡터(CTR·CVR·REV) × `n` 스윕 — 같은 로그·같은 weight(`FunnelConfig`, `src/ope/business.py`) | funnel 신뢰도 사다리: 깊은 지표일수록 이벤트 희소(+price heavy tail)로 판별 한계 급증 · **진단은 지표 불변**(게이트 trust ≠ 깊은 지표 판별력) · seed-ensemble band+p90 병기·이벤트 수 컬럼(0-이벤트 퇴화 정직 기록) — 리텐션 단은 의도적 부재(RL OPE 소관, PLAYBOOK §8.4) | probe M6 GO (`results/tables/probe_funnel_dgp.json`) · CVR 세션 기준([GLOSSARY §7](../docs/GLOSSARY.md)) |
+| 16 | `16_business_gate` | 트레이드오프 시나리오(저가 액션 쏠림 등) × guardrail 게이트(Δ̂CTR>0 ∧ Δ̂REV≥−g ∧ HHI≤h) — 비교형 vs 절대형 | 다중 지표 guardrail: 중첩 지표의 같은-weight 공유로 결합 게이트 오류 **군집**(지표별 곱 아님 — seed 단위 기록) · 광고주 노출 재분배·HHI 는 정확 계산(OPE 아님) · subgroup 매출 OPE 는 임계 미달 시 not-estimable 정직 반환 · g·h 는 시연값(무교정) | [Δ-OPE, RecSys'24](https://arxiv.org/abs/2405.10024) 비교형 원리의 벡터 확장 |
 
 ## 게이트 메모
 
-- 코어 = 01–12. 스트레치 13·14 는 각각 **착수 전 1일 probe 선행** 후 GO/NO-GO — 특히 14 는
+- 코어 = 01–12(+ 비즈니스 층 15–16 — M6, probe 선행 GO). 스트레치 13·14 는 각각 **착수 전 1일 probe 선행** 후 GO/NO-GO — 특히 14 는
   Λ-최적화의 multi-action 수치 안정성이 미검증(불확실)이라 probe GO 시에만 진입 ([PLAN.md](../PLAN.md)).
 - 축 09 에서 멈추는 것은 의도된 경계다 — confounding 하 식별의 본류(proximal 등)는 연구 레포 소관
   (README [비범위](../README.md#비범위-경계-선언) 참조).

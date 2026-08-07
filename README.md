@@ -10,8 +10,8 @@
 ![gate forecast](https://img.shields.io/badge/gate_forecast-4.6%25_trust_vs_44.4%25_fallback-2a78d6)
 ![DR robustness](https://img.shields.io/badge/DR_robustness-4%2F4_real_datasets-008300)
 ![obp crossval](https://img.shields.io/badge/obp_crossval-rel__diff%E2%89%A41e--8_(7_est_%C3%97_2_tracks)-4a3aa7)
-![axes](https://img.shields.io/badge/axes-01%E2%80%9312_executed-6f6e66)
-![tests](https://img.shields.io/badge/tests-52_passed-1baf7a)
+![axes](https://img.shields.io/badge/axes-01%E2%80%9312%C2%B715%E2%80%9316_executed-6f6e66)
+![tests](https://img.shields.io/badge/tests-59_passed-1baf7a)
 ![license](https://img.shields.io/badge/license-MIT-b3b2a9)
 
 ---
@@ -58,7 +58,7 @@ n=500 에선 trust 다수결인데 그 cell 의 IPS MSE 는 승자의 70.6× 다
 | 시간 | 읽을 것 |
 |---|---|
 | **30초** | 위 TL;DR + hero 3장 |
-| **5분** | [2막 서사](#2막-서사) → [축별 발견](#핵심-발견--축별-한-줄) → [부러지지 않은 것들](#부러지지-않은-것들--기대가-틀렸던-곳) |
+| **5분** | [2막 서사](#2막-서사) → [축별 발견](#핵심-발견--축별-한-줄) → [비즈니스 임팩트로의 번역](#비즈니스-임팩트로의-번역) → [부러지지 않은 것들](#부러지지-않은-것들--기대가-틀렸던-곳) |
 | **재현** | [Quick Start](#quick-start) + [experiments/README.md](experiments/README.md) |
 | **30분** | [docs/PLAYBOOK.md](docs/PLAYBOOK.md) → [docs/CONCEPT.md](docs/CONCEPT.md) → [docs/POSITIONING.md](docs/POSITIONING.md) → [docs/LEDGER.md](docs/LEDGER.md) |
 
@@ -83,7 +83,7 @@ SNIPS → DR → Switch-DR/DRos 로 이어지는 bias-variance 아크 (그림 �
 
 | 구성 요소 | 내용 | 검증 |
 |---|---|---|
-| estimator 7종 | DM·IPS·SNIPS·Clipped-IPS·DR·Switch-DR·DRos — 순수 numpy (`src/ope/estimators.py`) | 3중: property test 52개 + **obp(py3.9)·sb-obp(py3.12) 두 트랙 교차검증 rel_diff ≤ 1e-8**(분기 발동 상태 — LEDGER `m1-crossval`) + 손계산 항등식 |
+| estimator 7종 | DM·IPS·SNIPS·Clipped-IPS·DR·Switch-DR·DRos — 순수 numpy (`src/ope/estimators.py`) | 3중: property test 59개 + **obp(py3.9)·sb-obp(py3.12) 두 트랙 교차검증 rel_diff ≤ 1e-8**(분기 발동 상태 — LEDGER `m1-crossval`) + 손계산 항등식 |
 | 진단·게이트 | ESS·max-weight·support proxy + 3-way `decision_gate` (`src/ope/diagnostics.py`) — [dag-registry](../dag-registry/) OPE 스펙의 실행 실증 | 축 08 에서 사전등록 임계값 **평가**(무튜닝) — 예보력 실증 (LEDGER `m2-08-forecast`) |
 | SLOPE | hyperparameter 데이터 기반 선택 (Su+ ICML'20) | **축 07 실험이 구현의 ladder 방향 반전 버그를 적발** → 수정·회귀 고정 — 수정 후 clipped tail p90 0.125→0.050 회복 (LEDGER `m2-07-slope`) |
 | 합성 DGP | 참값 보유 multi-action bandit — overlap·support·오지정·confounding 노브 (`src/ope/dgp.py`) | on-policy 종단 검산·confounding 대조 항등 등 property test |
@@ -108,6 +108,26 @@ SNIPS → DR → Switch-DR/DRos 로 이어지는 bias-variance 아크 (그림 �
 | 10 | 결정 안전성은 estimator 가 아니라 **비교 설계의 속성**: 같은-로그 비교는 오차 상쇄(fg 0.0), 혼합 비교는 bias 부활(DM fg 0.15/fs 0.375), 절대 임계는 전부 상속 | `m2-10-comparison` |
 | 11 | 실데이터(UCI 4종)에서 DR 강건성 4/4 재현 + percentile bootstrap 은 구조적 bias 를 못 잡는다(9/28 CI 가 참값 미커버) | `m3-11-dr-robust` |
 | 12 | ZOZO 실로그를 게이트가 DISTRUST 로 정확 판정(ESS/n 0.034·max w 278) — 판별력 없음(클릭 random 38건·bts 42건, GT CI ±32%)은 사전 선언 | `m3-12-gate-demo` |
+| 15 | 같은 로그·같은 weight 에서 지표만 CTR→CVR→REV 로 깊어지면 판별 한계가 사다리처럼 가팔라진다(이벤트 희소 + price heavy tail) — 진단은 weight 만 보는 **지표 불변**이라 게이트 trust 가 깊은 지표의 판별력을 보증하지 않는다 | [figure](results/figures/15_funnel_reliability.png) |
+| 16 | 다중 지표 guardrail 게이트(Δ̂CTR>0 ∧ Δ̂REV≥−g ∧ HHI≤h)는 비교형 원칙의 벡터 확장 — 단 중첩 지표가 같은 weight 를 공유해 결합 오류는 **군집 발생**(지표별 오류율 곱으로 낙관 금지); 광고주 노출 재분배·HHI 는 OPE 아닌 정확 계산 | [figure](results/figures/16_business_gate.png) |
+
+## 비즈니스 임팩트로의 번역
+
+<p align="center"><img src="results/figures/15_funnel_reliability.png" width="860" alt="축 15 — funnel 신뢰도 사다리: 같은 로그에서 CTR→CVR→REV 로 갈수록 판별 한계가 가팔라진다"><br>
+<sub><b>축 15 — funnel 신뢰도 사다리.</b> 같은 로그·같은 weight, 지표만 CTR→CVR→REV 로 깊어질 때의
+판별 한계. 정량 정본은 짝 CSV(<code>results/tables/15_funnel_reliability.csv</code>) — 본 섹션의
+정량 수치는 LEDGER <code>m6-*</code> 행 등재 후 인용한다.</sub></p>
+
+같은 로그·같은 importance weight 로 비즈니스 지표 벡터(CTR·CVR·REV — CVR 은 세션 기준,
+[GLOSSARY](docs/GLOSSARY.md) §7)를 한 번에 평가할 수 있지만, 신뢰는 지표마다 같지 않다 — funnel 이
+깊어질수록 이벤트가 희소해지고 price 의 heavy tail 이 얹혀 판별 한계가 사다리처럼 가팔라진다(축 15).
+더 위험한 것은 진단이 weight 만 보므로 **지표에 불변**이라는 점이다: 게이트의 trust 판정은 weight
+분산 위험의 예보일 뿐, 깊은 지표(REV)의 판별력 보증이 아니다. 다중 지표 guardrail 게이트(축 16)는
+비교형 우선 원칙의 벡터 확장이지만, 중첩 지표가 같은 weight 를 공유해 결합 게이트의 오류는 지표별
+오류율의 곱이 아니라 **군집으로** 발생한다. 게이트 규칙·경고의 정본은
+[docs/PLAYBOOK.md](docs/PLAYBOOK.md) §8 "비즈니스 번역" 절이다. 리텐션 등 세션 간·장기 지표는
+single-step bandit OPE 로 식별 불가라 **경계 밖으로 정직하게 선언**했다(RL OPE 소관 — 세션 내 proxy
+도 자기기만 위험으로 미채택).
 
 ## 부러지지 않은 것들 — 기대가 틀렸던 곳
 
@@ -147,7 +167,7 @@ rule 임계값은 사전등록·무튜닝 — 다른 도메인 이식은 재교�
 ```bash
 cd ope-to-decision
 uv sync --extra dev        # 본 env (Python 3.11+)
-uv run pytest              # property test 52개 (항등식·통계 성질·회귀 고정)
+uv run pytest              # property test 59개 (항등식·통계 성질·회귀 고정)
 
 # 축 실험 재현 (예: 축 01 — figure + CSV 페어 재생성)
 uv run python experiments/01_sample_size.py
@@ -163,12 +183,12 @@ uv run python experiments/01_sample_size.py
 
 ```
 ope-to-decision/
-├── src/ope/               # estimators(7종+SLOPE+bootstrap) · dgp · diagnostics(게이트) · policies · datasets
-├── experiments/           # 축 01–12 + probes/ + m1_crossval/ + hero_regime_map (인덱스: experiments/README.md)
+├── src/ope/               # estimators(7종+SLOPE+bootstrap) · dgp · diagnostics(게이트) · policies · datasets · business(funnel 지표 벡터)
+├── experiments/           # 축 01–12·15–16 + probes/ + m1_crossval/ + hero_regime_map (인덱스: experiments/README.md)
 ├── results/figures|tables # 실험 산출물 — NN_* figure↔CSV 1:1 규약 (수치 정본은 docs/LEDGER.md 경유)
 ├── docs/                  # PLAYBOOK · CONCEPT · POSITIONING · LEDGER · GLOSSARY · COMMS_BRIEF
 ├── assets/                # decision-gate 플로차트 SVG (ko/en)
-├── configs/  tests/       # Hydra 설계 기본값 / property test 52
+├── configs/  tests/       # Hydra 설계 기본값 / property test 59
 ├── data/                  # gitignore — 원본 재배포 금지 (data/README.md)
 └── PLAN.md  CLAUDE.md     # 마일스톤·게이트 / 에이전트 규약
 ```
@@ -204,7 +224,7 @@ ope-to-decision/
 1. **수치는 LEDGER 경유만.** 이 README 의 모든 결과 수치는 committed 산출물(`results/tables/`)에서
    만든 [docs/LEDGER.md](docs/LEDGER.md) 행을 인용한다(행 id 병기). 본문·배지의 축약 표기(4.6%·44.4%·
    −0.057 등)는 해당 행 원값 기준 반올림이다 — 원값·정밀도는 LEDGER 가 정본. 테스트 개수 등 공정
-   메타데이터(배지 tests 52)는 실험 결과 수치가 아니므로 LEDGER 범위 밖이다.
+   메타데이터(배지 tests 59)는 실험 결과 수치가 아니므로 LEDGER 범위 밖이다.
 2. **decision rule = 제안.** 게이트 규칙·임계값은 M1 에서 folklore 로 사전 등록되어 축 08 에서
    **평가만** 되었다(무튜닝·교정 아님) — 표준이 아니며, 실패 조건(축 09 blind spot·support arm 퇴화)을
    함께 전시한다.

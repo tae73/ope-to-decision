@@ -61,7 +61,7 @@
 |---|---|---|
 | bias–variance tradeoff | bias–variance 트레이드오프 | DM(bias 극단)과 IPS(variance 극단) 사이에서 estimator 패밀리가 위치하는 축; 본 레포 서사의 뼈대. |
 | MSE decomposition | MSE 분해 | MSE = bias² + variance; 참값을 보유한 합성 DGP에서 estimator별 오차를 성분 분해하는 본 레포의 기본 평가 프로토콜. |
-| bootstrap CI | bootstrap CI (영어 유지) | 재표집으로 추정치의 신뢰구간을 얻는 방법; 본 레포의 모든 figure에서 점추정과 병기한다(특히 근사참값 비교 시 필수). |
+| bootstrap CI | bootstrap CI (영어 유지) | 실데이터 축(11–12) figure 전용 — 근사참값 비교 시 필수; 합성 MC 축(01–10·15–16)은 seed-ensemble band(+heavy-tail 시 p90) 병기 (CLAUDE.md §2 규약). |
 | regime map | regime map (영어 유지) | 표본 크기 × overlap 등 설계 grid의 각 칸에 최저-MSE estimator를 색으로 표시한 히트맵; hero figure ②이자 decision gate의 증거층. |
 | SLOPE | SLOPE (영어 유지) | OPE hyperparameter를 데이터 기반으로 선택하는 방법 — Lepski 원리 적용 (Su et al. ICML 2020, http://proceedings.mlr.press/v119/su20d/su20d.pdf). 축 07·M2. |
 | IEOE | IEOE (영어 유지) | estimator robustness 자체를 평가하는 프로토콜 — error CDF 비교 (RecSys'21, https://arxiv.org/abs/2108.13703). 축 07. |
@@ -84,3 +84,13 @@
 | classification-to-bandit (c2b) | classification-to-bandit → 이후 "c2b" | multi-class 분류 데이터의 label을 action으로, 정답 여부를 reward로 바꿔 깨끗한 참값을 가진 bandit 로그를 만드는 표준 변환 프로토콜 (변환 사용 예: https://arxiv.org/pdf/1802.03493). 축 11. |
 | OBD (Open Bandit Dataset) | OBD (영어 유지) | ZOZO가 공개한 multi-action bandit 로그 — 실측 propensity와 로깅 정책 2종(uniform random + Bernoulli TS)의 병행 수집으로 근사참값 프로토콜이 성립하는 공개 데이터 (https://arxiv.org/abs/2008.07146 · https://research.zozo.com/data.html). 축 12(small 버전). |
 | ground truth (exact vs approximate) | 참값(ground truth) vs 근사참값 — 구분 필수 | 합성 DGP·c2b에서는 V(π_e)를 해석적/Monte Carlo로 아는 **참값**, OBD에서는 random-policy 로그의 on-policy 평균이라 표본 오차를 갖는 **근사참값** — 근사참값 비교에는 bootstrap CI를 병기하고 점 비교 단정을 금지한다. |
+
+## 7. 비즈니스 지표 (M6 — 축 15·16)
+
+| EN 용어 | KO 표기(정본) | 한 줄 정의 |
+|---|---|---|
+| CTR (click-through rate) | CTR (영어 유지) | 세션(노출)당 클릭 확률 — funnel 최상층 지표. 본 레포 funnel DGP(`src/ope/business.py`)에서 reward=click 인 정책가치 V_ctr(π). 축 15·16. |
+| CVR (conversion rate) | CVR (영어 유지) — **세션 기준** 명시 필수 | 본 레포의 CVR 은 **세션 기준** = 노출당 click·conv 의 기대(E[click·conv])다 — **업계 관행의 click-조건부 CVR(E[conv∣click])과 다르다**. 분모(클릭 수)까지 추정치가 되는 ratio-of-estimates 함정을 회피하기 위한 정의 선택이며, 관련 figure 캡션에 고정 병기한다. 축 15·16. |
+| funnel | funnel (영어 유지; 뜻풀이 "전환 깔때기") | impression → click → conversion → revenue 로 이어지는 단계 구조. 단계가 깊을수록 이벤트가 희소해져 같은 로그에서 OPE 판별 한계가 커진다 — "funnel 신뢰도 사다리"(축 15). 세션 간 지표(retention 등)는 funnel 에 없다 — single-step bandit OPE 로 식별 불가(RL OPE 소관, PLAYBOOK §8.4). |
+| guardrail metric | guardrail (영어 유지) | 주 지표 개선(예: Δ̂CTR>0)을 전제로 부지표 악화 한계(예: Δ̂REV≥−g)·구조 제약(예: HHI≤h)을 함께 요구하는 다중 지표 게이트의 보호 지표 — 한계값 g·h 는 시연값(무교정, 본 레포 "제안" 지위 계승). 축 16. |
+| HHI (Herfindahl–Hirschman index) | HHI (영어 유지) | 점유율 제곱합 Σsᵢ² 로 정의되는 집중도 지표 — 본 레포에선 광고주별 기대 노출 점유율에 적용하며, π 가 기지이므로 **OPE 가 아니라 정확 계산**(결정적 arm — 오류율 0)이다. 축 16 (`src/ope/business.py` `hhi`). |

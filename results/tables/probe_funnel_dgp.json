@@ -1,0 +1,28 @@
+{
+  "probe": "M6 funnel_dgp",
+  "config": {
+    "base_ctr": 0.01,
+    "amp_ctr": 0.06,
+    "base_cvr": 0.05,
+    "amp_cvr": 0.25,
+    "beta": [
+      2.0,
+      6.0
+    ],
+    "n": 10000,
+    "s_seeds": 20
+  },
+  "v_ctr_pi0": 0.04967408156579895,
+  "v_ctr_pie": 0.05858849990923346,
+  "delta_true": 0.00891441834343451,
+  "delta_hat_sd_over_seeds": 0.0017984601788472575,
+  "ess_ratio_mean": 0.6987414510888594,
+  "conv_events_min": 74,
+  "checks": {
+    "ctr_base_in_range": true,
+    "delta_detectable": true,
+    "ess_healthy": true,
+    "conv_events_ge_30": true
+  },
+  "verdict": "GO"
+}
