@@ -23,6 +23,7 @@
 | **최종** | portfolio-design Stage 6 적대검증(모든 수치 = LEDGER 삼각일치) → Stage 7 publish(GitHub) → 선택: lowellth-publish | 0.5–1주 | 검증 실패 항목 0 |
 | **M7** (publish 후 확장) | notebook 상세 분석 층 5권(00 로그 EDA → 04 결과 심층) — 파생·재현 층(정본 승격 금지), 실행 output 포함 커밋 | +0.5주 | 5권 실행 무오류 + verify(멱등·LEDGER 정합·데이터 보호) — **완료(2026-08-07, §4.8)** |
 | **M8** (publish 후 재정위) | **GT-미상(practitioner) 본편 트랙**: validity battery(17)·calibrated-confounding 경계(18)·end-to-end blind decision(19)·OBD decision card(20) — §2 확장 + §3.5 **사전등록** + `src/ope/validity.py`·`fitters.py` + 문서 역전(README 3막·PLAYBOOK — 실험 후 단일 패스, 그림 3 은 motivation 으로 전환) | +1.5–2.5주 | §3.5: **사전등록 커밋(수치 0)이 실험에 선행**(git 이력이 증거) · probe M8-A/M8-B GO 시에만 축 착수 · LEDGER ENTERED 전 문서 수치 저작 금지(M4 선례) — **완료(2026-08-10, §4.9 — M9 이월분 별도)** |
+| **M9** (이월분 실행) | **축 21 c2b 주입 replication**(§3.6 사전등록·probe M9-A 게이트·`datasets.py` δ keyword 최소 수정) + **notebook 5권 재정박 + 신권 05**(GT-미상 프로토콜 walkthrough — 무대 라벨·stale 수정·전 6권 재실행) + **frontstage/backstage 구조도 SVG ko/en** + **lowellth 첫 발행**(greenfield — projects 엔트리 + 리포트 노트) | +1–2주 | §3.6 사전등록 커밋(수치 0)이 실험에 선행 · probe M9-A GO 시에만 축 21 착수 · notebook 재실행 무오류+assert PASS · lowell `npm run 발행` 은 **사용자 확인 게이트 후에만** — **진행 중(2026-08-10 착수, §4.10)** |
 
 **달력 정직성.** 연구(proximal OTR/DTR) 병행 파트타임이므로 달력 시간으로 **총 2–3개월**로 잡는 것이 정직하다.
 M2 종료 시점에 이미 레포가 성립하도록(부분 완성으로도 공개 가능) 설계했고, M5 는 drop 해도 코어 서사가 완결된다.
@@ -54,6 +55,7 @@ DGP 노브는 `src/ope/dgp.py` 의 `DGPConfig` 필드와 1:1 대응한다(기본
 | 18 | calibrated-confounding 경계 (M8 — GT-미상 본편) | γ × 기록 방식 2종(as-recorded vs **U-주변화 calibrated**) | `confounding_strength` (+ 사후 marginal-pscore 순수함수 — 생성기 본체 불변) | 관측 동등성 하에서 battery 전항이 **원리적으로 null**·IPS bias 만 성장 — 잡히는 것(miscalibration)과 못 잡는 것(consistent confounding)의 **구성적 분리** 전시, 출구는 Λ-밴드(축 14 도구)로 이월 — 그림 3(축 09)의 GT-미상 세대교체 | **본편** |
 | 19 | end-to-end blind decision (M8 — GT-미상 본편) | `split_log` → crossfit q̂ 후보(β ladder) × 로깅 regime | — (후보도 로그 유래 — oracle `q_true` 누수 금지) | 로그만으로 GO/NO-GO/AB 결정 → reveal 채점(regret·false-go/false-stop) — **naive(IPS 점추정·무게이트) 대비 프로토콜의 결정 가치** 정량화; 축 10 의 GT-미상 판 | **본편** |
 | 20 | OBD decision card (M8 — GT-미상 본편) | OBD small 단일 프로토콜(축 12 계승 — 스윕 아님) | — (`datasets.py`) | **reveal 없는 완전 실전** 1-page 판정 카드(추정+CI·진단·battery — 적용불가/inconclusive 정직 표기·Λ-부채꼴 vs anchor·verdict) — 검증 주장 없음·**시연 프레임**, 근사 GT 대조는 축 12 LEDGER 행 참조만 | **본편** |
+| 21 | c2b 주입-실패 채점 (M9 — GT-미상 본편) | 시나리오 7종 사전등록 목록(§3.6-1) × c2b 4 datasets × S=20 | — (`datasets.py` — δ 주입은 `support_deficiency` keyword, M9 최소 수정) | **replication(외적 타당성)**: 축 17 의 battery 예보력이 실제 공변량·실제 정책 기하(K∈{6,10,26}·n 2.8k–10k·결정적 보상)에서 재현되는가 + q̂-품질 채널(good vs degraded — gate arm 무반응 예측) · 오염은 전부 로깅측(`gt_value` 불변·`truth_kind="exact_c2b"`) · **impossible family 는 실데이터 구성 불가 선언**(§3.6-3 — 축 18 co-exhibit) | **본편** |
 
 비고: `dim_context`·`seed`·`struct_seed` 는 스윕 축이 아니라 통제 변수다 — `struct_seed`(M1 추가 필드)는
 환경 구조(θ·b·d_a)를 고정하고 `seed` 만 바꿔 "같은 환경, 다른 로그" MC 반복을 만든다(구조 rng draw 순서는
@@ -200,6 +202,92 @@ probe JSON 만으로 기계 판독 가능해야 한다.
   라벨을 유지하되 축 17 에서 불발이 재확인되면 그대로 보고한다(예상 반증도 발견) — 축 18 의
   2-패널 서사는 "부분 검출 vs 원리적 불가"가 아니라 **"양쪽 다 비발화·bias 만 성장"**으로 강화된다.
   → 축 17–20 전부 착수 가능.
+
+### 3.6 M9 게이트 — 축 21 c2b 주입 replication **사전등록** (2026-08-10, 실험 수치 0 상태에서 커밋)
+
+> **주장의 스코프.** 축 17 은 battery 예보력을 **합성 기하**에서 실측했다. 축 21 의 고유 주장은
+> **replication(외적 타당성)** — "사전등록 임계 그대로의 battery 가 실제 공변량(표준화 OpenML
+> 피처)·실제 정책 기하(LR-score softmax·K ∈ {6,10,26}·n ∈ 2.8k–10k)·결정적 보상(1[a=y]) 위에서도
+> 같은 방향으로 발화/침묵하는가"다. 부수 채널: **q̂-품질**(good vs degraded — gate arm 4종은
+> pscore 채널 검사라 q̂ 에 무반응이어야 한다는 것 자체가 사전등록 예측; 보고 전용 `dr_correction`
+> 만 상승 예상). battery 임계·정의는 §3.5-1 그대로 — 재등록·재교정 없음.
+
+**3.6-1. 시나리오 목록 (고정 — 사후 추가·삭제 금지).** slug `21_c2b_injection`,
+4 datasets(`C2B_DATASETS` 순서: optdigits·satimage·pendigits·letter) × S=20(`range(1000,1020)` —
+축 11 정본 계승) × 7 시나리오 = 560 runs. 구조는 `C2B_SPLIT_SEED=0` 불변, 오염은 전부
+**로깅측** — `gt_value` 는 전 시나리오·전 seed 불변(정확 참값, `truth_kind="exact_c2b"` —
+스크립트가 전-seed 동일성을 assert 한다).
+
+| scenario | family | 주입 | q̂ |
+|---|---|---|---|
+| `clean` | control | 없음 | `q_scores` |
+| `clean_qdeg` | control | 없음 — q̂ 채널 대조 | `q_scores_degraded` |
+| `noised_s05` | detectable | `clip(pscore·exp(0.5·z), 1e-6, 1)` | `q_scores` |
+| `noised_s10` | detectable | 같은 기전 s=1.0 | `q_scores` |
+| `support_d02` | detectable | 구조 mask δ=0.2 (3.6-2) | `q_scores` |
+| `support_d04` | detectable | 구조 mask δ=0.4 | `q_scores` |
+| `estimated_insample` | partial | in-sample multinomial LR(C=1.0·max_iter=300 — 축 17 계승) | `q_scores` |
+
+noised rng(사전등록 식): `z ~ default_rng(900_000 + 10_000·dataset_idx + seed)` — 축 05/17 의
+offset(500_000)과 분리해 데이터셋 간 z 재사용을 방지. `PractitionerLog.pi_log_dist=None` 전
+시나리오. **q̂ 출처 편차 공시**: `q_scores`/`q_scores_degraded` 는 A-절반(full-feedback)에서
+학습된 supervised 자산 — 축 17·19 의 "로그 유래 q̂" 원칙에서의 **예고된 이탈**이다(평가 절반 B
+라벨 무접촉·`C2B_SPLIT_SEED` 구조 고정 — 축 11 이 같은 페어를 백스테이지 벤치로 쓴 선례).
+
+**3.6-2. support 주입 기전 (Stage 2 src 최소 수정 1건).** `classification_to_bandit` 에
+`support_deficiency: float = 0.0` keyword 추가: per-row `s`(good LR proba) 하위 ⌊δK⌋ 컬럼 구조
+mask(축 04 근거 계승 — 랜덤 mask 는 proxy 를 원리적 blind 으로 만듦) → π₀ renormalize → **같은
+rng 호출 순서로** 행동 재표집 → masked 세계의 정확 propensity 기록. **δ=0 이면 산출
+bit-identical**(회귀 테스트로 고정). π_e·`gt_value` 불변 — masked 행동은 로그에 안 나타나고
+π_e 는 질량 유지 ⇒ 진짜 식별 실패. δ 양자화 명기: ⌊δK⌋ = optdigits/pendigits 2/4 ·
+satimage 1/2(K=6 — δ=0.2 는 최약 주입으로 사전 선언) · letter 5/10.
+
+**3.6-3. impossible family — 부재 선언 (구성 불가 논증).** c2b 에는 `confounded-calibrated`
+(관측 동등성) family 를 만들 수 없다: ① calibrated 기록은 참 P(y|x) 의 주변화를 요구하는데
+실데이터에서 P(y|x) 는 미지다 — LR-근사 주변화는 근사 오차만큼 miscalibration 을 섞어 "원리적
+무검출" 주장을 오염시킨다(**관측 동등성 세계의 구성 자체가 참 조건분포 지식을 요구한다 —
+축 18 이 합성에서만 가능한 이유의 명문화**). ② 라벨 기반 행 선택(selection) 대안도 불가:
+calibration arm 을 정확 null 로 유지하려면 selection ⊥ a|x 여야 하는데, 그 순간 잔존 로그는
+잔존 모집단에 불편(unbiased)이라 남는 실패는 confounding 이 아니라 estimand 불일치 — battery
+가 검사를 주장한 적 없는 다른 종의 실패다. **처리**: figure 에 hatched placeholder 밴드로
+부재를 전시(matrix CSV 에 가짜 행 금지 — 데이터 정직성)하고, 축 21 의 모든 battery 주장에
+축 18(`m8-18-boundary`) co-exhibit 를 병기한다(CLAUDE.md §5).
+
+**3.6-4. 예상 라벨 (반증도 발견 — 사후 수정 금지).**
+- `clean`/`clean_qdeg`: 비발화 예상(placebo 명목 오알람 수준). **q̂ 채널 무반응 예측**: arm 별
+  발화율 |clean_qdeg − clean| ≤ 0.1, 대신 `dr_correction` 은 qdeg 에서 상승 예상.
+- `noised`: 발화 예상(전 dataset) — 곱셈 log-normal 기전은 데이터-불가지(E[w] → e^{s²/2}).
+- `support`: **방향(mean_w < 1)만 예상, 발화는 조건부** — E[w] = 1 − E_x[masked π_e 질량]인데
+  π_e = softmax(6·s) 는 날카롭고 mask 는 최저-s 행동이라 masked 질량이 작을 수 있다. 결정적
+  보상에서 실위험(IPS 편향)도 정확히 같은 양으로 유계 — **비발화 ∧ 비오차의 동시성은 battery
+  실패가 아니라 필요조건-검사 의미론의 확증(true negative)**이다. satimage d02(1/6 mask)는
+  최약 주입 — 축 17 support_d02 의 "mean_w 침묵·harmonic 회수" 패턴 재현 여부가 명시 관찰 항목.
+- `estimated_insample`: 비발화(준-null) 예상 — c2b 는 기록 pscore 자체가 LR-score softmax 라
+  같은 피처 공간의 in-sample refit 이 π₀ 를 거의 복원한다(합성보다 날카로운 함정).
+
+**3.6-5. probe M9-A (축 21 착수 게이트 — 1일, self-contained·src 미의존).**
+`experiments/probes/probe_c2b_injection.py` — satimage(K=6 최조악 양자화)·letter(K=26 런타임
+최악) × 5 seeds(700–704), c2b 변환+mask+battery 를 인라인 재구현. **GO ⇔ 4/4:**
+① mask 역학: δ∈{0.2,0.4} 에서 masked 행동 로그 출현 0 ∧ 기록 pscore = renormalized π₀ verbatim
+∧ gt_value 주입 전후 불변(기계 판독 assert) ② support 방향: δ=0.4 에서 mean_w 점추정 < 1(양
+dataset 5/5 — **발화(임계 통과)는 GO 조건이 아니다**: 발화를 요구하면 주입 튜닝이 된다)
+③ noised 방향: letter s=1.0 에서 mean_w > 1(5/5) ④ 런타임: letter(n=10k·K=26) battery+joint
+bootstrap ≤ 3s/run(M8-A 예산 규칙 재사용). **부수 실측(게이트 아님)**: dataset×δ 별 masked
+π_e 질량 — 3.6-4 예상의 정량 앵커로 `m9-probe-a` 에 등재. **NO-GO 폴백**: ① 실패 → 착수
+금지·구현 수정 선행 / ②③ 실패 → 예상 라벨 무수정 실행·확정 반증으로 등재(`m5-probe-13` 선례).
+δ=0 bit-항등 회귀는 probe 소관이 아니라 **Stage 2 테스트** 소관(probe 는 src 미의존이라
+production 로더와 대조 불가 — 분업 명기).
+
+**3.6-6. 산출·채점·PATTERN.** 하네스 표준(`_decision.csv`·`_reveal.csv`) + companion
+`21_c2b_injection_matrix.csv`(**28행 = 4 dataset × 7 scenario — pooled 행 금지**, 축 17 컬럼
+계승 + `dataset` 열) + `_confusion.csv`((dataset, verdict) 그룹 — 단독 인용 금지). figure:
+Panel A = scenario-major 28행 heatmap(family 구분선·impossible hatched 밴드) / Panel B =
+large-err bars(SNIPS·backstage 명기). **PATTERN 4종(사전등록)**: ① noised_s10 mean_w fire ≥ 0.9
+(전 dataset) ② clean any-arm fire ≤ 0.2(dataset 별) ③ support_d04 mean_w 중앙값 < 1(전 dataset
+— 방향) ④ q-채널: arm 별 |fire(clean_qdeg)−fire(clean)| ≤ 0.1 ∧ median dr_correction(qdeg) >
+median dr_correction(clean)(전 dataset). LEDGER: `m9-probe-a`(ID `M9-A`)·`m9-21-matrix`(ID
+`21`) — GT-분류 동시 등재(둘 다 C). 런타임 예산 ~15분(예상 8–11분 — 초과 시 S 축소 금지·
+시나리오 축소 금지, 원인 규명 우선).
 
 ## 4. M0 체크리스트 (진행 표시)
 
@@ -391,6 +479,28 @@ probe JSON 만으로 기계 판독 가능해야 한다.
   프로토콜 walkthrough) · frontstage/backstage 구조도 SVG ko/en · lowellth 재발행 — 착수는 별도
   계획(M7 post-publish 확장 선례)
 
+## 4.10 M9 체크리스트 (이월분 실행 — 진행 중, 2026-08-10 착수)
+
+- [x] **Stage 0 사전등록 커밋(수치 0)**: §1 M9 행 · §2 축 21 행 · §3.6(시나리오 7종 고정·주입
+  기전·impossible 부재 논증·예상 라벨·probe M9-A 기준·PATTERN — **실험 수치보다 먼저 커밋**) ·
+  §6 예약 갱신(다음 22) · experiments/README(배너·probes 표·축표 21 행) · LEDGER(규칙 6·스키마
+  ID 확장) · CLAUDE.md §4
+- [ ] **Stage 1 probe M9-A** → JSON verdict → GO/NO-GO 분기 집행(§3.6-5) + LEDGER `m9-probe-a`
+- [ ] **Stage 2 src 최소 수정**: `classification_to_bandit` `support_deficiency` keyword —
+  δ=0 bit-항등 회귀 + mask 순수 헬퍼 테스트(OpenML skip-guard 관례), 기존 97 green 유지
+- [ ] **Stage 3 축 21**: figure+CSV 4벌 + PATTERN 4종 + LEDGER `m9-21-matrix`(+GT-분류)
+- [ ] **Stage 4 notebook 층**: 00–04 재정박(배너 무대 라벨·04 깨진 참조·01 제목·02/03 무대 용어
+  충돌 해소·gate v1↔battery 브릿지) + 신권 05(GT-미상 walkthrough — live 는 합성 1로그 한정·
+  집계는 CSV-read·`write_decision_csv`/`reveal` 무호출·LEDGER verbatim assert·co-exhibit) +
+  notebooks/README 재편(본편 00→03→05 / 백스테이지 01→02→04) + 전 6권 jupytext 재실행
+- [ ] **Stage 5 SVG + 문서 동기**: `assets/frontstage_backstage_{ko,en}.svg`(하우스 관례·rsvg
+  검수·수치 0) + README KO/EN(Tier1 축 21 행·notebook 6권·배지 axes 01–12·14–21) + LEDGER 헤더
+  카운트 + 적대 verify(삼각일치·parity·링크) + **repo push**
+- [ ] **Stage 6 lowellth 첫 발행**(greenfield 풀 스코프 — 사용자 확정: 엔트리+리포트 노트·order 3):
+  에셋(public/projects·diagrams — sync-safe) → projects/projects-en 엔트리 → 리포트 노트
+  (vault KO publish:true + notes-en EN twin) → gotcha 체크리스트(통화 `\$`·`_ko/_en` SVG·
+  file://→GitHub·leak gate) → sync+build+leak+프리뷰 verify → **사용자 확인 후에만 `npm run 발행`**
+
 ## 5. 리듬 규약
 
 - **한 stage = 한 `/goal`.** M1 부터는 마일스톤(필요 시 마일스톤 내 소단계)을 `/goal` 로 잠그고 게이트 판정 후 해제.
@@ -401,8 +511,8 @@ probe JSON 만으로 기계 판독 가능해야 한다.
 
 ## 6. 실험 규율
 
-- **ID 불변**: 실험 ID 01–20 은 재부여·재정렬 금지(17–20 은 M8 GT-미상 practitioner 트랙 — §3.5
-  사전등록 선행·probe 게이트). 축 추가는 새 번호로만(다음 예약: 21 — M9 c2b 주입 후보).
+- **ID 불변**: 실험 ID 01–21 은 재부여·재정렬 금지(17–20 은 M8 · 21 은 M9 — 각각 §3.5/§3.6
+  사전등록 선행·probe 게이트). 축 추가는 새 번호로만(다음 예약: 22).
 - **한 축 = 한 스크립트 = 한 figure**: `experiments/NN_slug.py` 가 해당 축의 유일한 진입점.
 - **figure ↔ 데이터 1:1 페어링**: `results/figures/NN_*.{png,svg}` 마다 `results/tables/NN_*.csv` 동반 커밋 — 페어 없는 figure 금지.
 - **모든 문서 수치는 LEDGER 경유**: committed 결과만 `docs/LEDGER.md` 에 등재하고, README·리포트는 LEDGER 만 인용

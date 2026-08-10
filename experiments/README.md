@@ -33,6 +33,7 @@ NO-GO 여도 세션 실패가 아니다 — 폴백 경로는 [PLAN.md](../PLAN.m
 | M5-14 | [`probes/probe_lambda_msm.py`](probes/probe_lambda_msm.py) | 축 14(Λ-sweep) 착수 게이트: MSM 정규화 bound 정렬-임계 정확해의 multi-action 수치 안정성(Λ=1 SNIPS 항등 · Λ 단조 · n=30k 안정 · oracle coverage) → GO/NO-GO | `results/tables/probe_lambda_msm.json` — **GO** |
 | M8-A | [`probes/probe_validity_battery.py`](probes/probe_validity_battery.py) | 축 17·19·20 착수 게이트: GT-free validity battery(E[w]·harmonic calibration·placebo·disagreement — PLAN §3.5-1 사전등록 정의)의 방향성 발화 + E[w] 의 컨텍스트-국소 support 결핍 회복(축 04 blind 의 GT-미상 대응) + joint bootstrap 런타임 → GO/NO-GO (기준: PLAN §3.5-4) | `results/tables/probe_validity_battery.json` — **GO** |
 | M8-B | [`probes/probe_calibrated_confounding.py`](probes/probe_calibrated_confounding.py) | 축 18 착수 게이트: U-주변화(calibrated) 기록 pscore 사후 순수함수의 수치·메모리 안정 + battery null 정합 + IPS bias 잔존 + as-recorded 대조 발화 실측 → GO/NO-GO (기준: PLAN §3.5-4 — DGP 생성기 본체 불변, 결정적 구적 GL×φ) | `results/tables/probe_calibrated_confounding.json` — **GO** |
+| M9-A | `probes/probe_c2b_injection.py` (예정) | 축 21 착수 게이트: c2b 주입 기전(구조 mask 역학·gt_value 불변·재표집) + support/noised 방향(발화 아님 — 발화 요구는 주입 튜닝) + K=26·n=10k 런타임 → GO/NO-GO (기준: PLAN §3.6-5) + 부수 실측: dataset×δ 별 masked π_e 질량 | `results/tables/probe_c2b_injection.json` — 미실행 |
 
 **상태:** M0-A VERDICT **GO** · M0-B 두 트랙(obp·sb-obp) 모두 VERDICT **GO** · M6 VERDICT **GO** ·
 **M5-13 VERDICT NO-GO(축 13 drop — 정직 기록)** · **M5-14 VERDICT GO(축 14 실행 완료)** ·
@@ -77,7 +78,7 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 (CI 는 라이브러리별 bootstrap 구현이 상이 — 비교 제외). 수치 정본: `results/tables/m1_obp_crossval.csv`
 → [docs/LEDGER.md](../docs/LEDGER.md).
 
-## 축 01–20 표 (01–12·14–20 실행 완료 · 13 은 probe NO-GO 로 drop — ID 는 확정 불변)
+## 축 01–21 표 (01–12·14–20 실행 완료 · 13 은 probe NO-GO 로 drop · 21 은 M9 사전등록·미실행 — ID 는 확정 불변)
 
 | ID | slug 후보 | 스윕 노브 | 보려는 것 | 근거 (URL) | 무대 |
 |---|---|---|---|---|---|
@@ -101,6 +102,7 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 | 18 | `18_calibrated_boundary` [M8 — 실행 완료] | γ × 기록 방식 2종(as-recorded vs **U-주변화 calibrated** — 사후 순수함수, 생성기 불변) | 관측 동등성 하 battery 전항 **원리적 null**·IPS bias 만 성장 — 잡히는 것(miscalibration)/못 잡는 것(consistent confounding)의 구성적 분리, 출구는 Λ-밴드(축 14 도구) — 그림 3(축 09)의 GT-미상 세대교체 | PLAN §3.5 (probe M8-B 게이트) · [Kallus & Zhou](https://arxiv.org/pdf/1805.08593) 도구 재사용 | **본편** |
 | 19 | `19_blind_decision` [M8 — 실행 완료] | `split_log` → crossfit q̂ 후보(β ladder) × 로깅 regime — 후보도 로그 유래(oracle 누수 금지) | 로그만으로 GO/NO-GO/AB → reveal 채점(regret·false-go/false-stop) — **naive(IPS 점추정·무게이트) 대비 프로토콜의 결정 가치**; 축 10 의 GT-미상 판 | PLAN §3.5 (probe M8-A 게이트 공유) · [Δ-OPE](https://arxiv.org/abs/2405.10024) 비교형 계승 | **본편** |
 | 20 | `20_obd_decision_card` [M8 — 실행 완료] | OBD small 단일 프로토콜(축 12 계승 — 스윕 아님) | **reveal 없는 완전 실전** 1-page decision card(추정+CI·진단·battery — 적용불가/inconclusive 정직 표기·Λ-부채꼴 vs anchor·verdict) — 검증 주장 없음(시연 프레임)·근사 GT 대조는 축 12 LEDGER 행 참조만 | PLAN §3.5 · [OBD](https://arxiv.org/abs/2008.07146) | **본편** |
+| 21 | `21_c2b_injection` [M9 — 사전등록·미실행] | 시나리오 7종(PLAN §3.6-1 고정) × c2b 4 datasets × S=20 — 오염은 전부 로깅측(`gt_value` 불변, `truth_kind="exact_c2b"`) | **replication(외적 타당성)**: 축 17 battery 예보력의 실제 공변량·정책 기하(K∈{6,10,26}) 재현 + q̂-품질 채널(무반응 예측) · **impossible family 는 실데이터 구성 불가 선언**(§3.6-3 — 축 18 co-exhibit) · matrix 28행 pooled 금지 | PLAN §3.6 (probe M9-A 게이트) · c2b 변환 관례는 축 11 과 동일 출처 | **본편** |
 
 ## 게이트 메모
 

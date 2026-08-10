@@ -22,12 +22,14 @@
    probe `M0-A`(DGP·estimator sanity) / probe `M0-B`(obp 교차검증) / probe `M6`(funnel DGP) /
    probe `M5-13`(MIPS 액션 스케일 — 축 13 착수 게이트) / probe `M5-14`(Λ-MSM 수치 안정성 — 축 14 착수 게이트) /
    probe `M8-A`(validity battery — 축 17·19·20 착수 게이트) / probe `M8-B`(calibrated confounding — 축 18 착수 게이트) /
+   probe `M9-A`(c2b 주입 기전 — 축 21 착수 게이트) /
    `01` 표본 n / `02` 로깅 β / `03` 타깃-로깅 괴리 / `04` deficient support / `05` propensity 오지정 /
    `06` reward model 오지정 / `07` hyperparameter 민감도(IEOE) / `08` 진단 예보력+결정규칙 /
    `09` confounding 주입+대조표 / `10` 의사결정 metric / `11` c2b 멀티데이터셋 / `12` OBD small 게이트 /
    `13`[스트레치] 액션 수+MIPS / `14`[스트레치] Λ-sweep / `15` funnel 신뢰도 사다리(비즈니스 층) /
    `16` 다중 지표 비즈니스 게이트(비즈니스 층) / `17` validity battery(M8 GT-미상 본편) /
-   `18` calibrated-confounding 경계(M8) / `19` end-to-end blind decision(M8) / `20` OBD decision card(M8).
+   `18` calibrated-confounding 경계(M8) / `19` end-to-end blind decision(M8) / `20` OBD decision card(M8) /
+   `21` c2b 주입 replication(M9 GT-미상 본편).
 7. **VERDICT 는 수치가 아니다.** VERDICT 문자열(GO/NO-GO/INSTALL-FAIL)은 수치가 아닌 상태 표기로서,
    `PLAN.md` 등 진행 문서가 LEDGER 등재 전에도 인용할 수 있다(수치 인용은 불가).
 
@@ -39,7 +41,7 @@
 | `수치` | source 파일의 값 verbatim. 미등재 시 `(미등재)`. |
 | `단위` | 물리/논리 단위. 무차원 추정치는 `—`. |
 | `source 파일 경로` | 레포 루트 기준 committed 산출물 경로 (`results/tables/...` 등). |
-| `생성 실험 ID` | 위 규칙 6의 확정 ID (probe `M0-A`/`M0-B`/`M6`/`M5-13`/`M5-14`/`M8-A`/`M8-B` / 축 `01`–`20` + 마일스톤 게이트 `M1`/`M2`/`M3`/`M6`/`M7`/`M8`). |
+| `생성 실험 ID` | 위 규칙 6의 확정 ID (probe `M0-A`/`M0-B`/`M6`/`M5-13`/`M5-14`/`M8-A`/`M8-B`/`M9-A` / 축 `01`–`21` + 마일스톤 게이트 `M1`/`M2`/`M3`/`M6`/`M7`/`M8`/`M9`). |
 | `등재일` | `YYYY-MM-DD`. |
 | `상태` | `RESERVED`(경로만 예약, 수치 미등재) / `ENTERED`(수치 등재 완료 — NO-GO 등 실패 결과 포함) / `SUPERSEDED`(재실험으로 대체됨). |
 

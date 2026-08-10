@@ -75,8 +75,9 @@
     17 validity battery / 18 calibrated-confounding 경계 / 19 end-to-end blind decision /
     20 OBD decision card. frontstage 산출 `NN_*_decision.csv` 에 `v_true`·oracle 컬럼 금지
     (계약 테스트), reveal 채점은 `NN_*_reveal.csv` 분리(축 20 은 reveal 없음). tier 분류
-    (본편/백스테이지)의 정본은 PLAN §2·experiments/README(`무대` 열은 M8 Stage 5 문서 역전에서
-    추가 예정 — 그 전까지는 PLAN §4.9 Stage 5 항목이 배정 기록).
+    (본편/백스테이지)의 정본은 PLAN §2·experiments/README 의 `무대` 열.
+  - M9 본편 추가: 21 c2b 주입 replication(**사전등록 PLAN §3.6**·probe M9-A 게이트 —
+    `truth_kind="exact_c2b"`, impossible family 는 실데이터 구성 불가 선언·축 18 co-exhibit).
 - `experiments/probes/` 는 **self-contained**(src 미의존, 단독 실행 가능) — research-design Stage 3
   포맷(WHAT GENERALIZES / THE RESULT boxed / HONEST reduces_check / VERDICT) + JSON 산출 유지.
 - 결과 경로 규약: figure → `results/figures/NN_*.{png,svg}`, 수치 → `results/tables/NN_*.{json,csv}`
