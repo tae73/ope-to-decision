@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 690" width="1000" height="690" role="img" aria-label="Frontstage and backstage structure: log-only frontstage signals are scored blind-then-reveal by the truth-holding backstage, with the observational-equivalence boundary attached to every verdict">
+  <title>Frontstage/backstage structure — the two stages of the GT-unknown protocol (M9)</title>
+  <!-- EN twin of assets/frontstage_backstage_ko.svg — identical structure/coords/palette/arrows, text only in English.
+       Inline presentation attributes only (no style/filter/marker elements) for GitHub camo-safe rendering.
+       Palette = experiments/_style.py (entity-fixed figure colors); warning band inherits the
+       decision_gate_flowchart convention (#fdf3f7 tint / #e87ba4 stroke / #c94f7c heading), battery box
+       uses #eda100 stroke / #a97400 heading. No numbers (structure diagram — outside LEDGER scope).
+       Stage vocabulary canon: docs/GLOSSARY.md §8. -->
+  <rect x="0" y="0" width="1000" height="690" fill="#fcfcfb"/>
+  <g font-family="Helvetica, Arial, sans-serif">
+    <text x="500" y="36" text-anchor="middle" font-size="19" font-weight="bold" fill="#33322e">Frontstage and backstage &#8212; the two stages of the GT-unknown protocol</text>
+    <text x="500" y="58" text-anchor="middle" font-size="12.5" fill="#55544e">A practitioner only ever holds the left side &#183; the right side is what earns it trust (GLOSSARY &#167;8)</text>
+
+    <!-- frontstage -->
+    <rect x="25" y="80" width="560" height="490" rx="10" fill="#ffffff" stroke="#008300" stroke-width="2"/>
+    <text x="45" y="108" font-size="13.5" font-weight="bold" fill="#008300">Frontstage &#8212; logs only, no ground truth needed</text>
+    <text x="45" y="126" font-size="10.8" fill="#55544e">Everything inside this box takes only the logged layer and a candidate policy distribution</text>
+
+    <rect x="45" y="142" width="520" height="62" rx="8" fill="#ffffff" stroke="#2a78d6" stroke-width="1.6"/>
+    <text x="60" y="163" font-size="12" font-weight="bold" fill="#2a78d6">Logged layer (everything the practitioner has)</text>
+    <text x="60" y="180" font-size="10.8" fill="#55544e">(x, a, r, recorded pscore) + candidate &#960;&#8337; distribution &#8212; nobody knows V(&#960;&#8337;)</text>
+    <text x="60" y="195" font-size="10.8" fill="#55544e">(optional) log-derived q&#770; &#183; the deployed logging distribution &#183; timestamps</text>
+
+    <line x1="305" y1="204" x2="305" y2="234" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="305,240 300,230 310,230" fill="#6f6e66"/>
+
+    <rect x="45" y="244" width="160" height="146" rx="8" fill="#ffffff" stroke="#555550" stroke-width="1.6"/>
+    <text x="58" y="266" font-size="12" font-weight="bold" fill="#33322e">Gate v1</text>
+    <text x="58" y="284" font-size="10.3" fill="#55544e">ESS/n &#183; max weight</text>
+    <text x="58" y="298" font-size="10.3" fill="#55544e">support proxy</text>
+    <text x="58" y="316" font-size="9.5" fill="#8a897f">thresholds pre-registered</text>
+    <text x="58" y="330" font-size="9.5" fill="#8a897f">at M1 &#183; evaluated, untuned</text>
+
+    <rect x="215" y="244" width="185" height="146" rx="8" fill="#ffffff" stroke="#eda100" stroke-width="1.6"/>
+    <text x="228" y="266" font-size="12" font-weight="bold" fill="#a97400">Validity battery [proposal]</text>
+    <text x="228" y="284" font-size="10.3" fill="#55544e">E[w]=1 &#183; harmonic T(a*)</text>
+    <text x="228" y="298" font-size="10.3" fill="#55544e">placebo (truth 0) &#183; disagreement</text>
+    <text x="228" y="316" font-size="9.5" fill="#8a897f">necessary-condition screen</text>
+    <text x="228" y="330" font-size="9.5" fill="#8a897f">passing &#8800; proof of validity</text>
+    <text x="228" y="344" font-size="9.5" fill="#8a897f">pre-registered at M8 &#183; untuned</text>
+
+    <rect x="410" y="244" width="155" height="146" rx="8" fill="#ffffff" stroke="#e87ba4" stroke-width="1.6"/>
+    <text x="423" y="266" font-size="12" font-weight="bold" fill="#c94f7c">&#923;*_flip</text>
+    <text x="423" y="284" font-size="10.3" fill="#55544e">smallest sensitivity &#923;</text>
+    <text x="423" y="298" font-size="10.3" fill="#55544e">that flips the conclusion</text>
+    <text x="423" y="316" font-size="9.5" fill="#8a897f">not a certificate &#8212;</text>
+    <text x="423" y="330" font-size="9.5" fill="#8a897f">a fragility report</text>
+
+    <line x1="305" y1="390" x2="305" y2="420" stroke="#6f6e66" stroke-width="1.6"/>
+    <polygon points="305,426 300,416 310,416" fill="#6f6e66"/>
+
+    <rect x="45" y="430" width="520" height="74" rx="8" fill="#ffffff" stroke="#4a3aa7" stroke-width="1.6"/>
+    <text x="60" y="451" font-size="12" font-weight="bold" fill="#4a3aa7">Combination rule (pre-registered) &#8594; verdict &#183; decision</text>
+    <text x="60" y="468" font-size="10.3" fill="#55544e">harmonic fail &#8594; AB-FALLBACK &#183; E[w]/placebo/disagreement fail &#8594; DISTRUST &#183; else gate v1</text>
+    <text x="60" y="483" font-size="10.3" fill="#55544e">decision: SNIPS CI vs mean(r) &#8594; GO / NO-GO / A/B &#183; fragile label (small &#923;*_flip)</text>
+    <text x="60" y="498" font-size="9.5" fill="#8a897f">frontstage CSVs contain no truth columns (enforced by contract tests)</text>
+
+    <text x="45" y="530" font-size="9.5" font-style="italic" fill="#8a897f">Frontstage axes: 12 &#183; 14 &#183; 17&#8211;21 &#8212; in production (axis 20) no answer sheet (reveal) exists at all.</text>
+    <text x="45" y="546" font-size="9.5" font-style="italic" fill="#8a897f">"We don't know" (inconclusive &#183; A/B deferral) is a legitimate output, not a failure.</text>
+
+    <!-- reveal link -->
+    <line x1="585" y1="330" x2="642" y2="330" stroke="#b3b2a9" stroke-width="1.6" stroke-dasharray="6 4"/>
+    <polygon points="648,330 638,325 638,335" fill="#b3b2a9"/>
+    <text x="616" y="318" text-anchor="middle" font-size="9.5" font-style="italic" fill="#6f6e66">blind-then-</text>
+    <text x="616" y="348" text-anchor="middle" font-size="9.5" font-style="italic" fill="#6f6e66">reveal</text>
+
+    <!-- backstage -->
+    <rect x="650" y="80" width="325" height="420" rx="10" fill="#ffffff" stroke="#555550" stroke-width="2" stroke-dasharray="7 5"/>
+    <text x="668" y="108" font-size="13.5" font-weight="bold" fill="#33322e">Backstage</text>
+    <text x="668" y="126" font-size="10.8" fill="#55544e">Truth-holding scoring &#8212; the oracle layer, scoring only</text>
+
+    <rect x="668" y="142" width="289" height="58" rx="8" fill="#ffffff" stroke="#b3b2a9" stroke-width="1.4"/>
+    <text x="681" y="162" font-size="11" font-weight="bold" fill="#33322e">Synthetic DGP &#8212; exact truth v_true</text>
+    <text x="681" y="178" font-size="9.5" fill="#8a897f">axes 01&#8211;10 &#183; 15&#8211;16 + reveal scoring of 17&#8211;19</text>
+
+    <rect x="668" y="212" width="289" height="58" rx="8" fill="#ffffff" stroke="#b3b2a9" stroke-width="1.4"/>
+    <text x="681" y="232" font-size="11" font-weight="bold" fill="#33322e">c2b &#8212; exact truth from full labels</text>
+    <text x="681" y="248" font-size="9.5" fill="#8a897f">axis 11 + reveal scoring of the axis-21 replication</text>
+
+    <rect x="668" y="282" width="289" height="58" rx="8" fill="#ffffff" stroke="#b3b2a9" stroke-width="1.4"/>
+    <text x="681" y="302" font-size="11" font-weight="bold" fill="#33322e">OBD &#8212; approximate truth (bootstrap CI)</text>
+    <text x="681" y="318" font-size="9.5" fill="#8a897f">axis 12 &#8212; interval language only, no point claims</text>
+
+    <text x="668" y="368" font-size="10.8" fill="#55544e">Measured here: gate/battery forecast power,</text>
+    <text x="668" y="384" font-size="10.8" fill="#55544e">decision value vs naive, and the blind boundary.</text>
+    <text x="668" y="412" font-size="9.5" font-style="italic" fill="#8a897f">The backstage does not exist in production &#8212;</text>
+    <text x="668" y="428" font-size="9.5" font-style="italic" fill="#8a897f">it is the stage that earns the frontstage its trust.</text>
+    <text x="668" y="456" font-size="9.5" font-style="italic" fill="#8a897f">The GT-known world moved down here &#8212;</text>
+    <text x="668" y="472" font-size="9.5" font-style="italic" fill="#8a897f">as motivation and as verification (M8).</text>
+
+    <!-- observational-equivalence boundary band -->
+    <rect x="25" y="585" width="950" height="85" rx="10" fill="#fdf3f7" stroke="#e87ba4" stroke-width="1.6"/>
+    <text x="45" y="610" font-size="12" font-weight="bold" fill="#c94f7c">The observational-equivalence boundary (axis 18) &#8212; the line between the two stages</text>
+    <text x="45" y="628" font-size="10.3" fill="#55544e">Confounding whose recorded pscore is the true marginal is indistinguishable by any log statistic &#8212; every battery arm stays silent while bias grows.</text>
+    <text x="45" y="643" font-size="10.3" fill="#55544e">The battery narrows the blind spot but cannot eliminate it. The honest exit is not a point estimate but the width of the &#923;-sensitivity band, and abstention.</text>
+    <text x="45" y="660" font-size="9.5" font-style="italic" fill="#8a897f">battery = necessary-condition screen &#8212; this warning is the disclaimer attached to every frontstage "pass" (CLAUDE.md &#167;5 co-exhibit).</text>
+  </g>
+</svg>

@@ -16,12 +16,16 @@
 # > **지위 배너 — 재현/탐색 층.** 이 노트북이 새로 계산하는 수치는 전부 **LEDGER 미등재
 # > (정본 아님)** 이다. 정본 수치는 [`docs/LEDGER.md`](../docs/LEDGER.md) 뿐이며, 기존 결과를
 # > 인용할 때는 행 id 를 병기한다. 규약: [`notebooks/README.md`](README.md).
+# > **무대 라벨 — 본편.** 이 권의 진단·게이트는 전부 로그 층만 사용한다 — M8 이후 gate v1 이며,
+# > validity battery(gate v2 [제안])가 병렬 합류한다(GLOSSARY §8·PLAN §3.5).
 #
 # 02권까지의 질문이 "V(π_e) 를 어떻게 추정하나"였다면, 이 권의 질문은 **"그 추정치를 믿어도
 # 되는가"**다. OPE 의 실무 종착점은 점추정이 아니라 **배포 결정**이고, 결정에는 신뢰 판정이
 # 선행해야 한다. [`src/ope/diagnostics.py`](../src/ope/diagnostics.py) 는 **로그만으로(참값
 # 없이) 계산 가능한** 진단 3종 — ESS · max importance weight · support proxy — 과 3-way
-# **decision gate** (trust / distrust / ab_fallback) 를 구현한다. 이 노트북은:
+# **decision gate** (trust / distrust / ab_fallback) 를 구현한다. M8 이후 이것은 **gate v1** 이다:
+# `src/ope/validity.py` 의 validity battery(E[w]·harmonic·placebo·disagreement — gate v2 [제안],
+# 필요조건 검사)가 같은 로그-단독 규율로 병렬 합류한다(PLAN §3.5-1·05권 walkthrough). 이 노트북은:
 #
 # 1. 세 진단의 계산 과정을 numpy 로 한 단계씩 열고 `compute_diagnostics` 와 대조(assert)한다.
 # 2. `decision_gate` 가 판정하는 순간 — 어느 조건이 발동해 어느 arm 으로 가는가 — 를 트레이스한다.
@@ -57,15 +61,15 @@ from ope.diagnostics import (PROVISIONAL_THRESHOLDS, DiagnosticsReport,  # noqa:
                              compute_diagnostics, decision_gate)
 from ope.estimators import estimate_ips  # noqa: E402
 
-C_HEALTHY = ESTIMATOR_COLORS["dm"]    # blue — healthy 무대
-C_HARSH = ESTIMATOR_COLORS["ips"]     # orange — harsh 무대 (bias 패널의 IPS entity 색과 동일 계열)
-C_CONF = ESTIMATOR_COLORS["dros"]     # violet — confounded 무대
+C_HEALTHY = ESTIMATOR_COLORS["dm"]    # blue — healthy 장
+C_HARSH = ESTIMATOR_COLORS["ips"]     # orange — harsh 장 (bias 패널의 IPS entity 색과 동일 계열)
+C_CONF = ESTIMATOR_COLORS["dros"]     # violet — confounded 장
 DIAG_COLOR = "#3f3e39"                # 진단 곡선 — estimator 팔레트 밖 중립색 (축 09 관례)
 THRESH_COLOR = "#a33b3b"              # [제안] 임계선 전용색 (축 09 관례)
 GRAY = "#9a9a9a"
 
 # %% [markdown]
-# ## A. 세 로그 무대 — healthy · harsh · confounded
+# ## A. 세 로그 설정 — healthy · harsh · confounded
 #
 # 같은 환경(`struct_seed=7`)·같은 평가 정책(β_eval=3) 아래 **로깅만 다른** 세 로그를 세운다
 # (base 는 `experiments/_common.BASE_M2` 와 동일값 — n=10,000, K=10):
@@ -98,7 +102,7 @@ for name, cfg in STAGES.items():
         "logged=true pscore": bool(np.allclose(d.pscore_logged, d.pscore_true)),
     })
 stage_summary = pd.DataFrame(rows).set_index("log")
-print(f"V(pi_e) ground truth = {V_TRUE:.4f}   (세 무대 공통 — dgp.py 의 γ-불변 정리)")
+print(f"V(pi_e) ground truth = {V_TRUE:.4f}   (세 설정 공통 — dgp.py 의 γ-불변 정리)")
 display(stage_summary.style.format({"mean_reward": "{:.3f}",
                                     "pscore_min": "{:.2e}", "pscore_max": "{:.3f}"}))
 
@@ -213,7 +217,7 @@ for name in logs:
     print(f"{name:11s} 상위 1% row 가 쥔 Σw 지분 = {100 * ww[:k].sum() / ww.sum():.1f}%")
 
 # %% [markdown]
-# 합성 harsh 무대(연속 보상·n=10,000)에서는 상위 1% row 가 Σw 의 ~11% 를 쥔다(healthy 는 ~2%)
+# 합성 harsh 설정(연속 보상·n=10,000)에서는 상위 1% row 가 Σw 의 ~11% 를 쥔다(healthy 는 ~2%)
 # — 아직 "완만한" 집중이다. 이 지렛대는 **보상이 희소할수록 파괴적**이 된다: 실로그 OBD 에서는
 # 클릭 한 개가 IPS 추정의 **0.33** 을 쥐었다(top1 클릭 기여 0.3300, max w 277.78 — LEDGER
 # `m3-12-gate-demo`). max-weight 진단이 cap(아래 E 절) 하나로 지렛대 자체를 감시하는 이유다.
@@ -308,7 +312,7 @@ display(thr_table)
 #    (사유 전부 기록).
 # 3. 아무것도 발동하지 않으면 **trust**.
 #
-# 세 무대 로그와, 판정 경로를 마저 보여줄 시연 행들을 게이트에 통과시킨다.
+# 세 설정 로그와, 판정 경로를 마저 보여줄 시연 행들을 게이트에 통과시킨다.
 
 # %%
 def trace_gate(name: str, report: DiagnosticsReport) -> dict:
@@ -344,7 +348,7 @@ print("→ max_weight·support 위반이 공존해도 기록된 사유는 hard f
 # %% [markdown]
 # 트레이스에서 읽을 것 세 가지:
 #
-# - **세 무대 로그는 전부 trust 다.** harsh(ESS/n ≈ 0.32)조차 soft floor 0.10 위라 통과한다 —
+# - **세 설정 로그는 전부 trust 다.** harsh(ESS/n ≈ 0.32)조차 soft floor 0.10 위라 통과한다 —
 #   이 임계 아래로 내려가려면 β_log=12 급이 필요했고, 그 시연 행에서는 soft ESS 와 max-weight
 #   **두 사유가 동시에** 발동한다.
 # - **confounded 의 trust 가 이 권의 함정이다.** 같은 로그에 진짜 propensity(`pscore_true`)를
@@ -460,18 +464,31 @@ plt.show()
 # 미니 재현의 γ=2 oracle 점이 0 에서 벗어나 보이는 것은 이 heavy-tail 소표본 구간의 불안정성
 # 이다(band 폭 참조) — 이 점 하나로 oracle 의 bias 를 단정하지 않는다. 정본 대조는 S=40·
 # n=30,000 의 축 09 figure(`results/figures/09_confounding_blindspot.png`)가 담당한다.
+# 축 18(M8)은 이 대비를 더 날카롭게 만들었다: U-주변화 calibrated 기록에서는 battery 전항이
+# 발화 0 인 채 bias 만 자란다(LEDGER `m8-18-boundary`) — 어떤 로그 통계도 원리적으로 구별 불가
+# (관측 동등성). 이 co-exhibit 는 battery·게이트 주장 전체에 붙는 면책이다.
 #
 # ## G. 정리 — 게이트는 도구지 부적이 아니다
 #
 # | 진단 | 계산 (로그만으로) | 발동 arm | 원리적 한계 |
 # |---|---|---|---|
-# | ESS/n | $(\sum w)^2 / \sum w^2 / n$ | hard → ab_fallback · soft → distrust | 기록 pscore 가 거짓이면 무력 (축 09) |
+# | ESS/n | $(\sum w)^2 / \sum w^2 / n$ | hard → ab_fallback · soft → distrust | 기록 pscore 가 거짓이면 무력 (축 09·18) |
 # | max weight | $\max_i w_i$ | cap 초과 → distrust | 동일 — weight 는 기록의 함수 |
 # | support proxy | 전역 미등장 액션의 $\bar\pi_e$ 질량 | 초과 → distrust | 컨텍스트-국소 결핍에 전면 blind (축 04) |
 #
+# **battery 확장(M8 — gate v2 [제안]).** 위 gate v1 에 validity battery 4 arm 이 병렬 합류한다:
+# **E[w]**(기록 pscore 가 참이면 mean(w)=1 항등) · **harmonic**(기록 pscore vs 경험 행동빈도의
+# per-action 항등) · **placebo**(자체 생성 noise 보상의 IPS — 구성상 참값 0) · **disagreement**
+# (weighting 계열 점추정 스프레드). 결합 규칙은 harmonic fail → ab_fallback, mean_w·placebo·
+# disagreement fail → distrust(`experiments/_practitioner.py` §3.5-2, 동시 성립 시 ab_fallback
+# 우선) — 계산 walkthrough 는 05권이다. 전 arm 이 필요조건 검사(falsifier)라 **통과는 무결의
+# 증명이 아니다**: calibrated confounding(축 18)에서는 battery 전항이 발화 0 인 채 bias 만
+# 자란다(LEDGER `m8-18-boundary`).
+#
 # 세 진단은 전부 **로그의 함수**다 — 기록이 참일 때만 신뢰 신호이고, 기록 밖의 실패 모드
-# (unobserved confounding)에는 원리적으로 침묵한다. 게이트의 사용법·한계 산문의 정본은
-# [`docs/PLAYBOOK.md`](../docs/PLAYBOOK.md), 실험 정본은 축 08(예보력, `m2-08-forecast`)·
-# 축 09(blind spot, `m2-09-blindspot`)다. 임계값은 본 레포의 제안(사전등록·무튜닝 평가)이며
+# (unobserved confounding — 축 09, calibrated 극단은 축 18)에는 원리적으로 침묵한다. 게이트의
+# 사용법·한계 산문의 정본은 [`docs/PLAYBOOK.md`](../docs/PLAYBOOK.md), 실험 정본은 축 08(예보력,
+# `m2-08-forecast`)·축 09(blind spot, `m2-09-blindspot`)·축 18(관측 동등성 경계,
+# `m8-18-boundary`)다. 임계값은 본 레포의 제안(사전등록·무튜닝 평가)이며
 # 문헌 표준이 아니다 — 다른 도메인에 옮길 때는 그 도메인의 축 08 급 평가를 다시 밟아야 하고,
 # 어떤 경우에도 "통과 = 안전"으로 읽어서는 안 된다.

@@ -19,6 +19,8 @@
 # > 에서의 파생"이다. LEDGER 행이 이미 인용한 값은 **verbatim 일치를 검증(PASS 표기)** 하고,
 # > 그 외 파생값을 문서(README·PLAYBOOK)로 승격하려면 LEDGER 등재 경로를 밟아야 한다.
 # > 규약: [`notebooks/README.md`](README.md) · [`docs/LEDGER.md`](../docs/LEDGER.md).
+# > **무대 라벨 — 백스테이지.** 이 권의 CSV 재해석은 참값 채점 무대의 심층이다(축 14 Λ\* 분포
+# > §E 만 로그-계산 가능 통계, GLOSSARY §8).
 #
 # README 는 결론을 **headline 한 줄**로 큐레이션한다 — "dros 가 11 cell 을 이겼다",
 # "꼬리가 갈랐다", "사다리가 무너졌다". 이 권은 그 한 줄의 **뒤**를 본다:
@@ -30,6 +32,9 @@
 # | C. 축 07 hyperparameter 꼬리 | 평균이 아니라 꼬리가 갈랐다 — error CDF 재도출 | `07_hyperparam_ieoe.csv` |
 # | D. 축 15 funnel 사다리 세부 | 지표가 올라갈수록 *무엇이* 무너지나 — 분위·이벤트 수 | `15_funnel_reliability.csv` · `_events.csv` |
 # | E. 축 14 Λ\* 분포 | 중앙값 한 줄 뒤의 seed 산포와 참 왜곡과의 자릿수 차 | `14_lambda_sweep_breakdown.csv` |
+#
+# **무대 주:** 다섯 재해석은 §E 의 Λ\*(로그-계산 가능 통계 — 본편 무대)를 빼면 전부
+# 백스테이지(참값 채점 무대)다(GLOSSARY §8).
 
 # %%
 import sys
@@ -59,7 +64,8 @@ TAB = ROOT / "results" / "tables"
 # %% [markdown]
 # ## A. regime map 셀 해부 — 승자 지도의 마진과 동률 구조
 #
-# README 그림 2(`results/figures/hero_regime_map.png`)의 headline 은 LEDGER `m3-hero-map`:
+# README 3막의 백스테이지 증거층 figure(`results/figures/hero_regime_map.png` — M8 재편 전에는
+# hero 그림 2 였다)의 headline 은 LEDGER `m3-hero-map`:
 # 28-cell 승자 지도에서 **dr 9 · switch_dr 8 · dros 11 cells, DM·IPS 계열 outright 0,
 # tie 21/28**. 그런데 승자 지도는 1등 이름만 남긴다 — 1등이 2등을 **얼마나** 이겼는지
 # (마진), 어느 cell 이 사실상 동률이고 어느 cell 이 압도인지는 지도에 없다. raw CSV
@@ -460,7 +466,8 @@ print("[파생] n=10k IPS: true lift / seed-sd(V̂) —",
 #
 # LEDGER `m5-14-lambda` 의 headline 은 γ 별 **Λ\* 중앙값**(γ=0.5: 1.0740 / γ=1.5: 1.0372)
 # 이다. Λ\* 는 "MSM 감도 Λ 를 얼마나 허용하면 두 후보 정책(β=3 vs β=5)의 순위 단정이
-# 무너지는가"의 임계값 — 중앙값 한 줄이 감춘 두 가지를 본다: ① seed 산포(S=20/γ)의 폭,
+# 무너지는가"의 임계값이다(본편 무대 — Λ\* 계산은 로그만 필요; M8 의 Λ\*_flip 은 그 결정-층
+# 변형, GLOSSARY §8). 중앙값 한 줄이 감춘 두 가지를 본다: ① seed 산포(S=20/γ)의 폭,
 # ② 같은 CSV 에 기록된 **참 왜곡**(oracle true violation 분위)과의 자릿수 차이.
 
 # %%
@@ -551,3 +558,4 @@ display(disp.style.format("{:.4f}"))
 # **지위 재확인:** 이 권의 모든 신규 도출 수치는 committed CSV 에서의 **파생**이다(재현/탐색
 # 지위, LEDGER 미등재). PASS 로 표기한 값만 LEDGER 행과 verbatim 일치가 확인된 것이며,
 # 문서(README·PLAYBOOK)에서의 수치 인용은 언제나 **LEDGER 행 id 경유**로만 한다.
+# M8 본편 결과(축 17–20)의 같은 방식 심층 재해석은 이 권이 아니라 **05권 D–F** 소관이다.

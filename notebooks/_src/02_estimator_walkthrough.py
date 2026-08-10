@@ -16,6 +16,8 @@
 # > **지위 배너 — 재현/탐색 층.** 이 노트북이 새로 계산하는 수치는 전부 **LEDGER 미등재
 # > (정본 아님)** 이다. 정본 수치는 [`docs/LEDGER.md`](../docs/LEDGER.md) 뿐이며, 기존 결과를
 # > 인용할 때는 행 id 를 병기한다. 규약: [`notebooks/README.md`](README.md).
+# > **무대 라벨 — 본편 도구·백스테이지 채점.** estimator 계산은 로그만 필요하지만(§B·§C), 이 권의
+# > 채점(§A 참값·§D bias-variance)은 백스테이지다(GLOSSARY §8).
 #
 # **한 로그 위에서 일곱 estimator 를 직접 계산한다 — 수식과 코드가 한 줄씩 대응.**
 #
@@ -25,7 +27,7 @@
 # 사이 어딘가에서 weight 를 **길들인다**. 이 권은 `src/ope/estimators.py` 의 구현 7종을
 # 수식 그대로 numpy 한 줄로 재계산해 일치를 확인하고(`assert np.isclose`), 같은 로그 위에서
 # 추정치·오차·weight 변형·bias-variance 분해를 눈으로 본다. 정본 채점은 축 01–07
-# (`experiments/`)의 몫이다.
+# (`experiments/`, 백스테이지)의 몫이다.
 
 # %%
 import sys
@@ -53,9 +55,9 @@ from matplotlib.patches import Patch  # noqa: E402
 GRAY = "#9a9a9a"
 
 # %% [markdown]
-# ## A. 무대 — base config 로그 하나, 그리고 참값
+# ## A. 설정 — base config 로그 하나, 그리고 참값 (백스테이지 채점)
 #
-# M2 base config(`experiments/_common.BASE_M2`, PLAN §2)의 로그 **하나**를 무대로 쓴다:
+# M2 base config(`experiments/_common.BASE_M2`, PLAN §2)의 로그 **하나**를 놓고 시작한다:
 # n=10,000 · K=10 · β_log=1(온건한 로깅) · β_eval=3(더 확신에 찬 평가 정책) · confounding 없음.
 # 두 관례도 축 01–07 과 동일하게 가져온다:
 #
@@ -89,7 +91,7 @@ print(f"hyperparams: tau(p95)={hp['tau']:.4f}  lam_clip(p90)={hp['lam_clip']:.4f
       f"lam_dros(p90^2)={hp['lam_dros']:.4f}")
 
 # %% [markdown]
-# 무대의 기하 두 장 — 왼쪽은 raw weight 분포(τ·λ 가 분포의 어디를 자르는지), 오른쪽은 q̂ 의
+# 설정의 기하 두 장 — 왼쪽은 raw weight 분포(τ·λ 가 분포의 어디를 자르는지), 오른쪽은 q̂ 의
 # 오지정 형태(identity 에서 살짝 수축된 직선). 일곱 estimator 는 전부 이 두 재료의 조합이다.
 
 # %%
@@ -264,7 +266,7 @@ print(f"error vs v_true = {res_dros.value - v_true:+.6f}")
 
 # %% [markdown]
 # 일곱 값을 한 화면에 — 왼쪽은 점추정과 참값 기준선, 오른쪽은 signed error. **한 로그**의
-# 실현값이므로 우열 단정은 금물이다(그건 D 절과 축 01–07 의 몫) — 여기서 볼 것은 DM 의
+# 실현값이므로 우열 단정은 금물이다(그건 D 절과 축 01–07(백스테이지)의 몫) — 여기서 볼 것은 DM 의
 # 체계적 하향(모델 수축의 전이)과 나머지 여섯이 참값 주위에 흩어지는 모양이다.
 
 # %%
@@ -362,7 +364,7 @@ plt.show()
 #
 # 한 로그의 실현값은 운이다. S=30 seed 반복으로 $\mathrm{MSE} = \mathrm{bias}^2 +
 # \mathrm{var}$ 를 분해해 보자 — n∈{1,000, 10,000} 두 지점만 찍는 **탐색 지위** 미니 아크다
-# (정본 아크는 축 01–07: S=40–100, 5-지점 grid, `results/tables/01_*.csv` 등).
+# (정본 아크는 축 01–07(백스테이지): S=40–100, 5-지점 grid, `results/tables/01_*.csv` 등).
 # hyperparameter 는 로그별 적응(위 관례와 동일 — `evaluate_run` 기본 정책).
 #
 # **정직 주의**: S=30 에서 불편 계열의 $\mathrm{bias}^2$ 추정치는 MC 노이즈 바닥
@@ -433,10 +435,10 @@ display(crossval.style.format({"mine": "{:.12f}", "obp_py39": "{:.12f}", "sbobp_
 # 한 로그에서 누가 이겼는지는 대답이 아니다 — 대답은 로그의 기하(n·overlap·q̂ 품질)가
 # 어느 regime 에 있느냐다.
 #
-# - **정본 지도**: hero regime map — 28-cell 승자 지도에서 dr 9 · switch_dr 8 · dros 11
-#   cells, DM·IPS 계열 outright 0, tie 21/28 (LEDGER `m3-hero-map`,
-#   `results/tables/hero_regime_map.csv`).
+# - **백스테이지 증거층 지도**(M8 이후 README 3막 — hero 아님): hero regime map — 28-cell 승자
+#   지도에서 dr 9 · switch_dr 8 · dros 11 cells, DM·IPS 계열 outright 0, tie 21/28
+#   (LEDGER `m3-hero-map`, `results/tables/hero_regime_map.csv`).
 # - **방법론 산문**: [`docs/PLAYBOOK.md`](../docs/PLAYBOOK.md) — estimator 선택과 게이트
 #   판정의 운영 규칙.
 # - **다음 권(03)**: 추정치를 "언제 믿으면 안 되는가" — ESS·max-weight 진단과 decision gate
-#   의 계산 과정을 해부한다.
+#   의 계산 과정을 해부한다. 그리고 GT-미상 프로토콜(validity battery)은 05권이다.

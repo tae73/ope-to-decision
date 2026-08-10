@@ -16,6 +16,7 @@
 # > **지위 배너 — 재현/탐색 층.** 이 노트북이 새로 계산하는 수치는 전부 **LEDGER 미등재
 # > (정본 아님)** 이다. 정본 수치는 [`docs/LEDGER.md`](../docs/LEDGER.md) 뿐이며, 기존 결과를
 # > 인용할 때는 행 id 를 병기한다. 규약: [`notebooks/README.md`](README.md).
+# > **무대 라벨 — 본편 시점.** 이 권은 로그만 보는 실무자의 출발점이다(GLOSSARY §8).
 #
 # off-policy evaluation 의 입력은 모델이 아니라 **로그**다 — 어떤 정책이 어떤 확률로 행동을
 # 골랐고(propensity), 무엇이 관측됐는가(reward). estimator 를 고르기 전에 로그의 세 가지를
@@ -28,7 +29,8 @@
 #
 # 이 노트북은 실데이터 두 트랙 — **OBD small**(ZOZO 실로그, 실측 propensity) 과
 # **classification-to-bandit** (OpenML 4종, 정확 propensity·정확 참값) — 의 로그를 이 세 관점으로
-# 훑는다. 본 실험은 축 11–12(`experiments/11_*.py`·`12_*.py`) 가 정본이다.
+# 훑는다. 본 실험은 축 11–12(`experiments/11_*.py`·`12_*.py`) 가 정본이다(백스테이지 채점 무대;
+# 같은 ZOZO 로그의 본편 판정 카드는 축 20 — reveal 없는 실전, LEDGER `m8-20-card`).
 
 # %%
 import sys
@@ -142,7 +144,7 @@ if HAS_OBD:
 # DISTRUST 를 내리는 로그의 전형이다(정본 판정·수치는 LEDGER `m3-12-gate-demo` 행과
 # `results/tables/12_obd_small_gate.csv`).
 #
-# ## B. classification-to-bandit — 깨끗한 참값을 가진 4종 벤치
+# ## B. classification-to-bandit — 깨끗한 참값을 가진 4종 벤치 (백스테이지 — 정확 참값은 채점 전용)
 #
 # OpenML 분류 데이터셋을 밴딧化한다: 라벨 = 정답 행동, reward = 1[a=y], 로깅/평가 정책은
 # 같은 스코어의 softmax 온도쌍(β_log=2 → β_eval=6). **propensity 도 참값도 정확**하므로
@@ -201,4 +203,6 @@ plt.show()
 # 이 세 열이 곧 진단 3종(ESS·max-weight·support proxy, `src/ope/diagnostics.py`)의 데이터적
 # 기원이다 — 03권에서 계산 과정을 해부한다. 로그의 기하가 estimator 성적을 어떻게 가르는지의
 # **정본 채점표**는 축 11(`m3-11-dr-robust`)·축 12(`m3-12-gate-demo`)와
-# [`docs/PLAYBOOK.md`](../docs/PLAYBOOK.md) 에 있다.
+# [`docs/PLAYBOOK.md`](../docs/PLAYBOOK.md) 에 있다. M8 이후에는 같은 로그들 위에 **본편 축**이
+# 얹혔다 — 축 20(OBD decision card, reveal 없는 실전 판정 — LEDGER `m8-20-card`)과
+# 축 21(c2b 주입 replication — M9 진행)이 그 forward pointer 다.

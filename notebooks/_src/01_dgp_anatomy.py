@@ -11,17 +11,21 @@
 # ---
 
 # %% [markdown]
-# # 01 — 합성 DGP 해부: 참값을 아는 벤치마크의 장치 열기
+# # 01 — 합성 DGP 해부: 백스테이지가 참값을 아는 이유
 #
 # > **지위 배너 — 재현/탐색 층.** 이 노트북이 새로 계산하는 수치는 전부 **LEDGER 미등재
 # > (정본 아님)** 이다. 정본 수치는 [`docs/LEDGER.md`](../docs/LEDGER.md) 뿐이며, 기존 결과를
 # > 인용할 때는 행 id 를 병기한다. 규약: [`notebooks/README.md`](README.md).
+# > **무대 라벨 — 백스테이지.** 이 권이 여는 oracle 층은 실무에 존재하지 않는다 — 그래서 본편
+# > 신호를 채점할 무대가 필요하다(GLOSSARY §8).
 #
-# 이 레포의 합성 벤치마크(축 01–10)가 성립하는 이유는 하나다 — **DGP 가 참값을 알기 때문**이다.
-# `SyntheticBanditData` 는 두 층으로 갈라져 있다: estimator 가 보는 **로그 층**(context·action·
-# reward·`pscore_logged`·`pi_e_dist`)과, 채점에만 쓰이는 **oracle 층**(`q_true`·`pscore_true`·
-# `v_true`). 이 권은 그 장치를 연다 — `DGPConfig` 의 노브 하나하나가 어떤 기하를 만들고,
-# 그 기하가 어떤 실험 축(02·03·04·09)의 데이터적 기원인지를 눈으로 확인한다.
+# 이 레포의 백스테이지(합성 축 01–10·확장 14·17–19 의 reveal 층)가 성립하는 이유는 하나다 —
+# **DGP 가 참값을 알기 때문**이다. M8 이후 이 무대는 본편(GT-미상 프로토콜)의 신호를 채점하는
+# 검증 층이다. `SyntheticBanditData` 는 두 층으로 갈라져 있다: estimator 가 보는 **로그 층**
+# (context·action·reward·`pscore_logged`·`pi_e_dist`)과, 채점에만 쓰이는 **oracle 층**(`q_true`·
+# `pscore_true`·`v_true`) — 이 두 층 구분이 M8 의 본편(frontstage)/백스테이지(backstage) 언어의
+# 원형이다(GLOSSARY §8). 이 권은 그 장치를 연다 — `DGPConfig` 의 노브 하나하나가 어떤 기하를
+# 만들고, 그 기하가 어떤 실험 축(02·03·04·09)의 데이터적 기원인지를 눈으로 확인한다.
 #
 # 정본 owner 는 [`src/ope/dgp.py`](../src/ope/dgp.py)(구현·설계 결정 주석)와 `PLAN.md` §2
 # (노브↔축 매핑)다. 여기서 쓰는 config 는 [`configs/dgp/default.yaml`](../configs/dgp/default.yaml)
@@ -51,6 +55,7 @@ from ope.dgp import (  # noqa: E402
     CONF_REWARD_SCALE,
     DGPConfig,
     make_synthetic_bandit_data,
+    marginal_logging_dist,
     true_policy_value,
 )
 from ope.policies import softmax_policy  # noqa: E402
@@ -308,13 +313,26 @@ axes[0].set_ylabel("pscore_true (U-conditional)")
 fig.suptitle("Recorded vs true propensity — the wedge $\\gamma$ drives", y=1.03, fontsize=11)
 plt.show()
 
+# %%
+# U-주변화 기록판 미리보기(축 18, M8) — γ>0 이면 실제 로깅 분포가 의도 분포에서 벗어난다
+for g in GAMMAS:
+    dg = data_by_gamma[g]
+    marg = marginal_logging_dist(BASE._replace(confounding_strength=g), dg.context[:2000],
+                                 n_nodes=200)
+    intended = softmax_policy(dg.q_true[:2000], BASE.beta_log)
+    print(f"γ={g:g}: max|marginal − intended| = {np.abs(marg - intended).max():.4f}  "
+          f"(컨텍스트 2,000개, n_nodes=200)")
+
 # %% [markdown]
 # γ=0 에서는 점이 대각선 위에 정확히 놓이고, γ=1.5 에서는 같은 기록값에 대해 실제 확률이
 # 위아래로 넓게 흩어진다. estimator 와 진단은 왼쪽 축(기록값)만 보므로, **weight 기하 기반
 # 진단(ESS·max-weight)은 γ 가 커져도 동일 양호로 읽는다 — bias 만 자란다.** 이것이 축 09
 # "진단이 못 보는 것" 대조표의 장치이고, 정본 수치는 LEDGER `m2-09-blindspot`(logged ESS
 # 평평 vs oracle-pscore ESS 붕괴·IPS bias 증가)다. U-주변화 propensity 는 불편성을 복원하지
-# 못한다는 정의 구분(`dgp.py` 주석)도 여기서 나온다.
+# 못한다는 정의 구분(`dgp.py` 주석)도 여기서 나온다. 축 18 은 이 γ 장치의 U-주변화(calibrated)
+# 기록판을 만들어 — `marginal_logging_dist`(dgp.py, M8, 위 셀의 괴리가 그 원료) — validity
+# battery 전체가 관측 동등성으로 눈머는 경계를 전시했다(LEDGER `m8-18-boundary`,
+# 필요조건-검사 co-exhibit).
 #
 # ## E. v_true 검산 — "같은 환경, 다른 로그"의 구조
 #
@@ -415,6 +433,11 @@ display(sep.style.format({"v_true": "{:.6f}"}))
 # | `confounding_strength` γ | D | `pscore_logged` ≠ `pscore_true` 쐐기 | 09 `09_confounding_blindspot` | `m2-09-blindspot` |
 # | `seed` / `struct_seed` | E | 같은 환경, 다른 로그 (MC 반복 구조) | 01–10 공통 규약 | `m0a-dgp-sanity` |
 #
+# M8 이후 같은 노브들은 **본편 축**의 원료이기도 하다 — 오염 family 는 축 17(validity battery
+# 매트릭스, `m8-17-matrix`), γ 장치는 축 18(관측 동등성 경계, `m8-18-boundary`), β·γ regime 은
+# 축 19(decision-value, `m8-19-decision-value`)로 흘러든다.
+#
 # 이 권의 모든 수치는 탐색 지위다 — 노브별 estimator 성적·게이트 판정의 **정본**은
 # `experiments/NN_*.py` → `results/tables/NN_*.csv` → [`docs/LEDGER.md`](../docs/LEDGER.md)
-# 경로에만 있다. 다음 권(02)에서 이 로그를 받아 estimator 7종을 수식→코드→수치로 해부한다.
+# 경로에만 있다. 권 읽기 순서는 본편 00→03→05 / 백스테이지 01→02→04 다(notebooks/README 재편
+# 예정) — 다음 권(02)은 이 로그를 받아 estimator 7종을 수식→코드→수치로 해부하는 백스테이지다.
