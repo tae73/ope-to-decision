@@ -31,11 +31,13 @@ NO-GO 여도 세션 실패가 아니다 — 폴백 경로는 [PLAN.md](../PLAN.m
 | M6 | [`probes/probe_funnel_dgp.py`](probes/probe_funnel_dgp.py) | funnel DGP 의 기저율–분리력 상충 해소 — 저기저율 CTR ∧ 정책 간 Δ 판별 가능 ∧ weight 건전(ESS)을 동시 만족하는 파라미터 존재 확인 → GO/NO-GO (축 15·16 착수 게이트) | `results/tables/probe_funnel_dgp.json` |
 | M5-13 | [`probes/probe_mips_scale.py`](probes/probe_mips_scale.py) | 축 13(액션 폭발+MIPS) 착수 게이트: K 스케일업(50→2000)에서 IPS 분산 붕괴 + MIPS 구원 서사가 본 DGP family 에서 성립하는가 → GO/NO-GO | `results/tables/probe_mips_scale.json` — **NO-GO** |
 | M5-14 | [`probes/probe_lambda_msm.py`](probes/probe_lambda_msm.py) | 축 14(Λ-sweep) 착수 게이트: MSM 정규화 bound 정렬-임계 정확해의 multi-action 수치 안정성(Λ=1 SNIPS 항등 · Λ 단조 · n=30k 안정 · oracle coverage) → GO/NO-GO | `results/tables/probe_lambda_msm.json` — **GO** |
-| M8-A | `probes/probe_validity_battery.py` (예정) | 축 17·19 착수 게이트: GT-free validity battery(E[w]·harmonic calibration·placebo·disagreement — PLAN §3.5-1 사전등록 정의)의 방향성 발화 + E[w] 의 컨텍스트-국소 support 결핍 회복(축 04 blind 의 GT-미상 대응) + joint bootstrap 런타임 → GO/NO-GO (기준: PLAN §3.5-4) | `results/tables/probe_validity_battery.json` — 미실행 |
-| M8-B | `probes/probe_calibrated_confounding.py` (예정) | 축 18 착수 게이트: U-주변화(calibrated) 기록 pscore 사후 순수함수의 수치·메모리 안정 + battery null 정합 + IPS bias 잔존 + as-recorded 대조 발화 실측 → GO/NO-GO (기준: PLAN §3.5-4 — DGP 생성기 본체 불변) | `results/tables/probe_calibrated_confounding.json` — 미실행 |
+| M8-A | [`probes/probe_validity_battery.py`](probes/probe_validity_battery.py) | 축 17·19·20 착수 게이트: GT-free validity battery(E[w]·harmonic calibration·placebo·disagreement — PLAN §3.5-1 사전등록 정의)의 방향성 발화 + E[w] 의 컨텍스트-국소 support 결핍 회복(축 04 blind 의 GT-미상 대응) + joint bootstrap 런타임 → GO/NO-GO (기준: PLAN §3.5-4) | `results/tables/probe_validity_battery.json` — **GO** |
+| M8-B | [`probes/probe_calibrated_confounding.py`](probes/probe_calibrated_confounding.py) | 축 18 착수 게이트: U-주변화(calibrated) 기록 pscore 사후 순수함수의 수치·메모리 안정 + battery null 정합 + IPS bias 잔존 + as-recorded 대조 발화 실측 → GO/NO-GO (기준: PLAN §3.5-4 — DGP 생성기 본체 불변, 결정적 구적 GL×φ) | `results/tables/probe_calibrated_confounding.json` — **GO** |
 
 **상태:** M0-A VERDICT **GO** · M0-B 두 트랙(obp·sb-obp) 모두 VERDICT **GO** · M6 VERDICT **GO** ·
-**M5-13 VERDICT NO-GO(축 13 drop — 정직 기록)** · **M5-14 VERDICT GO(축 14 실행 완료)** —
+**M5-13 VERDICT NO-GO(축 13 drop — 정직 기록)** · **M5-14 VERDICT GO(축 14 실행 완료)** ·
+**M8-A·M8-B 모두 VERDICT GO(2026-08-10 — 축 17–20 착수 가능; 부수 실측: as-recorded 로그에서도
+battery 비발화 0/5 — PLAN §3.5-4 판정 기록)** —
 여기는 상태 표기만, 수치 정본은 [docs/LEDGER.md](../docs/LEDGER.md).
 
 M0-B 는 obp 의 의존성 핀 때문에 **별도 pinned Python 3.9 env** 안에서 실행한다(본 env 아님).

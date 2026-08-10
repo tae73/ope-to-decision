@@ -190,6 +190,16 @@ probe JSON 만으로 기계 판독 가능해야 한다.
   서사)으로 축소하고, 축 17 의 impossible family 는 이론 참조로 대체.
 - **DGP 동결 보호**: marginal pscore 는 `make_synthetic_bandit_data` 본체 밖 **사후 순수함수·별도
   rng** 로 구현 — 기존 축 01–16 산출 불변(Stage 2 에서 checksum 회귀 테스트로 기계화).
+  *(구현 확정: rng 자체가 불필요한 결정적 구적 GL×φ — probe M8-B 에서 hermegauss 고차 overflow
+  실측 후 교체, 사후 순수함수 조건 자명 충족.)*
+- **판정 완료(2026-08-10):** probe **M8-A GO**(4/4 — noised 방향 발화 5/5·support 방향 발화 5/5·
+  clean placebo 오알람 0·런타임 예산의 ~1%, LEDGER `m8-probe-a`) · probe **M8-B GO**(4/4 —
+  구적 안정·γ=0 항등·calibrated null 5/5·bias 성장, LEDGER `m8-probe-b`). **부수 실측(정직 기록):**
+  as-recorded(축 09 장치) 로그에서도 battery 발화 0/5 — "부분 검출(miscalibration 성분)" 예상이
+  본 설정(β_log=1·γ≤2.5)에선 **불성립**. §3.5-3 의 `confounded-as-recorded` family 는 partial 예상
+  라벨을 유지하되 축 17 에서 불발이 재확인되면 그대로 보고한다(예상 반증도 발견) — 축 18 의
+  2-패널 서사는 "부분 검출 vs 원리적 불가"가 아니라 **"양쪽 다 비발화·bias 만 성장"**으로 강화된다.
+  → 축 17–20 전부 착수 가능.
 
 ## 4. M0 체크리스트 (진행 표시)
 
@@ -349,8 +359,9 @@ probe JSON 만으로 기계 판독 가능해야 한다.
   experiments/README 축 표·probes 표 동기 · LEDGER(위생 2건: 헤더 카운트 M7·`m7-gate` 블록화 +
   규칙 6/스키마 ID 확장 + **GT-의존성 분류 부속 블록**) · GLOSSARY §8 신설 ·
   CLAUDE.md(§2 practitioner 예외 · §4 tier 註 · §5 co-exhibit 가드레일)
-- [ ] **Stage 1 probe 2종**(`probe_validity_battery.py`·`probe_calibrated_confounding.py`) →
-  JSON verdict → GO/NO-GO 분기 집행(§3.5-4 — NO-GO 도 등재·발행)
+- [x] **Stage 1 probe 2종**(`probe_validity_battery.py`·`probe_calibrated_confounding.py`) →
+  **M8-A GO · M8-B GO**(§3.5-4 판정 기록·LEDGER `m8-probe-a`/`m8-probe-b` ENTERED) — 부수 실측:
+  as-recorded 비발화 0/5(정직 기록, 축 18 서사 강화)·hermegauss overflow → GL×φ 구적 교체
 - [ ] **Stage 2 src+테스트**: `src/ope/validity.py` · `src/ope/fitters.py` · dgp 최소 수정
   (`pi_log_dist` 필드 + marginal-pscore 사후 순수함수 — rng draw 순서 불변) ·
   `experiments/_practitioner.py`(DECISION/REVEAL 스키마·split_log·run_protocol·reveal 파일 경유) —

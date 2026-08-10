@@ -1,0 +1,364 @@
+{
+  "probe": "M8-B calibrated_confounding",
+  "prereg": {
+    "gammas": [
+      1.0,
+      2.5
+    ],
+    "n_nodes": [
+      400,
+      800
+    ],
+    "thresholds": {
+      "mean_w": 0.1,
+      "harmonic": 0.25
+    },
+    "B": 500,
+    "alpha": 0.05,
+    "seeds": [
+      700,
+      701,
+      702,
+      703,
+      704
+    ],
+    "need": 4,
+    "quadrature": "Gauss-Legendre \u00d7 \u03c6(u), \uc808\ub2e8 [-8,8] \u2014 rng \ubd88\uc694 \uc0ac\ud6c4 \uc21c\uc218\ud568\uc218 (hermegauss \ub294 degree\u2265~400 overflow \uc2e4\uce21\uc73c\ub85c \uad50\uccb4)",
+    "source": "PLAN.md \u00a73.5-4 (\ucee4\ubc0b a1bfa4c \uc0ac\uc804\ub4f1\ub85d)"
+  },
+  "v_true_backstage": 0.7153918288961995,
+  "gamma0_identity_max_diff": 4.718447854656915e-16,
+  "stability": {
+    "1.0": {
+      "max_rel_diff_400v800": 3.863269125907959e-15
+    },
+    "2.5": {
+      "max_rel_diff_400v800": 4.502993927534862e-15
+    }
+  },
+  "results": {
+    "1.0": {
+      "per_seed": [
+        {
+          "seed": 700,
+          "calibrated": {
+            "mean_w": 1.00552055493377,
+            "mean_w_ci": [
+              0.9970699692515966,
+              1.0142645354097224
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.947958997180186,
+              1.0477287303964145
+            ]
+          },
+          "as_recorded": {
+            "mean_w": 1.0024957680453586,
+            "mean_w_ci": [
+              0.9942774689869809,
+              1.0109823526158452
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9362167325952298,
+              1.062922841191935
+            ]
+          },
+          "ips_calibrated": 0.703023664384427
+        },
+        {
+          "seed": 701,
+          "calibrated": {
+            "mean_w": 0.9982870661827697,
+            "mean_w_ci": [
+              0.990068992097818,
+              1.008417622633283
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9308137647794418,
+              1.0770898309892665
+            ]
+          },
+          "as_recorded": {
+            "mean_w": 0.9952732408070829,
+            "mean_w_ci": [
+              0.9873035631179647,
+              1.0051840744738123
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9438269672276715,
+              1.0923415469555733
+            ]
+          },
+          "ips_calibrated": 0.6884019063081119
+        },
+        {
+          "seed": 702,
+          "calibrated": {
+            "mean_w": 1.0052532554971978,
+            "mean_w_ci": [
+              0.9963417316093888,
+              1.0152498821945357
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9310480790825675,
+              1.0686805764605958
+            ]
+          },
+          "as_recorded": {
+            "mean_w": 1.0019321939700416,
+            "mean_w_ci": [
+              0.9931821267484581,
+              1.0119105800983899
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9397152723782402,
+              1.05622902350835
+            ]
+          },
+          "ips_calibrated": 0.686104654567421
+        },
+        {
+          "seed": 703,
+          "calibrated": {
+            "mean_w": 0.9995479781720571,
+            "mean_w_ci": [
+              0.9907634218489068,
+              1.0081763660784797
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9385643016851134,
+              1.0567998904195406
+            ]
+          },
+          "as_recorded": {
+            "mean_w": 0.9968120979929048,
+            "mean_w_ci": [
+              0.9881629336362724,
+              1.005310765131468
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.929418052384162,
+              1.044781802594873
+            ]
+          },
+          "ips_calibrated": 0.6999979347205083
+        },
+        {
+          "seed": 704,
+          "calibrated": {
+            "mean_w": 0.9975586497315316,
+            "mean_w_ci": [
+              0.9877503163183858,
+              1.0064220063829958
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9504185259588763,
+              1.0443396370516707
+            ]
+          },
+          "as_recorded": {
+            "mean_w": 0.9940647201353949,
+            "mean_w_ci": [
+              0.9844745396047506,
+              1.0028684461242536
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9397915594045894,
+              1.059246565884703
+            ]
+          },
+          "ips_calibrated": 0.6832308924482174
+        }
+      ],
+      "null_ok": 5,
+      "as_recorded_fires": 0,
+      "ips_calibrated_bias_mean": -0.023240018410462304,
+      "ips_se": 0.003936823131510117
+    },
+    "2.5": {
+      "per_seed": [
+        {
+          "seed": 700,
+          "calibrated": {
+            "mean_w": 1.003442909126186,
+            "mean_w_ci": [
+              0.9945819093342183,
+              1.0133623223349018
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9396940023678175,
+              1.0450514662792596
+            ]
+          },
+          "as_recorded": {
+            "mean_w": 0.9982121236263645,
+            "mean_w_ci": [
+              0.9896656458601398,
+              1.0077094401322657
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9246947781638113,
+              1.0556091655778046
+            ]
+          },
+          "ips_calibrated": 0.6497630599025612
+        },
+        {
+          "seed": 701,
+          "calibrated": {
+            "mean_w": 1.002357783369032,
+            "mean_w_ci": [
+              0.9934522084643334,
+              1.0117309119195892
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.8997283254303861,
+              1.0504073719411653
+            ]
+          },
+          "as_recorded": {
+            "mean_w": 0.9968809279697173,
+            "mean_w_ci": [
+              0.9882359089111309,
+              1.0061286684190545
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9210548591407003,
+              1.0755865762895387
+            ]
+          },
+          "ips_calibrated": 0.6351678730925585
+        },
+        {
+          "seed": 702,
+          "calibrated": {
+            "mean_w": 1.0064732574649036,
+            "mean_w_ci": [
+              0.9966650956082999,
+              1.016799234382305
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.927567649601318,
+              1.0579909236260676
+            ]
+          },
+          "as_recorded": {
+            "mean_w": 1.000178120907866,
+            "mean_w_ci": [
+              0.9908379391978774,
+              1.009839151191324
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9284269158906052,
+              1.053861404414887
+            ]
+          },
+          "ips_calibrated": 0.6320681955118606
+        },
+        {
+          "seed": 703,
+          "calibrated": {
+            "mean_w": 0.998277255705245,
+            "mean_w_ci": [
+              0.9903904474601736,
+              1.0073479628960391
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9717013259004327,
+              1.0417083932766928
+            ]
+          },
+          "as_recorded": {
+            "mean_w": 0.992835402880858,
+            "mean_w_ci": [
+              0.9850381166746416,
+              1.0018147554025931
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9549984689448878,
+              1.0490187278902279
+            ]
+          },
+          "ips_calibrated": 0.6490272659931087
+        },
+        {
+          "seed": 704,
+          "calibrated": {
+            "mean_w": 0.9981484785965642,
+            "mean_w_ci": [
+              0.9891267111061481,
+              1.006630117371519
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9476436114002811,
+              1.067528682374355
+            ]
+          },
+          "as_recorded": {
+            "mean_w": 0.9918382228743045,
+            "mean_w_ci": [
+              0.9832092479285698,
+              0.9998286167721455
+            ],
+            "mean_w_fail": false,
+            "harmonic_fail": false,
+            "harmonic_T_range": [
+              0.9284238620250446,
+              1.0926779788293826
+            ]
+          },
+          "ips_calibrated": 0.6254678104846649
+        }
+      ],
+      "null_ok": 5,
+      "as_recorded_fires": 0,
+      "ips_calibrated_bias_mean": -0.07709298789924868,
+      "ips_se": 0.004794719309825975
+    }
+  },
+  "checks": {
+    "s1_quadrature_stable": true,
+    "s1_gamma0_identity": true,
+    "s2_calibrated_null": true,
+    "s3_bias_grows": true
+  },
+  "verdict": "GO"
+}

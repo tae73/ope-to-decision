@@ -21,7 +21,7 @@
 6. **실험 ID 불변.** `생성 실험 ID` 는 `PLAN.md`의 확정 축 ID를 그대로 쓴다:
    probe `M0-A`(DGP·estimator sanity) / probe `M0-B`(obp 교차검증) / probe `M6`(funnel DGP) /
    probe `M5-13`(MIPS 액션 스케일 — 축 13 착수 게이트) / probe `M5-14`(Λ-MSM 수치 안정성 — 축 14 착수 게이트) /
-   probe `M8-A`(validity battery — 축 17·19 착수 게이트) / probe `M8-B`(calibrated confounding — 축 18 착수 게이트) /
+   probe `M8-A`(validity battery — 축 17·19·20 착수 게이트) / probe `M8-B`(calibrated confounding — 축 18 착수 게이트) /
    `01` 표본 n / `02` 로깅 β / `03` 타깃-로깅 괴리 / `04` deficient support / `05` propensity 오지정 /
    `06` reward model 오지정 / `07` hyperparameter 민감도(IEOE) / `08` 진단 예보력+결정규칙 /
    `09` confounding 주입+대조표 / `10` 의사결정 metric / `11` c2b 멀티데이터셋 / `12` OBD small 게이트 /
@@ -43,7 +43,7 @@
 | `등재일` | `YYYY-MM-DD`. |
 | `상태` | `RESERVED`(경로만 예약, 수치 미등재) / `ENTERED`(수치 등재 완료 — NO-GO 등 실패 결과 포함) / `SUPERSEDED`(재실험으로 대체됨). |
 
-## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 · M6 4행 · M5 2행 · M7 1행 등재)
+## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 · M6 4행 · M5 2행 · M7 1행 · M8 2행 등재)
 
 M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 동반 commit** 되어 아래와 같이
 등재되었다(등재일 2026-08-06). `수치` 필드는 각 source JSON 의 값 verbatim 이다(규칙 3 — 반올림 금지).
@@ -93,6 +93,13 @@ M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 
 | id | 수치 | 단위 | source 파일 경로 | 생성 실험 ID | 등재일 | 상태 |
 |---|---|---|---|---|---|---|
 | `m7-gate` | notebook 층 5권(00–04) 실행 무오류·output 포함 커밋 · **파생·재현 층 지위**(이 표의 규칙 2 에 따라 노트북 셀 출력은 등재 불가 — 본 행은 상태 기록이지 수치 행이 아님) · verify(멱등 재실행·LEDGER 행 id 실재·데이터 보호·렌더 검수) 통과 | — | `notebooks/00_log_eda.ipynb`…`04_results_deepdive.ipynb` (+`_src/*.py`) | `M7` | 2026-08-07 | ENTERED |
+
+### M8 행 (GT-미상 practitioner 트랙 — 2026-08-10)
+
+| id | 수치 | 단위 | source 파일 경로 | 생성 실험 ID | 등재일 | 상태 |
+|---|---|---|---|---|---|---|
+| `m8-probe-a` | VERDICT **`GO`** (4/4 checks) · noised(s=1.0) mean_w 5-seed 범위 = 1.5970614805188188–1.7049262710751725, **fires_up 5/5** (임계 §3.5-1 그대로 — 예측 방향 e^{s²/2}>1 정합) · support(δ=0.4) mean_w = 0.8542952167324976–0.8586472322956628, **fires_down 5/5** — 같은 로그의 전역 support proxy 는 전 seed **0.0**(축 04 `m2-04-proxy-blind` 의 전면 blind 지점에서 E[w] 가 기대값 수준 회복) · clean placebo 오알람 0/5 · battery 런타임 중앙값 = 0.035365415969863534 s (B=500·n=10k) | — | `results/tables/probe_validity_battery.json` | `M8-A` | 2026-08-10 | ENTERED |
+| `m8-probe-b` | VERDICT **`GO`** (4/4 checks) · γ=0 항등 max diff = 4.718447854656915e-16 · 구적(GL×φ, 절단 ±8) 400v800 max rel diff = 3.863269125907959e-15(γ=1.0) · 4.502993927534862e-15(γ=2.5) · **calibrated 로그 battery null 5/5**(양 γ — mean_w 0.997559–1.006473, 비발화) · **as-recorded(축 09 장치) 로그도 발화 0/5**(mean_w 0.991838–1.002496 — 의도값 기록의 miscalibration 이 임계 0.10 에 원거리 미달, "부분 검출" 가설 이 설정에선 불성립 — 정직 기록) · 그럼에도 calibrated-IPS bias(백스테이지 v_true = 0.7153918288961995 채점): γ=1.0 → −0.023240018410462304 (se 0.003936823131510117) · γ=2.5 → −0.07709298789924868 (se 0.004794719309825975) — **battery 전항 통과 상태에서 bias 만 성장** | — | `results/tables/probe_calibrated_confounding.json` | `M8-B` | 2026-08-10 | ENTERED |
 
 **M5 행 비고:** `m5-14-lambda` 의 min/median/max·범위 표기는 committed breakdown CSV 의 per-seed
 verbatim 값(40행)에서 재도출한 요약 통계다(`m3-hero-map`·`m2-07-slope` 재도출 선례) — 문서 본문의
@@ -156,3 +163,5 @@ verbatim 값(40행)에서 재도출한 요약 통계다(`m3-hero-map`·`m2-07-sl
 | `m5-probe-13` | C | max_w 스케일 안정 절 | mse·bias 비교 절 |
 | `m5-14-lambda` | C | breakdown Λ\*(min/median/max)·censored 절(밴드·Λ\* 계산은 로그만 필요) | v_true·true_rank_gap·snips_rank_correct·true_viol·coverage 절(Λ 는 식별 불가 가정 — 수치는 합성 시연) |
 | `m7-gate` | ― | (공정 메타) | — |
+| `m8-probe-a` | A | 전 절(mean_w·placebo·proxy·런타임 — 로그 층 통계와 사전등록 설계값뿐) | — |
+| `m8-probe-b` | C | γ=0 항등·구적 수렴·calibrated null·as-recorded 비발화 절(로그 층 통계) | calibrated-IPS bias·v_true 절(백스테이지 채점 — probe 한정 허용, §3.5-4) |
