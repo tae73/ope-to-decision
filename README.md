@@ -13,8 +13,8 @@
 ![backstage forecast](https://img.shields.io/badge/backstage_forecast-4.6%25_trust_vs_44.4%25_fallback-6f6e66)
 ![DR robustness](https://img.shields.io/badge/DR_robustness-4%2F4_real_datasets-008300)
 ![obp crossval](https://img.shields.io/badge/obp_crossval-rel__diff%E2%89%A41e--8_(7_est_%C3%97_2_tracks)-4a3aa7)
-![axes](https://img.shields.io/badge/axes-01%E2%80%9312%C2%B714%E2%80%9320_executed_%C2%B7_13_dropped--by--probe-6f6e66)
-![tests](https://img.shields.io/badge/tests-97_passed-1baf7a)
+![axes](https://img.shields.io/badge/axes-01%E2%80%9312%C2%B714%E2%80%9321_executed_%C2%B7_13_dropped--by--probe-6f6e66)
+![tests](https://img.shields.io/badge/tests-100_passed-1baf7a)
 ![license](https://img.shields.io/badge/license-MIT-b3b2a9)
 
 ---
@@ -84,11 +84,16 @@
 |---|---|
 | **30초** | 위 TL;DR + 동기 그림 + hero 3장 |
 | **5분** | [3막 서사](#3막-서사) → [축별 발견](#핵심-발견--축별-한-줄-2-tier) → [비즈니스 임팩트로의 번역](#비즈니스-임팩트로의-번역) → [부러지지 않은 것들](#부러지지-않은-것들--기대가-틀렸던-곳) |
-| **상세 분석** | [notebooks/](notebooks/README.md) — 로그 EDA → DGP 해부 → estimator walkthrough → 진단·게이트 → 결과 심층 (5권, 실행 output 포함 — M8 반영 전 파생층) |
+| **상세 분석** | [notebooks/](notebooks/README.md) — 본편(로그 EDA → 진단·게이트 → GT-미상 프로토콜) + 백스테이지(DGP 해부 → estimator → 결과 심층) 6권, 실행 output 포함 |
 | **재현** | [Quick Start](#quick-start) + [experiments/README.md](experiments/README.md) |
 | **30분** | [docs/PLAYBOOK.md](docs/PLAYBOOK.md) → [docs/CONCEPT.md](docs/CONCEPT.md) → [docs/POSITIONING.md](docs/POSITIONING.md) → [docs/LEDGER.md](docs/LEDGER.md) |
 
 ## 3막 서사
+
+<p align="center"><img src="assets/frontstage_backstage_ko.svg" width="860" alt="본편/백스테이지 구조도 — 로그만으로 계산하는 본편과 참값 보유 채점 백스테이지"><br>
+<sub><b>두 무대 구조도.</b> 본편(로그 층 → 게이트 v1 + battery + Λ\* → 판정·결정 — 참값 불필요)과
+백스테이지(참값 보유 채점 — blind-then-reveal), 그리고 둘을 가르는 관측 동등성 경계(축 18).
+용어 정본: <a href="docs/GLOSSARY.md">GLOSSARY</a> §8.</sub></p>
 
 **1막 — 당신이 가진 것: 로그와 후보 정책뿐이다.** 이커머스 추천 팀이 새 정책 후보를 만들었다. A/B
 전에 어제까지의 로그만으로 새 정책의 기대 보상 $V(\pi_e)$ 를 추정한다 — Netflix·Airbnb·Amazon 도
@@ -116,7 +121,7 @@ n 에서 오경보 0.275 를 낸다[`m8-17-matrix`]).
 **3막 — 백스테이지: 참값을 아는 무대에서 신호를 채점하다.** 이 신호들을 왜 믿는가에 대한 답. 참값
 보유 합성 DGP 12축 + c2b 4종 + OBD 근사 GT 에서 전부 채점했다: 게이트 예보력 — trust 대오차율
 4.6% vs A/B 회귀 44.4%(`m2-08-forecast`); battery 예보력 — detectable family 전 시나리오에서 발화 신호 성립(약한 노브는 부분 발화)·
-partial/impossible 검출 arm 발화 0(그림 2); **결정 가치** — naive false-go 0.9 vs 프로토콜 0.0
+partial/impossible 검출 arm 발화 0(그림 2), 실데이터 replication 성립(축 21 — `m9-21-matrix`); **결정 가치** — naive false-go 0.9 vs 프로토콜 0.0
 (`m8-19-decision-value`); DR 강건성 실데이터 4/4(`m3-11-dr-robust`). 그리고 blind spot 의 정직
 공시: 관측 동등성 세계에서 battery 전항이 통과한 채 bias 만 자라고(축 18 — 동기 그림의 GT-미상
 세대교체), Λ\*_flip 중앙값은 1.31→1.05 로 수축해 **결론이 "이유를 모른 채" 취약해지는 것만**
@@ -133,8 +138,8 @@ trust 다수결인데 그 cell 의 IPS MSE 는 승자의 70.6× 다 (LEDGER <cod
 | 구성 요소 | 내용 | 검증 |
 |---|---|---|
 | **practitioner 프로토콜 (본편)** | frontstage 스키마(`experiments/_practitioner.py` — 산출 CSV 에 참값 컬럼 부재)·결정 규칙 사전등록(PLAN §3.5) | 계약 테스트 4중(스키마 ban·소스 ban·blindness·reveal 파일 경유) + 축 17–20 blind-then-reveal |
-| **validity battery [제안]** | E[w]·harmonic·placebo·disagreement + 보고 4종 (`src/ope/validity.py`) — gate v1 과 독립·병렬 | probe M8-A/M8-B GO 선행 · 축 17 family×arm 채점(`m8-17-matrix`) · 축 18 경계 전시(`m8-18-boundary`) |
-| estimator 7종 | DM·IPS·SNIPS·Clipped-IPS·DR·Switch-DR·DRos — 순수 numpy (`src/ope/estimators.py`) | 3중: property test 97개 + **obp(py3.9)·sb-obp(py3.12) 두 트랙 교차검증 rel_diff ≤ 1e-8**(분기 발동 상태 — LEDGER `m1-crossval`) + 손계산 항등식 |
+| **validity battery [제안]** | E[w]·harmonic·placebo·disagreement + 보고 4종 (`src/ope/validity.py`) — gate v1 과 독립·병렬 | probe M8-A/M8-B GO 선행 · 축 17 family×arm 채점(`m8-17-matrix`) · 축 18 경계 전시(`m8-18-boundary`) · 축 21 실데이터 replication(`m9-21-matrix`) |
+| estimator 7종 | DM·IPS·SNIPS·Clipped-IPS·DR·Switch-DR·DRos — 순수 numpy (`src/ope/estimators.py`) | 3중: property test 100개 + **obp(py3.9)·sb-obp(py3.12) 두 트랙 교차검증 rel_diff ≤ 1e-8**(분기 발동 상태 — LEDGER `m1-crossval`) + 손계산 항등식 |
 | 진단·게이트 (gate v1) | ESS·max-weight·support proxy + 3-way `decision_gate` (`src/ope/diagnostics.py`) | 축 08 에서 사전등록 임계값 **평가**(무튜닝) — 예보력 실증 (LEDGER `m2-08-forecast`) |
 | SLOPE | hyperparameter 데이터 기반 선택 (Su+ ICML'20) | **축 07 실험이 구현의 ladder 방향 반전 버그를 적발** → 수정·회귀 고정 — 수정 후 clipped tail p90 0.125→0.050 회복 (LEDGER `m2-07-slope`) |
 | 합성 DGP (백스테이지) | 참값 보유 multi-action bandit — overlap·support·오지정·confounding 노브 + U-주변화 calibrated 기록(`src/ope/dgp.py`) | on-policy 종단 검산·confounding 대조 항등·**산출 checksum 동결 배리어** property test |
@@ -156,6 +161,7 @@ LEDGER id 를 병기했다 — 그 외 축의 정량 상세는 각 figure 와 �
 | 18 | 관측 동등성 경계 — 검출 arm 발화 0/240·0/240(기록 모드별)·bias 만 −0.073 성장·Λ\*_flip 1.31→1.05 수축: battery 는 blind spot 을 **줄이지만 없애지 못한다** | `m8-18-boundary` |
 | 19 | end-to-end blind decision — 오염 로그에서 naive false-go 0.9(regret 0.21) vs 프로토콜 0.0(AB 회귀), 건강 로그에선 go 0.95/no-go 0.9 로 결정적(오류 0); 후보도 로그 유래(fit/eval 분리) | `m8-19-decision-value` |
 | 20 | 실로그 1-page decision card(reveal 없음) — harmonic 실발화(T=2.68: 기록 propensity 비정합 신호, 위치 풀링 인공물 가능성 병기) → AB_FALLBACK·fragile | `m8-20-card` |
+| 21 | battery 예보력의 실데이터 replication(c2b 4종 주입) — noised·support 검출 재현(per-action harmonic 이 전 셀 커버) + **사전등록 예상 반증**: estimated 준-null 예상 ↛ 전 dataset E[w] 발화(이중-softmax 기하는 in-sample LR 복원 불가) · 무해 주입에도 발화하는 over-caution(유예 비용) 정직 기록 · impossible family 는 실데이터 구성 불가 선언(축 18 co-exhibit) | `m9-21-matrix` |
 
 **Tier 2 — 백스테이지 (참값 보유 채점 — 본편 신호의 근거와 한계)**
 
@@ -244,11 +250,12 @@ rule·battery 임계값은 사전등록·무튜닝 — 다른 도메인 이식�
 ```bash
 cd ope-to-decision
 uv sync --extra dev        # 본 env (Python 3.11+)
-uv run pytest              # property test 97개 (항등식·통계 성질·blindness·checksum·회귀 고정)
+uv run pytest              # property test 100개 (항등식·통계 성질·blindness·checksum·회귀 고정)
 
 # 본편(GT-미상 트랙) 재현 — battery detection matrix + 실로그 decision card
 uv run python experiments/17_validity_battery.py
 uv run python experiments/20_obd_decision_card.py   # OBD small 로컬 배치 필요 (data/README.md)
+uv run python experiments/21_c2b_injection.py       # 실데이터 replication (OpenML 자동 캐시)
 
 # 백스테이지 축 재현 (예: 축 01 — figure + CSV 페어 재생성)
 uv run python experiments/01_sample_size.py
@@ -262,10 +269,10 @@ uv run python experiments/01_sample_size.py
 
 ## Notebooks — 상세 분석 (EDA → 결과 심층)
 
-README 가 큐레이션된 결론이라면 노트북은 **과정을 보여주는 층**이다 — 5권 전부 실행 output 포함.
+README 가 큐레이션된 결론이라면 노트북은 **과정을 보여주는 층**이다 — 6권 전부 실행 output 포함.
 노트북은 파생·재현·탐색 층이며 정본 수치는 [docs/LEDGER.md](docs/LEDGER.md) 경유만
-(지위 규약: [notebooks/README.md](notebooks/README.md)). **M8(GT-미상 본편) 반영 전 상태** —
-GT-미상 프로토콜 권(05)과 무대 재정렬은 후속 마일스톤 소관.
+(지위 규약: [notebooks/README.md](notebooks/README.md)). M9 부터 6권이 **무대**(본편
+00→03→05 / 백스테이지 01→02→04)로 나뉜다.
 
 | 권 | 한 줄 |
 |---|---|
@@ -274,6 +281,7 @@ GT-미상 프로토콜 권(05)과 무대 재정렬은 후속 마일스톤 소관
 | [02 estimator walkthrough](notebooks/02_estimator_walkthrough.ipynb) | 7종을 수식→코드→수치로 한 줄씩 — weight 를 길들이는 방식의 차이 + bias-variance 미니 아크 |
 | [03 진단·게이트 해부](notebooks/03_diagnostics_gate.ipynb) | ESS·max-weight·support proxy 계산 과정 + 게이트 판정 트레이스 + confounding blind spot 재현 |
 | [04 결과 심층](notebooks/04_results_deepdive.ipynb) | committed CSV 재해석 — regime map 마진·ESS 비단조·hyperparameter 꼬리·funnel 분위·Λ* 분포 |
+| [05 GT-미상 프로토콜](notebooks/05_gt_unknown_protocol.ipynb) | **본편 walkthrough** — battery 4-arm 손 재계산·오염 주입 실연(즉발 vs 원리적 침묵)·축 17–21 채점표·reveal 없는 실전 카드 |
 
 ## Repository Structure
 
@@ -281,13 +289,13 @@ GT-미상 프로토콜 권(05)과 무대 재정렬은 후속 마일스톤 소관
 ope-to-decision/
 ├── src/ope/               # estimators(7종+SLOPE+MSM+bootstrap) · dgp(+calibrated 기록) · diagnostics(게이트 v1)
 │                          #   · validity(battery [제안]) · fitters(crossfit q̂·π̂₀) · policies · datasets · business
-├── experiments/           # 백스테이지 축 01–12·14–16 + 본편 축 17–20 + _practitioner(frontstage/reveal 하네스)
+├── experiments/           # 백스테이지 축 01–12·14–16 + 본편 축 17–21 + _practitioner(frontstage/reveal 하네스)
 │                          #   + probes/ + m1_crossval/ + hero_regime_map (인덱스: experiments/README.md)
-├── notebooks/             # 상세 분석 5권 (00 EDA → 04 결과 심층) — 파생·재현 층 (M8 반영 전)
+├── notebooks/             # 상세 분석 6권 — 본편 00·03·05 / 백스테이지 01·02·04 (파생·재현 층)
 ├── results/figures|tables # 실험 산출물 — NN_* figure↔CSV 1:1 · 본편은 *_decision.csv(참값 컬럼 부재)/*_reveal.csv 분리
 ├── docs/                  # PLAYBOOK · CONCEPT · POSITIONING · LEDGER · GLOSSARY · COMMS_BRIEF(v1·v2)
-├── assets/                # decision-gate 플로차트 SVG (ko/en)
-├── configs/  tests/       # Hydra 설계 기본값 / property test 97 (blindness·ban·checksum 포함)
+├── assets/                # decision-gate 플로차트 + 두-무대 구조도 SVG (ko/en)
+├── configs/  tests/       # Hydra 설계 기본값 / property test 100 (blindness·ban·checksum 포함)
 ├── data/                  # gitignore — 원본 재배포 금지 (data/README.md)
 └── PLAN.md  CLAUDE.md     # 마일스톤·게이트(§3.5 M8 사전등록) / 에이전트 규약
 ```
@@ -326,7 +334,7 @@ ope-to-decision/
 1. **수치는 LEDGER 경유만.** 이 README 의 모든 결과 수치는 committed 산출물(`results/tables/`)에서
    만든 [docs/LEDGER.md](docs/LEDGER.md) 행을 인용한다(행 id 병기). 본문·배지의 축약 표기(4.6%·0.9·
    −0.073 등)는 해당 행 원값 기준 반올림이다 — 원값·정밀도는 LEDGER 가 정본. 테스트 개수 등 공정
-   메타데이터(배지 tests 97)는 실험 결과 수치가 아니므로 LEDGER 범위 밖이다.
+   메타데이터(배지 tests 100)는 실험 결과 수치가 아니므로 LEDGER 범위 밖이다.
 2. **decision rule = 제안.** 게이트 규칙·임계값(v1)과 battery 정의·임계값(v2)은 각각 M1·M8 에서
    folklore 로 **사전 등록**되어 축 08·17 에서 평가만 되었다(무튜닝·교정 아님) — 표준이 아니며,
    실패 조건(blind spot·support arm 퇴화·소표본 오경보)을 함께 전시한다.

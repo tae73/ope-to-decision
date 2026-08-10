@@ -503,13 +503,16 @@ median dr_correction(clean)(전 dataset). LEDGER: `m9-probe-a`(ID `M9-A`)·`m9-2
   **예상 반증 1건 등재**: estimated_insample 준-null 예상 ↛ 전 dataset E[w] 발화(c2b 이중-softmax
   기하는 in-sample LR 복원 불가 — replication 축의 존재 이유 실증) + support over-caution(무해
   주입에도 harmonic 발화 — 유예 비용) 정직 기록. LEDGER `m9-21-matrix` ENTERED(+GT-분류)
-- [ ] **Stage 4 notebook 층**: 00–04 재정박(배너 무대 라벨·04 깨진 참조·01 제목·02/03 무대 용어
-  충돌 해소·gate v1↔battery 브릿지) + 신권 05(GT-미상 walkthrough — live 는 합성 1로그 한정·
-  집계는 CSV-read·`write_decision_csv`/`reveal` 무호출·LEDGER verbatim assert·co-exhibit) +
-  notebooks/README 재편(본편 00→03→05 / 백스테이지 01→02→04) + 전 6권 jupytext 재실행
-- [ ] **Stage 5 SVG + 문서 동기**: `assets/frontstage_backstage_{ko,en}.svg`(하우스 관례·rsvg
-  검수·수치 0) + README KO/EN(Tier1 축 21 행·notebook 6권·배지 axes 01–12·14–21) + LEDGER 헤더
-  카운트 + 적대 verify(삼각일치·parity·링크) + **repo push**
+- [x] **Stage 4 notebook 층 (2026-08-10)**: 00–04 재정박(배너 무대 라벨·04 깨진 참조 수정·01 제목
+  README parity·02/03 "무대" 용어 충돌 해소·gate v1↔battery 브릿지·축 17–21 forward pointer —
+  introduced ruff violation 0) + 신권 05(GT-미상 walkthrough — battery 4-arm 손 재계산 assert·
+  오염 주입 실연·축 17–21 채점표 verbatim assert·reveal 부재 전시·`write_decision_csv`/`reveal`
+  무호출) + notebooks/README 재편(본편/백스테이지 2그룹) + 전 6권 재실행(error output 0)
+- [x] **Stage 5 SVG + 문서 동기 (2026-08-10)**: `assets/frontstage_backstage_{ko,en}.svg`(inline
+  attrs·_style 팔레트·정규화 diff 로 KO/EN 구조 동일 검증·rsvg 렌더 검수·수치 0 — README 3막
+  서두 삽입) + README KO/EN 동기(Tier1 축 21 행·notebook 6권·배지 axes 01–12·14–21·tests 100 —
+  EN 미러 에이전트가 KO 잔재 3곳 역적발·교정) + 기계 검사(LEDGER id 17종 KO/EN 동수·경로 29종
+  무결·tests 100 green) + repo push
 - [ ] **Stage 6 lowellth 첫 발행**(greenfield 풀 스코프 — 사용자 확정: 엔트리+리포트 노트·order 3):
   에셋(public/projects·diagrams — sync-safe) → projects/projects-en 엔트리 → 리포트 노트
   (vault KO publish:true + notes-en EN twin) → gotcha 체크리스트(통화 `\$`·`_ko/_en` SVG·

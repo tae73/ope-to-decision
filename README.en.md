@@ -14,8 +14,8 @@
 ![backstage forecast](https://img.shields.io/badge/backstage_forecast-4.6%25_trust_vs_44.4%25_fallback-6f6e66)
 ![DR robustness](https://img.shields.io/badge/DR_robustness-4%2F4_real_datasets-008300)
 ![obp crossval](https://img.shields.io/badge/obp_crossval-rel__diff%E2%89%A41e--8_(7_est_%C3%97_2_tracks)-4a3aa7)
-![axes](https://img.shields.io/badge/axes-01%E2%80%9312%C2%B714%E2%80%9320_executed_%C2%B7_13_dropped--by--probe-6f6e66)
-![tests](https://img.shields.io/badge/tests-97_passed-1baf7a)
+![axes](https://img.shields.io/badge/axes-01%E2%80%9312%C2%B714%E2%80%9321_executed_%C2%B7_13_dropped--by--probe-6f6e66)
+![tests](https://img.shields.io/badge/tests-100_passed-1baf7a)
 ![license](https://img.shields.io/badge/license-MIT-b3b2a9)
 
 ---
@@ -99,11 +99,17 @@ sheet (no reveal file)</b> — the backstage comparison against approximate GT b
 |---|---|
 | **30 sec** | The TL;DR above + the motivation figure + the three hero figures |
 | **5 min** | [The three-act story](#the-three-act-story) → [Findings by axis](#findings-by-axis--one-line-each-2-tier) → [Translating into business impact](#translating-into-business-impact) → [What didn't break](#what-didnt-break--where-our-expectations-were-wrong) |
-| **Deep dive** | [notebooks/](notebooks/README.md) — log EDA → DGP anatomy → estimator walkthrough → diagnostics & gate → results deep-dive (5 volumes, executed outputs included — a derived layer that predates M8) |
+| **Deep dive** | [notebooks/](notebooks/README.md) — frontstage (log EDA → diagnostics & gate → GT-unknown protocol) + backstage (DGP anatomy → estimator walkthrough → results deep-dive), 6 volumes with executed outputs |
 | **Reproduce** | [Quick Start](#quick-start) + [experiments/README.md](experiments/README.md) |
 | **30 min** | [docs/PLAYBOOK.md](docs/PLAYBOOK.md) → [docs/CONCEPT.md](docs/CONCEPT.md) → [docs/POSITIONING.md](docs/POSITIONING.md) → [docs/LEDGER.md](docs/LEDGER.md) |
 
 ## The three-act story
+
+<p align="center"><img src="assets/frontstage_backstage_en.svg" width="860" alt="frontstage/backstage structure — the frontstage computed from logs alone and the truth-holding scoring backstage"><br>
+<sub><b>The two-stage structure.</b> Frontstage (logged layer → gate v1 + battery + Λ\* →
+verdict·decision — no ground truth needed) and backstage (truth-holding scoring —
+blind-then-reveal), separated by the observational-equivalence boundary (axis 18). Vocabulary
+canon: <a href="docs/GLOSSARY.md">GLOSSARY</a> §8.</sub></p>
 
 **Act 1 — what you have: a log and a candidate policy, nothing else.** An e-commerce
 recommendation team has built a new candidate policy. Before any A/B test, they estimate its
@@ -139,7 +145,8 @@ at the same n [`m8-17-matrix`]).
 these signals at all". Everything was scored on the truth-holding stage — the synthetic DGP's
 12 axes + 4 c2b datasets + OBD approximate GT: gate forecasting power — large-error rate 4.6%
 on trust vs 44.4% on A/B fallback (`m2-08-forecast`); battery forecasting power — detection on
-every detectable-family scenario, 0 firings on partial/impossible (Figure 2); **decision
+every detectable-family scenario, 0 firings on partial/impossible (Figure 2), and it replicates
+on real covariates (axis 21 — `m9-21-matrix`); **decision
 value** — naive false-go 0.9 vs protocol 0.0 (`m8-19-decision-value`); DR robustness 4/4 on
 real data (`m3-11-dr-robust`). And the honest disclosure of the blind spot: in an
 observational-equivalence world every battery arm passes while the bias alone grows (axis 18 —
@@ -160,8 +167,8 @@ the winner's (LEDGER <code>m3-hero-map</code>).</sub></p>
 | Component | What it is | Verification |
 |---|---|---|
 | **Practitioner protocol (frontstage)** | The frontstage schema (`experiments/_practitioner.py` — output CSVs carry no ground-truth columns) + pre-registered decision rules (PLAN §3.5) | Four contract-test guards (schema ban · source ban · blindness · reveal-file-only scoring) + blind-then-reveal on axes 17–20 |
-| **Validity battery [proposal]** | E[w] · harmonic · placebo · disagreement + four report-only signals (`src/ope/validity.py`) — independent of and parallel to gate v1 | Probes M8-A/M8-B returned GO before build · axis-17 family×arm scoring (`m8-17-matrix`) · axis-18 boundary exhibit (`m8-18-boundary`) |
-| 7 estimators | DM · IPS · SNIPS · Clipped-IPS · DR · Switch-DR · DRos — pure numpy (`src/ope/estimators.py`) | Triple-checked: 97 property tests + **two-track cross-validation against obp (py3.9) and sb-obp (py3.12) with rel_diff ≤ 1e-8** (branches actually firing — LEDGER `m1-crossval`) + hand-computed identities |
+| **Validity battery [proposal]** | E[w] · harmonic · placebo · disagreement + four report-only signals (`src/ope/validity.py`) — independent of and parallel to gate v1 | Probes M8-A/M8-B returned GO before build · axis-17 family×arm scoring (`m8-17-matrix`) · axis-18 boundary exhibit (`m8-18-boundary`) · axis-21 real-data replication (`m9-21-matrix`) |
+| 7 estimators | DM · IPS · SNIPS · Clipped-IPS · DR · Switch-DR · DRos — pure numpy (`src/ope/estimators.py`) | Triple-checked: 100 property tests + **two-track cross-validation against obp (py3.9) and sb-obp (py3.12) with rel_diff ≤ 1e-8** (branches actually firing — LEDGER `m1-crossval`) + hand-computed identities |
 | Diagnostics & gate (gate v1) | ESS · max-weight · support proxy + 3-way `decision_gate` (`src/ope/diagnostics.py`) | Pre-registered thresholds **evaluated** on axis 08 (no tuning) — forecasting power demonstrated (LEDGER `m2-08-forecast`) |
 | SLOPE | Data-driven hyperparameter selection (Su+ ICML'20) | **The axis-07 experiment caught a reversed-ladder bug in our implementation** → fixed and pinned with a regression test — post-fix, clipped tail p90 recovers 0.125→0.050 (LEDGER `m2-07-slope`) |
 | Synthetic DGP (backstage) | Multi-action bandit with known ground truth — knobs for overlap, support, misspecification, confounding + U-marginalized calibrated recording (`src/ope/dgp.py`) | On-policy end-to-end check, the confounding contrast identity, and an **output-checksum freeze barrier** among the property tests |
@@ -184,6 +191,7 @@ paired CSV are canonical for the quantitative detail.
 | 18 | The observational-equivalence boundary — 0/240 · 0/240 detection-arm firings (per recording mode) · bias alone growing to −0.073 · Λ\*_flip contracting 1.31→1.05: the battery **narrows the blind spot but cannot eliminate it** | `m8-18-boundary` |
 | 19 | End-to-end blind decision — on contaminated logs, naive false-go 0.9 (regret 0.21) vs protocol 0.0 (A/B fallback); on healthy logs decisive at go 0.95 / no-go 0.9 (zero errors); the candidates are themselves log-derived (fit/eval split) | `m8-19-decision-value` |
 | 20 | The real-log 1-page decision card (no reveal) — a genuine harmonic firing (T=2.68: a recorded-propensity inconsistency signal, with the possibility of a position-pooling artifact noted alongside) → AB_FALLBACK · fragile | `m8-20-card` |
+| 21 | The real-data replication of battery forecasting power (injections into the 4 c2b datasets) — noised/support detection replicates (per-action harmonic covers every cell) + a **pre-registered expectation refuted**: estimated was expected quasi-null, yet E[w] fired on every dataset (the double-softmax geometry cannot be reproduced by an in-sample LR) · over-caution recorded honestly (harmonic fires even where the injection is harmless — a deferral cost) · the impossible family declared non-constructible on real data (an axis-18 co-exhibit) | `m9-21-matrix` |
 
 **Tier 2 — backstage (truth-holding scoring — the grounds and the limits of the frontstage signals)**
 
@@ -292,11 +300,12 @@ deliberately stops at exhibiting the blind spot (axis 09 → the axis-18 boundar
 ```bash
 cd ope-to-decision
 uv sync --extra dev        # main env (Python 3.11+)
-uv run pytest              # 97 property tests (identities, statistical properties, blindness, checksums, regression pins)
+uv run pytest              # 100 property tests (identities, statistical properties, blindness, checksums, regression pins)
 
 # Reproduce the frontstage (GT-unknown track) — battery detection matrix + real-log decision card
 uv run python experiments/17_validity_battery.py
 uv run python experiments/20_obd_decision_card.py   # requires OBD small placed locally (data/README.md)
+uv run python experiments/21_c2b_injection.py       # real-data replication (OpenML auto-cache)
 
 # Reproduce a backstage axis (e.g. axis 01 — regenerates the figure + CSV pair)
 uv run python experiments/01_sample_size.py
@@ -312,11 +321,11 @@ Real data: the four OpenML datasets download automatically on first run (cached 
 ## Notebooks — the deep-dive layer (EDA → results)
 
 If the README is the curated conclusion, the notebooks are **the layer that shows the
-process** — five volumes, committed with executed outputs. Notebooks are a
+process** — six volumes, committed with executed outputs. Notebooks are a
 derived/reproduction/exploration layer: canonical numbers flow only through
 [docs/LEDGER.md](docs/LEDGER.md) (conventions: [notebooks/README.md](notebooks/README.md)).
-**They predate M8 (the GT-unknown frontstage)** — a GT-unknown protocol volume (05) and the
-stage realignment belong to a later milestone.
+From M9 the six volumes are organized by **stage**: frontstage 00→03→05 / backstage
+01→02→04.
 
 | Volume | One line |
 |---|---|
@@ -325,6 +334,7 @@ stage realignment belong to a later milestone.
 | [02 Estimator walkthrough](notebooks/02_estimator_walkthrough.ipynb) | All seven estimators, formula → code → number, line by line — how each tames the weights, plus a mini bias-variance arc |
 | [03 Diagnostics & gate anatomy](notebooks/03_diagnostics_gate.ipynb) | ESS, max-weight, and support proxy computed step by step + gate verdict traces + a confounding-blind-spot reproduction |
 | [04 Results deep-dive](notebooks/04_results_deepdive.ipynb) | Re-reading the committed CSVs — regime-map margins, non-monotone ESS, hyperparameter tails, funnel quantiles, Λ* distributions |
+| [05 GT-unknown protocol](notebooks/05_gt_unknown_protocol.ipynb) | **Frontstage walkthrough** — hand-recomputing the 4 battery arms · injection demos (instant firing vs principled silence) · the axes 17–21 scorecard · the decision card with no reveal |
 
 ## Repository Structure
 
@@ -332,13 +342,13 @@ stage realignment belong to a later milestone.
 ope-to-decision/
 ├── src/ope/               # estimators (7 + SLOPE + MSM + bootstrap) · dgp (+ calibrated recording) · diagnostics (gate v1)
 │                          #   · validity (battery [proposal]) · fitters (crossfit q̂·π̂₀) · policies · datasets · business
-├── experiments/           # backstage axes 01–12·14–16 + frontstage axes 17–20 + _practitioner (frontstage/reveal harness)
+├── experiments/           # backstage axes 01–12·14–16 + frontstage axes 17–21 + _practitioner (frontstage/reveal harness)
 │                          #   + probes/ + m1_crossval/ + hero_regime_map (index: experiments/README.md)
-├── notebooks/             # 5-volume deep-dive layer (00 EDA → 04 results) — derived layer (predates M8)
+├── notebooks/             # 6-volume deep-dive layer — frontstage 00·03·05 / backstage 01·02·04 (derived layer)
 ├── results/figures|tables # experiment outputs — NN_* figure↔CSV 1:1 pairing · frontstage splits into *_decision.csv (no truth columns) / *_reveal.csv
 ├── docs/                  # PLAYBOOK · CONCEPT · POSITIONING · LEDGER · GLOSSARY · COMMS_BRIEF (v1·v2)
-├── assets/                # decision-gate flowchart SVGs (ko/en)
-├── configs/  tests/       # Hydra design defaults / 97 property tests (blindness·ban·checksum included)
+├── assets/                # decision-gate flowchart + two-stage structure SVGs (ko/en)
+├── configs/  tests/       # Hydra design defaults / 100 property tests (blindness·ban·checksum included)
 ├── data/                  # gitignored — no redistribution of source data (data/README.md)
 └── PLAN.md  CLAUDE.md     # milestones & gates (M8 pre-registration §3.5) / agent working agreement
 ```
@@ -381,7 +391,7 @@ ope-to-decision/
    [docs/LEDGER.md](docs/LEDGER.md), built from committed outputs (`results/tables/`), with the
    row id attached. Abbreviated figures in the text and badges (4.6%, 0.9, −0.073, …) are
    roundings of those rows' raw values — the LEDGER is canonical for raw values and precision.
-   Process metadata such as test counts (the tests badge, 97) are repo facts, not experimental
+   Process metadata such as test counts (the tests badge, 100) are repo facts, not experimental
    results, and sit outside the LEDGER's scope.
 2. **The decision rule is a proposal.** The gate rules and thresholds (v1) and the battery
    definitions and thresholds (v2) were **pre-registered** as folklore in M1 and M8
