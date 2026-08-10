@@ -498,7 +498,11 @@ median dr_correction(clean)(전 dataset). LEDGER: `m9-probe-a`(ID `M9-A`)·`m9-2
 - [ ] **Stage 1 probe M9-A** → JSON verdict → GO/NO-GO 분기 집행(§3.6-5) + LEDGER `m9-probe-a`
 - [ ] **Stage 2 src 최소 수정**: `classification_to_bandit` `support_deficiency` keyword —
   δ=0 bit-항등 회귀 + mask 순수 헬퍼 테스트(OpenML skip-guard 관례), 기존 97 green 유지
-- [ ] **Stage 3 축 21**: figure+CSV 4벌 + PATTERN 4종 + LEDGER `m9-21-matrix`(+GT-분류)
+- [x] **Stage 3 축 21 (2026-08-10)**: PATTERN 4/4 PASS(52s — 예산의 ~6%) — replication 성립
+  (noised 전 dataset 재현·support 는 harmonic 이 전 셀 커버·q̂-채널 무반응 예측 성립) +
+  **예상 반증 1건 등재**: estimated_insample 준-null 예상 ↛ 전 dataset E[w] 발화(c2b 이중-softmax
+  기하는 in-sample LR 복원 불가 — replication 축의 존재 이유 실증) + support over-caution(무해
+  주입에도 harmonic 발화 — 유예 비용) 정직 기록. LEDGER `m9-21-matrix` ENTERED(+GT-분류)
 - [ ] **Stage 4 notebook 층**: 00–04 재정박(배너 무대 라벨·04 깨진 참조·01 제목·02/03 무대 용어
   충돌 해소·gate v1↔battery 브릿지) + 신권 05(GT-미상 walkthrough — live 는 합성 1로그 한정·
   집계는 CSV-read·`write_decision_csv`/`reveal` 무호출·LEDGER verbatim assert·co-exhibit) +

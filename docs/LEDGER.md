@@ -45,7 +45,7 @@
 | `등재일` | `YYYY-MM-DD`. |
 | `상태` | `RESERVED`(경로만 예약, 수치 미등재) / `ENTERED`(수치 등재 완료 — NO-GO 등 실패 결과 포함) / `SUPERSEDED`(재실험으로 대체됨). |
 
-## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 · M6 4행 · M5 2행 · M7 1행 · M8 6행 · M9 1행 등재)
+## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 · M6 4행 · M5 2행 · M7 1행 · M8 6행 · M9 2행 등재)
 
 M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 동반 commit** 되어 아래와 같이
 등재되었다(등재일 2026-08-06). `수치` 필드는 각 source JSON 의 값 verbatim 이다(규칙 3 — 반올림 금지).
@@ -112,6 +112,7 @@ M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 
 | id | 수치 | 단위 | source 파일 경로 | 생성 실험 ID | 등재일 | 상태 |
 |---|---|---|---|---|---|---|
 | `m9-probe-a` | VERDICT **`NO-GO`** (규칙 4 — 실패 등재·§3.6-5 폴백 ② 분기 집행) · 역학 ①/noised 방향 ③/런타임 ④ 통과(letter noised mean_w 5-seed = 1.612–1.732 — e^{s²/2}=1.6487 정합 · battery 런타임 중앙값 0.036s) · **support 방향 ② 실패 — satimage 한정**: masked π_e 질량 = 0.008074076629350417(δ=0.2)·0.016271926801459217(δ=0.4)로 mean_w 5-seed = 0.9614–1.0081(부호 혼재) vs **letter** 질량 = 0.05747280310271292·0.1150446274653389 로 mean_w = 0.8835–0.8924(방향 5/5) — **주입의 실효 강도는 δ 가 아니라 π_e 첨도 × 하위-s 질량이 결정**(확정 발견 — §3.6-4 true-negative 의미론의 실측) | — | `results/tables/probe_c2b_injection.json` | `M9-A` | 2026-08-10 | ENTERED |
+| `m9-21-matrix` | **replication 성립 + 사전등록 예상 반증 1건**(S=20/셀·PATTERN 4/4 PASS): ① noised_s10 — mean_w/harmonic/disagreement fire = 1.0/1.0/1.0 전 4 dataset(mean_w 중앙값 1.668507–1.706648, e^{s²/2}=1.6487 정합 — 축 17 재현) ② support — **harmonic fire 1.0 전 dataset·전 δ**(전역 mean_w 가 침묵하는 satimage 까지 per-action 해상도가 커버, 축 17 support_d02 재현), mean_w 는 letter d04 만 0.85 발화(중앙값 optdigits 0.996399 → letter 0.885870 — `m9-probe-a` 질량 렌즈 정합) · 실위험은 letter d04 만(large_err 1.0·median rel_err 0.132301), 나머지 support 셀은 무해(large_err 0.0)한데도 harmonic 발화 — **over-caution(유예 비용) 정직 기록** ③ **estimated_insample 예상 반증(§3.6-4 준-null 예상)**: mean_w fire 1.0 전 dataset(중앙값 1.263219–1.717571) — c2b 의 이중-softmax 기하는 in-sample LR 로 복원 불가, letter 는 실오차 동반(large_err 1.0·median rel_err 0.223668·disagreement 도 발화) ④ clean 오경보 ≤ 0.2(placebo 0.05–0.20 — 명목 수준) ⑤ **q̂-채널 무반응 예측 성립**: clean vs clean_qdeg 발화율 전 arm 동일·dr_correction 중앙값만 상승(optdigits 0.003963→0.164116 · letter 0.037747→0.386887) · impossible family 는 실데이터 구성 불가 선언(§3.6-3 — 축 18 `m8-18-boundary` co-exhibit) | — | `results/tables/21_c2b_injection_matrix.csv` (+`_decision.csv`·`_reveal.csv`·`_confusion.csv`) | `21` | 2026-08-10 | ENTERED |
 
 **M8 행 비고(규칙 3 반올림 조항):** `m8-18`(Λ\*_flip 중앙값·mean_w 범위 끝값)·`m8-20`(카드 수치
 6종)의 6자리 표기는 source CSV 원값의 반올림이다 — 원값·전체 정밀도는 각 CSV 가 정본.
@@ -189,3 +190,4 @@ verbatim 값(40행)에서 재도출한 요약 통계다(`m3-hero-map`·`m2-07-sl
 | `m8-19-decision-value` | C | 프로토콜 결정 구성(go/no_go/AB 비율)·naive go 판정 절(frontstage) | false-go/false-stop·regret·truly-better 절(reveal — oracle MC 채점) |
 | `m8-20-card` | A | 전 절(카드 전체 — 로그와 후보 분포만으로 계산, reveal 없음) | — |
 | `m9-probe-a` | C | mean_w·런타임 절(로그 층 통계) | masked π_e 질량·gt 불변 절(주입측 지식 — 벤치 구성 정보) |
+| `m9-21-matrix` | C | 발화율·mean_w·dr_correction 절(frontstage — 로그 층만) | large_err·rel_err 절(reveal — c2b 정확 참값 채점) |
