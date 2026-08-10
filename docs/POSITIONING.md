@@ -135,6 +135,59 @@ GitHub `off-policy-evaluation` topic은 공개 레포 **36개**에 그친다(202
 
 해소 경과(M0-B, 2026-08-06): obp/sb-obp 릴리스 버전 **해소**(obp PyPI 0.5.7/2023-04-14 · sb-obp 0.5.10/2025-08-19 — 정본 `results/tables/probe_obp_pypi_check.json`), obp pinned env 설치 성공 여부 **해소**(py3.9 설치 성공·교차검증 GO — 단 `matplotlib<3.7` 핀 필수, `results/tables/probe_obp_crossval.json`). 잔여 미해소: Λ-최적화의 multi-action 수치 안정성(→ 축 14 착수 전 1일 probe), 한국어 콘텐츠 공백의 실재(→ 커버리지 한계로 상시 불확실 유지).
 
+## 7. GT-미상 프로토콜의 선점 재확인 (M8 — URL 스윕 2026-08-10)
+
+**결론 요약: battery 의 개별 검사는 전부 선행이 있다 — 남는 것은 조합뿐이며, 그 조합조차
+"folklore 의 체계화 시도" 프레임을 유지한다.**
+
+### 7.1 개별 검사의 계보 (검사 자체는 본 레포의 발명이 아니다)
+
+- **per-action harmonic calibration T(a\*)** — 직계 조상: Li·Chen·Kleban·Gupta (WWW 2015,
+  [arXiv:1403.1891](https://arxiv.org/abs/1403.1891)) 의 production 로깅 propensity 오류 탐지용
+  arithmetic/harmonic mean test. **원문이 이 테스트를 "Proposed by Leon Bottou et al., in private
+  communication" 으로 귀속** — folklore 가 공간(公刊)된 문자 그대로의 사례이며, 본 레포 프레임의
+  최상의 근거다.
+- **E[w] ≈ 1 검사** — 직계: Lefortier et al. (2016, [arXiv:1612.00367](https://arxiv.org/abs/1612.00367),
+  Criteo test-bed)의 "Ĉ(π) = (1/N)Σπ/q ≃ 1" sanity check; 뿌리는 survey calibration
+  (Deville & Särndal 1992, [DOI 10.2307/2290268](https://doi.org/10.2307/2290268))과 IPTW weight
+  진단 관행(Austin & Stuart 2015, [DOI 10.1002/sim.6607](https://onlinelibrary.wiley.com/doi/10.1002/sim.6607)).
+  propensity overfitting 명명·기대값-1 control variate 는 Swaminathan & Joachims (NeurIPS 2015).
+- **placebo reward** — negative control 의 역학 표준(Lipsitch·Tchetgen Tchetgen·Cohen 2010,
+  [PMID 20335814](https://pubmed.ncbi.nlm.nih.gov/20335814/); 리뷰 Shi·Miao·Tchetgen Tchetgen 2020,
+  [arXiv:2009.05641](https://arxiv.org/abs/2009.05641))의 OPE 이식.
+- **Λ\*·fragile 보고 형식** — E-value(VanderWeele & Ding 2017,
+  [DOI 10.7326/M16-2607](https://www.acpjournals.org/doi/abs/10.7326/M16-2607))·robustness value
+  (Cinelli & Hazlett 2020, [DOI 10.1111/rssb.12348](https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/rssb.12348))
+  idiom 의 MSM(Kallus & Zhou — 기인용) 판. 보고 형식의 이식이지 방법 신규성 주장이 아니다.
+- **weight-신뢰도 진단의 실무 산재** — PSIS Pareto-k̂(Vehtari et al.,
+  [arXiv:1507.02646](https://arxiv.org/abs/1507.02646))·ESS 계보(Elvira et al.,
+  [arXiv:1809.04129](https://arxiv.org/abs/1809.04129))·Bottou et al. 2013
+  ([JMLR](https://jmlr.org/beta/papers/v14/bottou13a.html)) — "folklore 는 실재하고 산발적"의 입증.
+
+### 7.2 인접 트랙과의 구별 (기능이 다르다)
+
+- **GT-free estimator 선택**: CV-OPE(Cief et al., [arXiv:2405.15332](https://arxiv.org/abs/2405.15332)
+  — validation split 의 unbiased 추정을 surrogate 로 한 K-fold 선택)·London et al. 2020
+  ([arXiv:2006.10460](https://arxiv.org/abs/2006.10460), SN 하한 CI) — "어느 estimator 가 나은가"
+  이지 "이 추정을 믿어도 되는가"(검사·게이트)가 아니다. SLOPE(기인용)도 같은 선택 계열.
+- **GT-based 채점 계열(본 레포의 백스테이지 analogue)**: obp `evaluate_performance_of_estimators`
+  (relative-EE — ground-truth 필요, [zr-obp](https://github.com/st-tech/zr-obp))·IEOE(기인용)·
+  SCOPE-RL SharpeRatio@k(기인용)·Adyen 사례([arXiv:2501.10470](https://arxiv.org/abs/2501.10470) —
+  검증 수단이 온라인 A/B 상관)·Criteo offline A/B(Gilotte et al.,
+  [arXiv:1801.07030](https://arxiv.org/abs/1801.07030)).
+- **gate 정신의 최근접**: marketplace launch-readiness DSS
+  ([arXiv:2605.12840](https://arxiv.org/abs/2605.12840)) — replay/OPE+guardrail+sensitivity 통합
+  추천이나, 사전등록 GT-free battery 의 blind-then-reveal 예보력 실측은 아니다.
+
+### 7.3 좁혀진 주장 (README·PLAYBOOK 이 인용하는 정본 문안)
+
+본 레포의 기여는 검사 자체가 아니라 그 **조합**이다 — ① 산발적 folklore 검사들을 **사전등록
+battery** 로 체계화하고(임계·family 를 실험 수치보다 먼저 커밋 — git 이력 증거), ② GT 를 가린
+**blind-then-reveal** 프로토콜로 battery 의 **예보력 자체를 falsification 대상**으로 실측하며
+(축 17·19), ③ 어떤 로그 통계도 탐지할 수 없는 **관측 동등성 confounding 경계를 구성적으로
+전시**한 것(축 18). 이는 folklore 의 체계화 시도이지 문헌 표준이 아니며, 동일 조합을 수행하는
+공개 벤치마크는 **2026-08 스윕 기준 미발견이다 [불확실 — 부재 증명 아님, 커버리지 한계 §6 준용]**.
+
 ## 문서 관계
 
 - 상류: 승인 계획(비공개 로컬 계획 문서 — 레포 외부; 레포 내 정본은 `PLAN.md`) — 실험 축 ID·마일스톤·게이트의 확정본. 본 문서는 그 계획의 Stage 1 근거층이다.

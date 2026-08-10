@@ -5,7 +5,13 @@
 > [Eligible Actions](https://arxiv.org/pdf/2207.00632); 선점 조사 전체는 [`POSITIONING.md`](POSITIONING.md)).
 > 모든 실험 수치는 [`LEDGER.md`](LEDGER.md) 행 id 로만 인용한다(verbatim — 반올림·자작 금지).
 > 용어는 [`GLOSSARY.md`](GLOSSARY.md) 정본을 따른다. 실행 코드는 `src/ope/diagnostics.py` 의
-> `decision_gate`(판정)와 `PROVISIONAL_THRESHOLDS`(임계값)다.
+> `decision_gate`(판정)와 `PROVISIONAL_THRESHOLDS`(임계값), M8 이후로는 `src/ope/validity.py`
+> (battery — §2.5)와 `experiments/_practitioner.py`(프로토콜 결합 규칙)가 더해진다.
+>
+> **GT-미상 레짐 선언(M8).** 이 문서의 모든 절차는 **로그 층만** 요구한다 — 참값 $V(\pi_e)$ 는
+> 어디에도 입력되지 않는다(GLOSSARY §8 본편/백스테이지). 단 §3 근거 표의 수치는 참값 보유
+> **백스테이지 채점**의 결과다 — 절차는 GT-free 지만, 절차를 믿을 근거는 GT 로 만들었다는 것이
+> 이 레포의 구조다(PLAN §3.5 원칙).
 
 ![Decision gate flowchart (EN)](../assets/decision_gate_flowchart_en.svg)
 
@@ -44,6 +50,35 @@ OPE 의 실무 종착점은 "V̂(π_e) 가 얼마인가"가 아니라 **"이 추
   단 hyperparameter 는 §5 규율(SLOPE 또는 데이터 적응형 규칙)을 따른다. 교정 후 게이트 재실행.
 - **support측 문제**: 추정단 교정이 없다(식별 불능 — 축 04). 처방은 로깅 정책의 탐색 확대 후
   **재로깅(re-log)** 뿐이다.
+
+## 2.5 validity battery [제안 — gate v2, M8 사전등록]
+
+게이트 v1 에 병렬로 합류하는 **필요조건 검사(falsifier)** 4종 — 정의·임계는 PLAN §3.5-1 에
+**실험 수치보다 먼저 커밋**되었고 축 17 에서 평가만 되었다(무튜닝). 실행 코드
+`src/ope/validity.py`, 결합 규칙(§3.5-2): harmonic fail → `ab_fallback` / mean_w·placebo·
+disagreement fail → `distrust` / 그 외 gate v1 판정 유지. 결정 estimator 는 SNIPS 사전등록,
+incumbent anchor = mean(r), fragile flag ⇐ Λ\*_flip < 1.5 [제안 — 라벨만]. **검사 자체는 본
+레포의 발명이 아니다** — harmonic 은 Li et al.(WWW 2015 — Bottou et al. 사적 교신 귀속),
+E[w] 는 Lefortier et al. 2016, placebo 는 negative control(Lipsitch et al. 2010)의 이식:
+전체 계보와 좁혀진 주장은 [`POSITIONING.md`](POSITIONING.md) §7 정본.
+
+| arm | 무엇을 잡나 (축 17 실증 — `m8-17-matrix`) | fail 규칙 [제안] |
+|---|---|---|
+| `E[w]` | HT 항등 E[w]=1 위반 — 곱셈 misrecording(발화 1.0, 방향 ↑)·구조적 support 결핍(발화 1.0, 방향 ↓ — 전역 proxy 가 0 인 지점의 기대값 회수) | 95% CI 가 1 제외 ∧ \|E[w]−1\| > 0.10 |
+| `harmonic` | per-action T(a\*)=mean(1[a=a\*]/pscore) 의 E[T]=1 위반 — δ=0.2 처럼 전역 신호가 전멸하는 국소 결핍까지 회수(발화 1.0) · **naive A/A(π_e=π₀ 기록 분포)는 w≡1 항등으로 vacuous — 채택 금지** | 대상 action(n_a≥30) 중 CI 1 제외 ∧ \|T−1\| > 0.25 |
+| `placebo` | 분석가 생성 독립 noise 보상(참값 0)에서의 가짜 신호 — weight 기계 안정성 | 95% CI 가 0 제외 |
+| `disagreement` | weighting 계열 {IPS·SNIPS·Clipped} 스프레드 — **agreement 는 validity 증거가 아니다**(일관되게 틀릴 때 최소 — §6.1) | > 0.50 (스케일 바닥 미만이면 inconclusive) |
+
+**운영 수칙 3개.**
+① battery 예보력은 **실패 family 별로만** 읽는다 — pooled 발화율 단독 인용 금지(PLAN §3.5-3;
+family 구성비가 임의라 무의미). ② 소표본 주의: harmonic 은 n=500 에서 오경보 0.275
+(`m8-17-matrix`) — 게이트 검정력의 소표본 실종(`m3-hero-map`)과 짝을 이루는 battery 판 함정.
+③ **co-exhibit 의무**: battery 통과를 인용하는 모든 문단에 §6.1 의 원리적 한계(calibrated
+confounding 무검출)를 병기한다(CLAUDE.md §5). 실전 시연: ZOZO 실로그에서 harmonic 이 실발화해
+(T=2.68 — 기록 propensity↔경험 빈도 비정합; 위치 풀링 인공물 가능성 병기) verdict 가
+`ab_fallback` 으로 넘어갔다(`m8-20-card`). 결정 가치의 정량: 오염 로그에서 naive IPS 점추정의
+false-go 0.9(평균 regret 0.21) vs 프로토콜 0.0 — 건강 로그에선 go 0.95/no-go 0.9 로 결정적
+(`m8-19-decision-value`).
 
 ## 3. 근거 — LEDGER 행 인용
 
@@ -120,6 +155,17 @@ ESS/n 0.8230 → 0.0182 로 즉시 감지한다 — 문제는 공식이 아니�
 - **경계 재선언**: confounding 의 교정 본류(proximal 식별·Λ-sensitivity 의 방법론적 발전 등)는 연구
   트랙(decision-frontier) 소관이다. 본 레포는 축 09 "진단이 못 보는 것" 대조표(+축 14 Λ-sweep —
   기존 bound 의 도구 시연)에서 **의도적으로 멈춘다** — 여기서 교정 방법을 주장하지 않는다.
+
+### 6.1 battery 도 예외가 아니다 — 관측 동등성 경계 (축 18, M8)
+
+이 면책 조항은 §2.5 의 battery 에 **그대로 적용**된다. 기록 pscore 가 참 marginal 인 관측 동등성
+세계(축 18 — `marginal_logging_dist` 구성)에서는 **어떤 로그 통계도 confounding 을 구별할 수 없다**
+— 실측(`m8-18-boundary`): calibration arm 발화 0/240(calibrated·as-recorded 양 기록 모드, 전 γ)
+인 채 bias(snips) 는 −0.0009 → −0.0732 로 자란다. 의도값 기록(축 09 장치)의 miscalibration 조차
+사전등록 임계에 미달했다(발화 0 — "부분 검출" 예상 반증, `m8-probe-b`). 유일하게 움직이는 GT-free
+신호는 Λ\*_flip 의 수축(1.31 → 1.05)인데, 이는 confounding 검출이 아니라 **결론이 이유를 모른 채
+취약해진다는 보고**다 — battery 는 blind spot 을 줄이지만(§2.5) 없애지 못하며, 그 몫은 Λ-감도
+구간(위 감도 분석 옵션)과 abstention 이 담당한다.
 
 ## 7. 실데이터 검증 상태 (축 11–12 — 반영 완료)
 
@@ -212,3 +258,9 @@ weight 분산 위험의 예보이지, 깊은 지표(REV)의 판별력 보증이 
    지표별 오류율의 곱으로 계산할 수 없으며(§8.2), 리텐션·장기 지표는 식별 불가로 범위 밖이다(§8.4).
    축 15·16 의 정량 수치는 LEDGER `m6-15-ladder`·`m6-16-gate` 행 verbatim 으로만 인용한다(§8 수치 지위 —
    사다리 성립·지표 불변 trust 40/40·오차 군집 0.53/0.43 vs 독립 기대 0.25·HHI arm 오류 0).
+9. **battery 한계(M8 — §2.5·§6.1)** — battery 는 필요조건 검사이며 통과 ≠ 무결: calibrated
+   confounding 에 관측 동등성으로 무검출(`m8-18-boundary`), harmonic 은 소표본 오경보 0.275
+   (`m8-17-matrix`), disagreement 의 agreement 는 validity 증거가 아니고, 임계값·fragile 라벨(1.5)
+   은 전부 [제안 — 사전등록·무교정]. 예보력 수치는 실패 family 별 분리 보고만 유효하다(pooled
+   단독 인용 금지). 실로그 시연(축 20)은 프로토콜 작동의 시연이지 판정 정확성의 검증이 아니다
+   (reveal 부재 — `m8-20-card`).

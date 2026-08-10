@@ -124,3 +124,14 @@ reward_noise σ=0.5 · support_deficiency=0.0 · confounding_strength=0.0 · n_s
 **마일스톤(달력 정직 — 연구 병행 파트타임, 총 2–3개월).** M0 스캐폴드+probe 2개(GO/NO-GO) → M1 1.5–2.5주
 (DGP+estimator 7종+obp 교차검증) → M2 2–3주(코어 축 01–10 — publishable 최소선) → M3 1.5–2.5주(11–12+플레이북+hero)
 → M4 1–1.5주(portfolio-design 문서) → M5 조건부 스트레치(13·14). 상세는 PLAN.md.
+
+---
+
+## 7. M8 재정위 부록 (2026-08-10 — 본문 §1–6 은 M0 시점 기록으로 동결)
+
+§3 의 2막 서사("ground truth 를 보유한 합성 DGP 에서 분해")는 M0–M7 의 역사 기록이다. M8 부터
+현행 서사는 **3막(GT-미상 본편 / 백스테이지 채점)** 으로 역전되었다 — 실무의 기본 상태(참값을
+아무도 모른다)를 본편으로 올리고, 참값 보유 무대는 본편 신호(게이트·validity battery·Λ\*)의
+예보력과 맹점을 채점하는 백스테이지가 되었다. 실험 축은 17–20(사전등록 PLAN §3.5)이 더해졌고
+§4 의 주장 표는 백스테이지 무대의 주장으로 유효하게 남는다. 현행 서사의 정본은 README 와
+[COMMS_BRIEF_v2.md](COMMS_BRIEF_v2.md), 용어는 [GLOSSARY.md](GLOSSARY.md) §8 이다.

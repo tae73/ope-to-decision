@@ -22,7 +22,7 @@
 | **M6** | 비즈니스 임팩트 층: funnel probe 선행 → `business.py` → 축 15(funnel 신뢰도 사다리)·16(다중 지표 guardrail+광고주 재분배) → PLAYBOOK·README KO/EN 통합 | 1–1.5주 | probe GO 게이트 + verify 지적 0 잔존 |
 | **최종** | portfolio-design Stage 6 적대검증(모든 수치 = LEDGER 삼각일치) → Stage 7 publish(GitHub) → 선택: lowellth-publish | 0.5–1주 | 검증 실패 항목 0 |
 | **M7** (publish 후 확장) | notebook 상세 분석 층 5권(00 로그 EDA → 04 결과 심층) — 파생·재현 층(정본 승격 금지), 실행 output 포함 커밋 | +0.5주 | 5권 실행 무오류 + verify(멱등·LEDGER 정합·데이터 보호) — **완료(2026-08-07, §4.8)** |
-| **M8** (publish 후 재정위) | **GT-미상(practitioner) 본편 트랙**: validity battery(17)·calibrated-confounding 경계(18)·end-to-end blind decision(19)·OBD decision card(20) — §2 확장 + §3.5 **사전등록** + `src/ope/validity.py`·`fitters.py` + 문서 역전(README 3막·PLAYBOOK — 실험 후 단일 패스, 그림 3 은 motivation 으로 전환) | +1.5–2.5주 | §3.5: **사전등록 커밋(수치 0)이 실험에 선행**(git 이력이 증거) · probe M8-A/M8-B GO 시에만 축 착수 · LEDGER ENTERED 전 문서 수치 저작 금지(M4 선례) — **진행 중(2026-08-10 착수, §4.9)** |
+| **M8** (publish 후 재정위) | **GT-미상(practitioner) 본편 트랙**: validity battery(17)·calibrated-confounding 경계(18)·end-to-end blind decision(19)·OBD decision card(20) — §2 확장 + §3.5 **사전등록** + `src/ope/validity.py`·`fitters.py` + 문서 역전(README 3막·PLAYBOOK — 실험 후 단일 패스, 그림 3 은 motivation 으로 전환) | +1.5–2.5주 | §3.5: **사전등록 커밋(수치 0)이 실험에 선행**(git 이력이 증거) · probe M8-A/M8-B GO 시에만 축 착수 · LEDGER ENTERED 전 문서 수치 저작 금지(M4 선례) — **완료(2026-08-10, §4.9 — M9 이월분 별도)** |
 
 **달력 정직성.** 연구(proximal OTR/DTR) 병행 파트타임이므로 달력 시간으로 **총 2–3개월**로 잡는 것이 정직하다.
 M2 종료 시점에 이미 레포가 성립하도록(부분 완성으로도 공개 가능) 설계했고, M5 는 drop 해도 코어 서사가 완결된다.
@@ -32,28 +32,28 @@ M2 종료 시점에 이미 레포가 성립하도록(부분 완성으로도 공�
 DGP 노브는 `src/ope/dgp.py` 의 `DGPConfig` 필드와 1:1 대응한다(기본값: `configs/dgp/default.yaml`).
 "—" 는 DGP 필드가 아니라 estimator/metric 층 노브라는 뜻이다.
 
-| ID | 축 | 스윕 노브 | `DGPConfig` 필드 | 보이려는 패턴 (출처) |
-|---|---|---|---|---|
-| 01 | 표본 크기 | n 로그스케일 스윕 | `n` | 소표본=IPS 분산 지배(DM 우세) ↔ 대표본=DM bias 지배 — regime 교차 ([OBP 벤치마크](https://arxiv.org/abs/2008.07146)) |
-| 02 | 로깅 stochasticity | softmax inverse-temperature 스윕 | `beta_log` | 준결정적 로깅 → overlap 축소 → weight 폭발, IPS/DR 붕괴 ([OBP docs](https://zr-obp.readthedocs.io/en/latest/)) |
-| 03 | 타깃–로깅 괴리 | 평가정책 온도 스윕(로깅 고정) | `beta_eval` | 괴리↑ → 분산 폭발·estimator 순위 역전 ([PAS-IF, AAAI'23](https://ojs.aaai.org/index.php/AAAI/article/view/26195)) |
-| 04 | deficient support | π₀(a\|x)=0 강제 비율 | `support_deficiency` | IPS 계열의 파국적(식별 불능) 실패와 진단의 한계 ([Sachdeva-Su-Joachims, KDD'20](https://arxiv.org/abs/2006.09438)). *M1 설계: per-row 랜덤이 아닌 **구조적 mask**(컨텍스트별 하위-q ⌊δK⌋개 제거 — 랜덤 mask 는 support proxy 를 원리적으로 blind 으로 만듦); δ 스윕은 1/K 양자화 — 세밀 스윕은 K↑ 로* |
-| 05 | propensity 오지정 | p̂ 를 true→estimated→noised 로 교체 | — (estimator 입력측; `pscore_logged`/`pscore_true` 배열 활용) | IPS bias 직결; DR 은 q̂ 한쪽만 맞아도 생존, 둘 다 틀리면 실패 ([DRUnknown](https://arxiv.org/pdf/2404.01830)) |
-| 06 | reward model 오지정 | q̂ 학습기 용량·오지정 정도 | — (estimator 측; 보조 `reward_noise`) | DM bias 의 표본 불감성, DR 보정의 한계 ([MRDR](https://arxiv.org/pdf/1802.03493)) |
-| 07 | hyperparameter 민감도 | clip λ·switch τ·shrinkage 를 분포로 샘플 | — (estimator 하이퍼 층) | 튜닝 없는 고급 estimator 가 단순 estimator 보다 불안정 — IEOE error-CDF ([IEOE](https://arxiv.org/abs/2108.13703)) |
-| 08 | 진단 예보력 + 결정규칙 | 축 01–07 grid 산출 재사용 | (전 축 필드 재사용) | ESS·max-weight vs 실오차 산점 — 진단이 예보하는 축과 못 보는 축의 대비; 결정규칙은 **본 레포의 제안**으로 프레임 |
-| 09 | confounding 주입 + 대조표 | U 개입 강도(기록 pscore ≠ 진짜) | `confounding_strength` | unconfounded vs confounded 에서 ESS·max-weight 는 동일 양호 범위, bias 만 상이 — 표준 진단이 원리적으로 blind ([RecSys'23](https://www.amazon.science/publications/offline-recommender-system-evaluation-under-unobserved-confounding) · [Namkoong+](https://arxiv.org/abs/2003.05623)). *M1 설계: U 는 로깅 logits(γ·U·d_a)와 reward(+γ·κ·U, κ=0.5)에 동시 개입; `pscore_logged`=의도 정책 기록값·`pscore_true`=**U-조건부** 실제값(oracle-IPS 가 참값 복원하는 정의 — tests/test_statistical.py 의 대조 항등으로 검증)* |
-| 10 | 의사결정 metric | MSE 대신 잘못 배포 확률·rank-corr | (전 축 grid 재사용; metric 층) | MSE 동률 estimator 가 정책 *선택* 안전성에선 갈림 ([SharpeRatio@k, ICLR'24](https://arxiv.org/abs/2311.18207)) |
-| 11 | 실데이터 c2b 멀티데이터셋 | optdigits·satimage·pendigits·letter | — (`datasets.py`; 표준 변환 프로토콜) | 깨끗한 GT 에서 synthetic 결론의 체계 벤치 재현 ([c2b 변환 사용 예 — MRDR(Farajtabar+ 2018)](https://arxiv.org/pdf/1802.03493) — 프로토콜 계보는 POSITIONING §2.1 참조) |
-| 12 | 실데이터 OBD small 게이트 | ZOZO 2 로깅정책·실측 propensity | — (`datasets.py`) | random-policy 근사 GT 대비 재현 — bootstrap CI 병기 필수(§3.4) ([OBD](https://arxiv.org/abs/2008.07146)) |
-| 13 | [스트레치] 액션 수 + MIPS | K 스윕(10→수천) | `n_actions` | IPS/DR 분산 폭발과 MIPS 의 구원 ([Saito-Joachims, ICML'22](https://arxiv.org/abs/2202.06317)) |
-| 14 | [스트레치] Λ-sweep + breakdown Λ* | MSM Λ 스윕(축 09 DGP 재사용) | `confounding_strength` (+ estimator 층 Λ) | 정책 순위가 뒤집히는 breakdown Λ* 리포트 ([Kallus & Zhou](https://arxiv.org/pdf/1805.08593)) |
-| 15 | funnel 신뢰도 사다리 (비즈니스 층) | 지표 벡터(CTR·CVR·REV) × n 스윕 — 같은 로그·같은 weight | — (`src/ope/business.py` `FunnelConfig` — 코어 DGP 아님) | 깊은 지표일수록 이벤트 희소(+price heavy tail)로 판별 한계 급증 · 진단은 지표 불변(게이트 trust ≠ 깊은 지표 판별력) · 리텐션 단 의도적 부재(RL OPE 소관) — probe M6 GO 선행(`results/tables/probe_funnel_dgp.json`) |
-| 16 | 다중 지표 비즈니스 게이트 (비즈니스 층) | 트레이드오프 시나리오 × guardrail(Δ̂CTR>0 ∧ Δ̂REV≥−g ∧ HHI≤h) 비교형 vs 절대형 | — (`FunnelConfig`; 광고주 매핑은 구조 rng) | 중첩 지표의 같은-weight 공유 → 결합 게이트 오류 군집(독립 곱 아님) · 노출 재분배·HHI 는 정확 계산(OPE 아님) · subgroup 매출 OPE 희소 시 not-estimable 정직 반환 — 비교형 원칙([Δ-OPE, RecSys'24](https://arxiv.org/abs/2405.10024))의 벡터 확장 |
-| 17 | validity battery (M8 — GT-미상 본편) | 오염 family 사전등록 목록(§3.5-3) × knob × S=40 | — (frontstage 는 로그 층만 — `experiments/_practitioner.py` 스키마) | GT-free **필요조건 검사** 배터리(E[w]·harmonic calibration·placebo·disagreement — §3.5-1)가 대오차(rel_err>0.10)를 family 별로 예보하는지/못 보는지 **blind-then-reveal** 채점 — 축 08 의 GT-미상 일반화 · pooled 단독 보고 금지(§3.5-3) · **calibrated confounding 은 관측 동등성으로 원리적 무검출**(축 18 co-exhibit 의무) |
-| 18 | calibrated-confounding 경계 (M8 — GT-미상 본편) | γ × 기록 방식 2종(as-recorded vs **U-주변화 calibrated**) | `confounding_strength` (+ 사후 marginal-pscore 순수함수 — 생성기 본체 불변) | 관측 동등성 하에서 battery 전항이 **원리적으로 null**·IPS bias 만 성장 — 잡히는 것(miscalibration)과 못 잡는 것(consistent confounding)의 **구성적 분리** 전시, 출구는 Λ-밴드(축 14 도구)로 이월 — 그림 3(축 09)의 GT-미상 세대교체 |
-| 19 | end-to-end blind decision (M8 — GT-미상 본편) | `split_log` → crossfit q̂ 후보(β ladder) × 로깅 regime | — (후보도 로그 유래 — oracle `q_true` 누수 금지) | 로그만으로 GO/NO-GO/AB 결정 → reveal 채점(regret·false-go/false-stop) — **naive(IPS 점추정·무게이트) 대비 프로토콜의 결정 가치** 정량화; 축 10 의 GT-미상 판 |
-| 20 | OBD decision card (M8 — GT-미상 본편) | OBD small 단일 프로토콜(축 12 계승 — 스윕 아님) | — (`datasets.py`) | **reveal 없는 완전 실전** 1-page 판정 카드(추정+CI·진단·battery — 적용불가/inconclusive 정직 표기·Λ-부채꼴 vs anchor·verdict) — 검증 주장 없음·**시연 프레임**, 근사 GT 대조는 축 12 LEDGER 행 참조만 |
+| ID | 축 | 스윕 노브 | `DGPConfig` 필드 | 보이려는 패턴 (출처) | 무대 |
+|---|---|---|---|---|---|
+| 01 | 표본 크기 | n 로그스케일 스윕 | `n` | 소표본=IPS 분산 지배(DM 우세) ↔ 대표본=DM bias 지배 — regime 교차 ([OBP 벤치마크](https://arxiv.org/abs/2008.07146)) | **백스테이지** |
+| 02 | 로깅 stochasticity | softmax inverse-temperature 스윕 | `beta_log` | 준결정적 로깅 → overlap 축소 → weight 폭발, IPS/DR 붕괴 ([OBP docs](https://zr-obp.readthedocs.io/en/latest/)) | **백스테이지** |
+| 03 | 타깃–로깅 괴리 | 평가정책 온도 스윕(로깅 고정) | `beta_eval` | 괴리↑ → 분산 폭발·estimator 순위 역전 ([PAS-IF, AAAI'23](https://ojs.aaai.org/index.php/AAAI/article/view/26195)) | **백스테이지** |
+| 04 | deficient support | π₀(a\|x)=0 강제 비율 | `support_deficiency` | IPS 계열의 파국적(식별 불능) 실패와 진단의 한계 ([Sachdeva-Su-Joachims, KDD'20](https://arxiv.org/abs/2006.09438)). *M1 설계: per-row 랜덤이 아닌 **구조적 mask**(컨텍스트별 하위-q ⌊δK⌋개 제거 — 랜덤 mask 는 support proxy 를 원리적으로 blind 으로 만듦); δ 스윕은 1/K 양자화 — 세밀 스윕은 K↑ 로* | **백스테이지** |
+| 05 | propensity 오지정 | p̂ 를 true→estimated→noised 로 교체 | — (estimator 입력측; `pscore_logged`/`pscore_true` 배열 활용) | IPS bias 직결; DR 은 q̂ 한쪽만 맞아도 생존, 둘 다 틀리면 실패 ([DRUnknown](https://arxiv.org/pdf/2404.01830)) | **백스테이지** |
+| 06 | reward model 오지정 | q̂ 학습기 용량·오지정 정도 | — (estimator 측; 보조 `reward_noise`) | DM bias 의 표본 불감성, DR 보정의 한계 ([MRDR](https://arxiv.org/pdf/1802.03493)) | **백스테이지** |
+| 07 | hyperparameter 민감도 | clip λ·switch τ·shrinkage 를 분포로 샘플 | — (estimator 하이퍼 층) | 튜닝 없는 고급 estimator 가 단순 estimator 보다 불안정 — IEOE error-CDF ([IEOE](https://arxiv.org/abs/2108.13703)) | **백스테이지** |
+| 08 | 진단 예보력 + 결정규칙 | 축 01–07 grid 산출 재사용 | (전 축 필드 재사용) | ESS·max-weight vs 실오차 산점 — 진단이 예보하는 축과 못 보는 축의 대비; 결정규칙은 **본 레포의 제안**으로 프레임 | **백스테이지** |
+| 09 | confounding 주입 + 대조표 | U 개입 강도(기록 pscore ≠ 진짜) | `confounding_strength` | unconfounded vs confounded 에서 ESS·max-weight 는 동일 양호 범위, bias 만 상이 — 표준 진단이 원리적으로 blind ([RecSys'23](https://www.amazon.science/publications/offline-recommender-system-evaluation-under-unobserved-confounding) · [Namkoong+](https://arxiv.org/abs/2003.05623)). *M1 설계: U 는 로깅 logits(γ·U·d_a)와 reward(+γ·κ·U, κ=0.5)에 동시 개입; `pscore_logged`=의도 정책 기록값·`pscore_true`=**U-조건부** 실제값(oracle-IPS 가 참값 복원하는 정의 — tests/test_statistical.py 의 대조 항등으로 검증)* | **백스테이지** |
+| 10 | 의사결정 metric | MSE 대신 잘못 배포 확률·rank-corr | (전 축 grid 재사용; metric 층) | MSE 동률 estimator 가 정책 *선택* 안전성에선 갈림 ([SharpeRatio@k, ICLR'24](https://arxiv.org/abs/2311.18207)) | **백스테이지** |
+| 11 | 실데이터 c2b 멀티데이터셋 | optdigits·satimage·pendigits·letter | — (`datasets.py`; 표준 변환 프로토콜) | 깨끗한 GT 에서 synthetic 결론의 체계 벤치 재현 ([c2b 변환 사용 예 — MRDR(Farajtabar+ 2018)](https://arxiv.org/pdf/1802.03493) — 프로토콜 계보는 POSITIONING §2.1 참조) | **백스테이지** |
+| 12 | 실데이터 OBD small 게이트 | ZOZO 2 로깅정책·실측 propensity | — (`datasets.py`) | random-policy 근사 GT 대비 재현 — bootstrap CI 병기 필수(§3.4) ([OBD](https://arxiv.org/abs/2008.07146)) | **본편** |
+| 13 | [스트레치] 액션 수 + MIPS | K 스윕(10→수천) | `n_actions` | IPS/DR 분산 폭발과 MIPS 의 구원 ([Saito-Joachims, ICML'22](https://arxiv.org/abs/2202.06317)) | **―(drop)** |
+| 14 | [스트레치] Λ-sweep + breakdown Λ* | MSM Λ 스윕(축 09 DGP 재사용) | `confounding_strength` (+ estimator 층 Λ) | 정책 순위가 뒤집히는 breakdown Λ* 리포트 ([Kallus & Zhou](https://arxiv.org/pdf/1805.08593)) | **본편** |
+| 15 | funnel 신뢰도 사다리 (비즈니스 층) | 지표 벡터(CTR·CVR·REV) × n 스윕 — 같은 로그·같은 weight | — (`src/ope/business.py` `FunnelConfig` — 코어 DGP 아님) | 깊은 지표일수록 이벤트 희소(+price heavy tail)로 판별 한계 급증 · 진단은 지표 불변(게이트 trust ≠ 깊은 지표 판별력) · 리텐션 단 의도적 부재(RL OPE 소관) — probe M6 GO 선행(`results/tables/probe_funnel_dgp.json`) | **백스테이지** |
+| 16 | 다중 지표 비즈니스 게이트 (비즈니스 층) | 트레이드오프 시나리오 × guardrail(Δ̂CTR>0 ∧ Δ̂REV≥−g ∧ HHI≤h) 비교형 vs 절대형 | — (`FunnelConfig`; 광고주 매핑은 구조 rng) | 중첩 지표의 같은-weight 공유 → 결합 게이트 오류 군집(독립 곱 아님) · 노출 재분배·HHI 는 정확 계산(OPE 아님) · subgroup 매출 OPE 희소 시 not-estimable 정직 반환 — 비교형 원칙([Δ-OPE, RecSys'24](https://arxiv.org/abs/2405.10024))의 벡터 확장 | **백스테이지** |
+| 17 | validity battery (M8 — GT-미상 본편) | 오염 family 사전등록 목록(§3.5-3) × knob × S=40 | — (frontstage 는 로그 층만 — `experiments/_practitioner.py` 스키마) | GT-free **필요조건 검사** 배터리(E[w]·harmonic calibration·placebo·disagreement — §3.5-1)가 대오차(rel_err>0.10)를 family 별로 예보하는지/못 보는지 **blind-then-reveal** 채점 — 축 08 의 GT-미상 일반화 · pooled 단독 보고 금지(§3.5-3) · **calibrated confounding 은 관측 동등성으로 원리적 무검출**(축 18 co-exhibit 의무) | **본편** |
+| 18 | calibrated-confounding 경계 (M8 — GT-미상 본편) | γ × 기록 방식 2종(as-recorded vs **U-주변화 calibrated**) | `confounding_strength` (+ 사후 marginal-pscore 순수함수 — 생성기 본체 불변) | 관측 동등성 하에서 battery 전항이 **원리적으로 null**·IPS bias 만 성장 — 잡히는 것(miscalibration)과 못 잡는 것(consistent confounding)의 **구성적 분리** 전시, 출구는 Λ-밴드(축 14 도구)로 이월 — 그림 3(축 09)의 GT-미상 세대교체 | **본편** |
+| 19 | end-to-end blind decision (M8 — GT-미상 본편) | `split_log` → crossfit q̂ 후보(β ladder) × 로깅 regime | — (후보도 로그 유래 — oracle `q_true` 누수 금지) | 로그만으로 GO/NO-GO/AB 결정 → reveal 채점(regret·false-go/false-stop) — **naive(IPS 점추정·무게이트) 대비 프로토콜의 결정 가치** 정량화; 축 10 의 GT-미상 판 | **본편** |
+| 20 | OBD decision card (M8 — GT-미상 본편) | OBD small 단일 프로토콜(축 12 계승 — 스윕 아님) | — (`datasets.py`) | **reveal 없는 완전 실전** 1-page 판정 카드(추정+CI·진단·battery — 적용불가/inconclusive 정직 표기·Λ-부채꼴 vs anchor·verdict) — 검증 주장 없음·**시연 프레임**, 근사 GT 대조는 축 12 LEDGER 행 참조만 | **본편** |
 
 비고: `dim_context`·`seed`·`struct_seed` 는 스윕 축이 아니라 통제 변수다 — `struct_seed`(M1 추가 필드)는
 환경 구조(θ·b·d_a)를 고정하고 `seed` 만 바꿔 "같은 환경, 다른 로그" MC 반복을 만든다(구조 rng draw 순서는
@@ -369,7 +369,7 @@ probe JSON 만으로 기계 판독 가능해야 한다.
   불변) + ban-encoding(스키마·소스 텍스트 2중) + DGP checksum 회귀(대표 config 2종 리터럴 고정)
 - [x] **Stage 3 축 17·18 (2026-08-10)**: PATTERN 17: 4/4 · 18: 2/2 PASS — 17 detection matrix
   (detectable 전 시나리오 검출·support_d02 는 harmonic 이 회수·partial/impossible 발화 0 인데
-  calibrated g2.5 대오차율 0.55 — blind 실증)·18 경계 전시(발화 0/240 양 모드·bias 만 성장·
+  calibrated g2.5 대오차율 0.55 — blind 실증)·18 경계 전시(검출 arm 발화 모드별 0/240·bias 만 성장·
   Λ\*_flip 수축 1.311→1.050). LEDGER `m8-17-matrix`·`m8-18-boundary` ENTERED(+GT-분류).
   probe M8-B 예고대로 as-recorded 도 비발화 — 2-패널 서사는 "양쪽 다 비발화·bias 만 성장" 확정
 - [x] **Stage 4 축 19·20 (2026-08-10)**: PATTERN 19: 3/3 PASS — noised×나쁜 후보에서 naive
@@ -378,14 +378,18 @@ probe JSON 만으로 기계 판독 가능해야 한다.
   verdict ab_fallback·fragile). §3.5-1 보고 전용 arm 보완: `refit_gap`·`time_split_gap` 헬퍼
   구현(테스트 97 green — time_split 은 축 20 카드 실측·refit_gap 은 실측처 미배정 상태로 구현만,
   편차 공시). LEDGER `m8-19-decision-value`·`m8-20-card` ENTERED(+GT-분류)
-- [ ] **Stage 5 문서 역전 단일 패스**: POSITIONING URL 스윕([불확실] 해소 전 novelty 문장 README
-  반입 금지) → `docs/COMMS_BRIEF_v2.md`(v1 동결 무접촉) → README KO 3막 역전 + EN twin 동일 커밋
-  (그림 3 → motivation 재캡션 · hero 재편 · 축표 2-tier: 본편 12·14·17–20 / 백스테이지 01–11·15–16) →
-  PLAYBOOK(GT-미상 레짐 선언·battery §·decision card 템플릿) → 축표 4벌 동기(`무대` 열) →
-  CONCEPT 말미 부록(본문 동결) → notebooks/README 1줄 註 →
-  verify(LEDGER 삼각일치·tier 일관·KO/EN parity·링크 무결)
-- [ ] **M9 이월 기록**: c2b 주입-실패 채점 축(ID 21 예약) · notebook 5권 재정박 + 신권 05(GT-미상
-  프로토콜 walkthrough) · frontstage/backstage 구조도 SVG ko/en · lowellth 재발행
+- [x] **Stage 5 문서 역전 단일 패스 (2026-08-10)**: POSITIONING §7 URL 스윕 완료([불확실] 해소 —
+  핵심 수확: harmonic test 의 직계 조상 Li et al. WWW'15 가 "Bottou et al. 사적 교신" 귀속,
+  E[w]≈1 은 Lefortier et al. 2016 직계 → 주장은 "조합"으로 좁힘·"미발견 [불확실 — 부재 증명
+  아님]" 태그) → `docs/COMMS_BRIEF_v2.md`(v1 동결) → README KO 3막 역전 + EN twin(그림 3 →
+  motivation 재캡션·hero 재편[flowchart/detection matrix/decision card]·축표 2-tier·정직성 각주
+  6개) → PLAYBOOK(GT-미상 선언·§2.5 battery·§6.1 관측 동등성 경계·§9-9) → 축표 4벌 `무대` 열 →
+  CONCEPT §7 부록·notebooks/README M8 註 → **verify 3중**(EN parity 자체검증 PASS ·
+  LEDGER 삼각일치 적대 감사: BLOCKER 0·WARN 6 전부 수정[verbatim 절단 3·범위 스코프·"전 arm"
+  과장·반올림 註] · KO 링크/LEDGER id 기계 검사 무결)
+- [x] **M9 이월 기록**: c2b 주입-실패 채점 축(ID 21 예약) · notebook 5권 재정박 + 신권 05(GT-미상
+  프로토콜 walkthrough) · frontstage/backstage 구조도 SVG ko/en · lowellth 재발행 — 착수는 별도
+  계획(M7 post-publish 확장 선례)
 
 ## 5. 리듬 규약
 
