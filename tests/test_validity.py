@@ -18,7 +18,7 @@ from ope.estimators import (
 )
 from ope.validity import (
     LambdaStar, ValidityConfig, bootstrap_joint, lambda_star_vs_anchor,
-    make_placebo_reward, run_validity_checks,
+    make_placebo_reward, refit_gap, run_validity_checks, time_split_gap,
 )
 
 
@@ -174,6 +174,22 @@ def test_lambda_star_censored_and_at_anchor(data):
     at = lambda_star_vs_anchor(data.reward, data.action, data.pscore_logged,
                                data.pi_e_dist, anchor=snips)
     assert at.direction == "at_anchor" and at.lam_star == 1.0
+
+
+def test_report_only_helpers_exact(data):
+    """보고 전용 arm 정확 항등: refit_gap(p, p)=0 · time_split_gap 은 두 반쪽 SNIPS 차."""
+    assert refit_gap(data.pscore_logged, data.pscore_logged) == 0.0
+    with pytest.raises(ValueError):
+        refit_gap(np.zeros(3), np.ones(3))
+    order = np.arange(BASE.n)
+    half = BASE.n // 2
+    va = estimate_snips(data.reward[:half], data.action[:half],
+                        data.pscore_logged[:half], data.pi_e_dist[:half]).value
+    vb = estimate_snips(data.reward[half:], data.action[half:],
+                        data.pscore_logged[half:], data.pi_e_dist[half:]).value
+    got = time_split_gap(data.reward, data.action, data.pscore_logged,
+                         data.pi_e_dist, order)
+    assert got == pytest.approx(vb - va, rel=1e-12)
 
 
 def test_report_deterministic(data):

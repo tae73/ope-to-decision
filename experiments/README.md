@@ -1,9 +1,9 @@
 # experiments — 실험 인덱스
 
-> **상태(2026-08-10): 축 01–12·14–16 실행 완료**(코어 01–10 + 실데이터 11–12 + 스트레치 14 +
-> 비즈니스 층 15–16) — figure+CSV 페어가 `results/` 에 커밋돼 있다. **스트레치 13 은 probe M5-13
-> NO-GO 로 drop**(2026-08-07 — 아래 축 표 13 행). **M8 GT-미상 practitioner 트랙(축 17–20)은
-> 사전등록 완료·미실행**(PLAN §3.5 — probe M8-A/M8-B GO 시에만 착수). 이 문서는
+> **상태(2026-08-10): 축 01–12·14–20 실행 완료**(코어 01–10 + 실데이터 11–12 + 스트레치 14 +
+> 비즈니스 층 15–16 + **M8 GT-미상 practitioner 트랙 17–20** — probe M8-A/M8-B GO 후 착수,
+> PLAN §3.5 사전등록 선행) — figure+CSV 페어가 `results/` 에 커밋돼 있다. **스트레치 13 은
+> probe M5-13 NO-GO 로 drop**(2026-08-07 — 아래 축 표 13 행). 이 문서는
 > 실험 ID · slug · 스윕 노브 · 산출물 규약의 *계약*이며, 결과 수치의 정본은
 > [docs/LEDGER.md](../docs/LEDGER.md) 경유로만 인용한다. 그 외 실행 완료: M0 probe 2종 ·
 > M6 probe(funnel DGP) · M5 probe 2종(13 NO-GO · 14 GO) · M1 교차검증(m1_crossval) · hero regime map.
@@ -77,7 +77,7 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 (CI 는 라이브러리별 bootstrap 구현이 상이 — 비교 제외). 수치 정본: `results/tables/m1_obp_crossval.csv`
 → [docs/LEDGER.md](../docs/LEDGER.md).
 
-## 축 01–20 표 (01–12·14–16 실행 완료 · 13 은 probe NO-GO 로 drop · 17–20 은 M8 사전등록·미실행 — ID 는 확정 불변)
+## 축 01–20 표 (01–12·14–20 실행 완료 · 13 은 probe NO-GO 로 drop — ID 는 확정 불변)
 
 | ID | slug 후보 | 스윕 노브 | 보려는 것 | 근거 (URL) |
 |---|---|---|---|---|
@@ -97,10 +97,10 @@ uv run python experiments/m1_crossval/make_table.py                   # 3단: �
 | 14 | `14_lambda_sweep` [스트레치 — **probe GO 후 실행 완료**] | MSM Λ grid(1→8 기하) × γ∈{0.5,1.5} × 정책 후보 2(β_eval∈{3,5}) → breakdown Λ*(순위 단정 불능점) — probe M5-14 GO 선행(`results/tables/probe_lambda_msm.json`) | 기록 propensity 왜곡의 worst-case 구간(정규화 SNIPS형 bound)과 순위 단정이 무너지는 감도 수준 Λ* — **기존 published 방법의 도구 시연**(본 레포 제안 아님·식별 본류는 범위 밖); 자체 스키마 CSV 2본(long+breakdown — 스크립트 docstring 정본), 수치는 LEDGER `m5-14-lambda` | [Kallus & Zhou](https://arxiv.org/pdf/1805.08593) |
 | 15 | `15_funnel_reliability` | 지표 벡터(CTR·CVR·REV) × `n` 스윕 — 같은 로그·같은 weight(`FunnelConfig`, `src/ope/business.py`) | funnel 신뢰도 사다리: 깊은 지표일수록 이벤트 희소(+price heavy tail)로 판별 한계 급증 · **진단은 지표 불변**(게이트 trust ≠ 깊은 지표 판별력) · seed-ensemble band+p90 병기·이벤트 수 컬럼(0-이벤트 퇴화 정직 기록) — 리텐션 단은 의도적 부재(RL OPE 소관, PLAYBOOK §8.4) | probe M6 GO (`results/tables/probe_funnel_dgp.json`) · CVR 세션 기준([GLOSSARY §7](../docs/GLOSSARY.md)) |
 | 16 | `16_business_gate` | 트레이드오프 시나리오(저가 액션 쏠림 등) × guardrail 게이트(Δ̂CTR>0 ∧ Δ̂REV≥−g ∧ HHI≤h) — 비교형 vs 절대형 | 다중 지표 guardrail: 중첩 지표의 같은-weight 공유로 결합 게이트 오류 **군집**(지표별 곱 아님 — seed 단위 기록) · 광고주 노출 재분배·HHI 는 정확 계산(OPE 아님) · subgroup 매출 OPE 는 임계 미달 시 not-estimable 정직 반환 · g·h 는 시연값(무교정) | [Δ-OPE, RecSys'24](https://arxiv.org/abs/2405.10024) 비교형 원리의 벡터 확장 |
-| 17 | `17_validity_battery` [M8 — 사전등록·미실행] | 오염 family 사전등록 목록(PLAN §3.5-3) × knob × S=40 — frontstage 는 로그 층만(`_practitioner.py` 스키마, `v_true` 컬럼 부재) | GT-free **필요조건 검사** 배터리(E[w]·harmonic·placebo·disagreement)가 대오차를 family 별로 예보/못 보는지 blind-then-reveal 채점 — 축 08 의 GT-미상 일반화 · **pooled 단독 보고 금지** · **calibrated confounding 은 관측 동등성으로 원리적 무검출**(축 18 co-exhibit) · 채점(reveal)은 별도 CSV | PLAN §3.5 (probe M8-A 게이트) · HT calibration 은 survey-weighting 관행의 체계화 **[불확실 — Stage 5 POSITIONING 스윕에서 출처 URL 확정 전 README 반입 금지]** |
-| 18 | `18_calibrated_boundary` [M8 — 사전등록·미실행] | γ × 기록 방식 2종(as-recorded vs **U-주변화 calibrated** — 사후 순수함수, 생성기 불변) | 관측 동등성 하 battery 전항 **원리적 null**·IPS bias 만 성장 — 잡히는 것(miscalibration)/못 잡는 것(consistent confounding)의 구성적 분리, 출구는 Λ-밴드(축 14 도구) — 그림 3(축 09)의 GT-미상 세대교체 | PLAN §3.5 (probe M8-B 게이트) · [Kallus & Zhou](https://arxiv.org/pdf/1805.08593) 도구 재사용 |
-| 19 | `19_blind_decision` [M8 — 사전등록·미실행] | `split_log` → crossfit q̂ 후보(β ladder) × 로깅 regime — 후보도 로그 유래(oracle 누수 금지) | 로그만으로 GO/NO-GO/AB → reveal 채점(regret·false-go/false-stop) — **naive(IPS 점추정·무게이트) 대비 프로토콜의 결정 가치**; 축 10 의 GT-미상 판 | PLAN §3.5 (probe M8-A 게이트 공유) · [Δ-OPE](https://arxiv.org/abs/2405.10024) 비교형 계승 |
-| 20 | `20_obd_decision_card` [M8 — 사전등록·미실행] | OBD small 단일 프로토콜(축 12 계승 — 스윕 아님) | **reveal 없는 완전 실전** 1-page decision card(추정+CI·진단·battery — 적용불가/inconclusive 정직 표기·Λ-부채꼴 vs anchor·verdict) — 검증 주장 없음(시연 프레임)·근사 GT 대조는 축 12 LEDGER 행 참조만 | PLAN §3.5 · [OBD](https://arxiv.org/abs/2008.07146) |
+| 17 | `17_validity_battery` [M8 — 실행 완료] | 오염 family 사전등록 목록(PLAN §3.5-3) × knob × S=40 — frontstage 는 로그 층만(`_practitioner.py` 스키마, `v_true` 컬럼 부재) | GT-free **필요조건 검사** 배터리(E[w]·harmonic·placebo·disagreement)가 대오차를 family 별로 예보/못 보는지 blind-then-reveal 채점 — 축 08 의 GT-미상 일반화 · **pooled 단독 보고 금지** · **calibrated confounding 은 관측 동등성으로 원리적 무검출**(축 18 co-exhibit) · 채점(reveal)은 별도 CSV | PLAN §3.5 (probe M8-A 게이트) · HT calibration 은 survey-weighting 관행의 체계화 **[불확실 — Stage 5 POSITIONING 스윕에서 출처 URL 확정 전 README 반입 금지]** |
+| 18 | `18_calibrated_boundary` [M8 — 실행 완료] | γ × 기록 방식 2종(as-recorded vs **U-주변화 calibrated** — 사후 순수함수, 생성기 불변) | 관측 동등성 하 battery 전항 **원리적 null**·IPS bias 만 성장 — 잡히는 것(miscalibration)/못 잡는 것(consistent confounding)의 구성적 분리, 출구는 Λ-밴드(축 14 도구) — 그림 3(축 09)의 GT-미상 세대교체 | PLAN §3.5 (probe M8-B 게이트) · [Kallus & Zhou](https://arxiv.org/pdf/1805.08593) 도구 재사용 |
+| 19 | `19_blind_decision` [M8 — 실행 완료] | `split_log` → crossfit q̂ 후보(β ladder) × 로깅 regime — 후보도 로그 유래(oracle 누수 금지) | 로그만으로 GO/NO-GO/AB → reveal 채점(regret·false-go/false-stop) — **naive(IPS 점추정·무게이트) 대비 프로토콜의 결정 가치**; 축 10 의 GT-미상 판 | PLAN §3.5 (probe M8-A 게이트 공유) · [Δ-OPE](https://arxiv.org/abs/2405.10024) 비교형 계승 |
+| 20 | `20_obd_decision_card` [M8 — 실행 완료] | OBD small 단일 프로토콜(축 12 계승 — 스윕 아님) | **reveal 없는 완전 실전** 1-page decision card(추정+CI·진단·battery — 적용불가/inconclusive 정직 표기·Λ-부채꼴 vs anchor·verdict) — 검증 주장 없음(시연 프레임)·근사 GT 대조는 축 12 LEDGER 행 참조만 | PLAN §3.5 · [OBD](https://arxiv.org/abs/2008.07146) |
 
 ## 게이트 메모
 

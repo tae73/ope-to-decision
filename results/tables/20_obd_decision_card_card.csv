@@ -1,0 +1,2 @@
+n_rounds,n_actions,incumbent_mean_r,time_split_gap_snips,ess_ratio_raw,max_weight_raw,support_proxy,gate_v1,mean_w,mean_w_state,harmonic_worst_t,harmonic_state,placebo_value,placebo_state,disagreement,disagreement_state,lam_star_flip,lam_star_censored,lam_direction,protocol_verdict,decision,fragile
+10000,80,0.0042,-0.0018018872962534012,0.03403783411325947,277.77777777777777,0.0,distrust,1.0111091697059524,pass,2.6765535890089587,fail,0.00011871101885191724,pass,0.2856879438213715,pass,1.3427879231868898,False,below,ab_fallback,ab_test,True

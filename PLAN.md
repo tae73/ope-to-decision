@@ -367,10 +367,17 @@ probe JSON 만으로 기계 판독 가능해야 한다.
   `experiments/_practitioner.py`(DECISION/REVEAL 스키마·split_log·run_protocol·reveal 파일 경유) —
   **테스트 63 → 96 green**: 5장르 + blindness(oracle NaN 오염+`true_policy_value` 폭파 하 산출
   불변) + ban-encoding(스키마·소스 텍스트 2중) + DGP checksum 회귀(대표 config 2종 리터럴 고정)
-- [ ] **Stage 3 축 17·18**: figure+CSV 페어 + stdout PATTERN + LEDGER `m8-17-*`·`m8-18-*` 행
-  (+GT-분류 블록 동시 등재) — 17 detection matrix(family 분리)·18 2-패널(부분 검출 vs 원리적 불가)
-- [ ] **Stage 4 축 19·20**: 동일 규약 — 19 는 naive 대비 결정 가치(regret), 20 은 **reveal 파일
-  없음**(시연 프레임·검증 주장 금지·축 12 는 LEDGER id 참조만)
+- [x] **Stage 3 축 17·18 (2026-08-10)**: PATTERN 17: 4/4 · 18: 2/2 PASS — 17 detection matrix
+  (detectable 전 시나리오 검출·support_d02 는 harmonic 이 회수·partial/impossible 발화 0 인데
+  calibrated g2.5 대오차율 0.55 — blind 실증)·18 경계 전시(발화 0/240 양 모드·bias 만 성장·
+  Λ\*_flip 수축 1.311→1.050). LEDGER `m8-17-matrix`·`m8-18-boundary` ENTERED(+GT-분류).
+  probe M8-B 예고대로 as-recorded 도 비발화 — 2-패널 서사는 "양쪽 다 비발화·bias 만 성장" 확정
+- [x] **Stage 4 축 19·20 (2026-08-10)**: PATTERN 19: 3/3 PASS — noised×나쁜 후보에서 naive
+  false-go 0.9(regret 0.208) vs protocol 0.0(AB 회귀)·healthy 는 결정적(go 0.95/no_go 0.9·오류 0) ·
+  20 실로그 decision card(**reveal 없음** — gate v1 distrust 재현·harmonic 실발화(fail)로
+  verdict ab_fallback·fragile). §3.5-1 보고 전용 arm 보완: `refit_gap`·`time_split_gap` 헬퍼
+  구현(테스트 97 green — time_split 은 축 20 카드 실측·refit_gap 은 실측처 미배정 상태로 구현만,
+  편차 공시). LEDGER `m8-19-decision-value`·`m8-20-card` ENTERED(+GT-분류)
 - [ ] **Stage 5 문서 역전 단일 패스**: POSITIONING URL 스윕([불확실] 해소 전 novelty 문장 README
   반입 금지) → `docs/COMMS_BRIEF_v2.md`(v1 동결 무접촉) → README KO 3막 역전 + EN twin 동일 커밋
   (그림 3 → motivation 재캡션 · hero 재편 · 축표 2-tier: 본편 12·14·17–20 / 백스테이지 01–11·15–16) →

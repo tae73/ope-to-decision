@@ -222,6 +222,30 @@ def run_validity_checks(reward, action, pscore, pi_e_dist, q_hat=None, context=N
                           dr_correction=dr_corr, nc_covariate=nc, checks_failed=failed)
 
 
+def refit_gap(pscore: np.ndarray, pscore_refit: np.ndarray) -> float:
+    """보고 전용(§3.5-1): crossfit π̂₀ 재적합값 vs 기록 pscore 의 평균 절대 상대 괴리.
+
+    기록이 같은 절차의 refit 산물이면 준-null 이 되는 함정(§3.5-1) — 게이트 비발화·보고만.
+    """
+    pscore = np.asarray(pscore, dtype=float)
+    if np.any(pscore <= 0):
+        raise ValueError("pscore must be positive")
+    return float(np.mean(np.abs(np.asarray(pscore_refit, dtype=float) - pscore) / pscore))
+
+
+def time_split_gap(reward, action, pscore, pi_e_dist, order) -> float:
+    """보고 전용(§3.5-1): 시간순 전/후반 SNIPS 추정 gap — nonstationarity/drift 전용 신호.
+
+    order 는 시간 오름차순 정렬 인덱스(타임스탬프 보유 로그 한정). 게이트 비발화·보고만.
+    """
+    order = np.asarray(order)
+    half = len(order) // 2
+    a, b = order[:half], order[half:]
+    va = estimate_snips(reward[a], action[a], pscore[a], pi_e_dist[a]).value
+    vb = estimate_snips(reward[b], action[b], pscore[b], pi_e_dist[b]).value
+    return float(vb - va)
+
+
 def lambda_star_vs_anchor(reward, action, pscore, pi_e_dist, anchor: float,
                           lam_max: float = 8.0, iters: int = 60) -> LambdaStar:
     """결론(SNIPS vs anchor 의 부호)이 뒤집힐 수 있는 최소 Λ — **Λ\\*_flip** (GLOSSARY §8).
