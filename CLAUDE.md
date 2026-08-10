@@ -8,7 +8,9 @@
 - **비범위 (README 에도 선언·상호 링크):** OPL/policy learning·CATE 는 범위 밖
   (→ `../kr_segmentation_causal_targeting_dunnhumby`, `../causal-inference`), slate OPE(PI/IIPS/RIPS)·
   RL OPE(FQE/DICE)도 범위 밖. **proximal 등 confounding 교정 본류는 연구 트랙(decision-frontier) 소관** —
-  본 레포는 축 09 의 "진단이 못 보는 것" 대조표(+조건부 스트레치 축 14 Λ-sweep)에서 **의도적으로 멈춘다**.
+  본 레포는 축 09 의 "진단이 못 보는 것" 대조표(+조건부 스트레치 축 14 Λ-sweep, M8 축 18 의
+  calibrated-confounding **경계 전시**)에서 **의도적으로 멈춘다** — GT-미상 트랙(축 17–20)도
+  confounding 교정을 주장하지 않는다(출구는 Λ-감도 구간 이월뿐).
 - 프로젝트 전체 설계 정본: 비공개 로컬 계획 문서(레포 외부) — 레포 내 정본은 `PLAN.md`. 마일스톤·게이트·
   진행 상태는 `PLAN.md` — 작업 완료 시마다 PLAN.md 상태를 동기화한다.
 
@@ -34,6 +36,9 @@
   diagnostics 의 입력으로 재사용된다. **불확실성 병기 규약(M2 정밀화)**: 합성 MC 축(01–10·15–16)은
   **S-seed ensemble band**(mean±2·SE over seeds)로 병기하고, `bootstrap_ci` 는 **실데이터 축 11–12
   (단일 로그·seed 반복 불가) 전용**이다 — 전면 bootstrap 은 런타임 ×1000 으로 비실용(M2 실측).
+  **M8 예외(practitioner 트랙 축 17–20)**: frontstage 는 합성 로그여도 단일-로그 **joint bootstrap**
+  (B=500 — 같은 재표집 인덱스에서 7종+battery 동시 계산·paired; 실무자에게 로그는 하나)을 쓴다.
+  seed-ensemble 은 reveal(백스테이지) 집계 전용 — 정본: PLAN §3.5.
 - Hydra 는 **Compose API 로만** 로드(`@hydra.main` 금지), OmegaConf → NamedTuple 변환 후
   src 모듈에는 NamedTuple 만 전달 (mta-simulation 관례). config 루트는 `configs/config.yaml`.
 - 네이밍: 함수 verb_noun(`estimate_*`·`compute_*`·`make_*`), 상수 UPPER_SNAKE, private `_prefix`.
@@ -64,6 +69,12 @@
     11 c2b 멀티데이터셋 / 12 OBD small 게이트
   - 스트레치(조건부): 13 액션 수+MIPS / 14 Λ-sweep — 각각 1일 probe GO 시에만 착수
   - 비즈니스 층 15–16(M6, probe 선행): 15 funnel 신뢰도 사다리 / 16 다중 지표 비즈니스 게이트
+  - GT-미상 practitioner 트랙(M8 본편 — **사전등록 PLAN §3.5**·probe M8-A/M8-B 게이트):
+    17 validity battery / 18 calibrated-confounding 경계 / 19 end-to-end blind decision /
+    20 OBD decision card. frontstage 산출 `NN_*_decision.csv` 에 `v_true`·oracle 컬럼 금지
+    (계약 테스트), reveal 채점은 `NN_*_reveal.csv` 분리(축 20 은 reveal 없음). tier 분류
+    (본편/백스테이지)의 정본은 PLAN §2·experiments/README(`무대` 열은 M8 Stage 5 문서 역전에서
+    추가 예정 — 그 전까지는 PLAN §4.9 Stage 5 항목이 배정 기록).
 - `experiments/probes/` 는 **self-contained**(src 미의존, 단독 실행 가능) — research-design Stage 3
   포맷(WHAT GENERALIZES / THE RESULT boxed / HONEST reduces_check / VERDICT) + JSON 산출 유지.
 - 결과 경로 규약: figure → `results/figures/NN_*.{png,svg}`, 수치 → `results/tables/NN_*.{json,csv}`
@@ -85,6 +96,11 @@
 - 미확인 사실은 **[불확실] 태그** 유지, probe 로 해소하면 정본(JSON) 경로와 함께 해소 기록을 남긴다 —
   선례: obp PyPI 릴리스 버전(0.5.5 vs 0.5.7 상충 기록)은 probe M0-B 의 PyPI 재확인으로 **해소**
   (0.5.7/2023-04-14 — `results/tables/probe_obp_pypi_check.json`, LEDGER m0b-pypi 행).
+- **validity battery(M8 축 17–20) 주장 규율**: battery 는 **"필요조건 검사(falsifier)"** 프레임 고정 —
+  "GT-free 검증/보증" 류 표현 금지. battery 관련 주장 문단마다 **calibrated confounding 원리적 무검출
+  (관측 동등성 — 축 18) co-exhibit 의무**(축 09 co-exhibit 규칙의 확장). family 분리 없는 pooled
+  발화율 단독 인용 반려(PLAN §3.5-3). frontstage 산출물에 oracle 컬럼(`v_true`·`q_true`·`pscore_true`·
+  `gt_value`)이 나타나면 반려.
 
 ## 6. 환경(env) 규약
 

@@ -75,7 +75,7 @@
 | sensitivity analysis | 민감도 분석(sensitivity analysis) | 미관측 교란의 세기를 가정 파라미터로 두고, 그 가정 아래 결론이 유지되는 범위를 계산하는 분석 틀. |
 | marginal sensitivity model (MSM) Λ | MSM Λ (영어 유지) — 스트레치(축 14 — probe M5-14 GO 후 실행 완료) | 기록 propensity와 진짜 propensity의 odds ratio가 Λ 이내라는 가정 하에 policy value의 worst-case 구간을 계산하는 모형 (Kallus & Zhou, https://arxiv.org/pdf/1805.08593). |
 | breakdown Λ\* | breakdown Λ\* (영어 유지) — 스트레치(축 14 — 실행 완료) | 정책 순위(또는 gate 판정)가 뒤집히는 최소 Λ; "이 결론이 뒤집히려면 얼마나 큰 confounding이 필요한가"라는 robustness certificate 언어. |
-| negative control | negative control (영어 유지; 뜻풀이 "음성 대조") — 미채택(참고 개념 — 본 레포의 확정 축 01–14 에 대응 실험 없음; 연구 브릿지 조사에서 검토된 선택 훅) | 인과 효과가 없음을 아는 action/outcome에서 nonzero 효과가 잡히면 confounding 알람으로 쓰는 진단 — A/A test와 유사한 sanity check. |
+| negative control | negative control (영어 유지; 뜻풀이 "음성 대조") — 축 01–16 시점 미채택(연구 브릿지 조사에서 검토된 선택 훅)이었다가 **M8 에서 placebo reward 형태로 채택**(축 17 사전등록 — PLAN §3.5-1·본 문서 §8 placebo reward; 이력 보존을 위해 미채택 기록 유지) | 인과 효과가 없음을 아는 action/outcome에서 nonzero 효과가 잡히면 confounding 알람으로 쓰는 진단 — A/A test와 유사한 sanity check(문헌 개념 — 도메인 지식으로 고른 공유-교란 대조가 전제). **주의(M8 명기):** 본 레포의 채택형(placebo reward)은 분석가 생성 독립 노이즈라 weight 기계의 무신호 안정성 검사이며, marginally calibrated confounding 에는 관측 동등성으로 원리적 무검출 — 문헌형과 달리 confounding 알람이 아니다(본 문서 §8). |
 
 ## 6. 데이터·ground truth
 
@@ -94,3 +94,25 @@
 | funnel | funnel (영어 유지; 뜻풀이 "전환 깔때기") | impression → click → conversion → revenue 로 이어지는 단계 구조. 단계가 깊을수록 이벤트가 희소해져 같은 로그에서 OPE 판별 한계가 커진다 — "funnel 신뢰도 사다리"(축 15). 세션 간 지표(retention 등)는 funnel 에 없다 — single-step bandit OPE 로 식별 불가(RL OPE 소관, PLAYBOOK §8.4). |
 | guardrail metric | guardrail (영어 유지) | 주 지표 개선(예: Δ̂CTR>0)을 전제로 부지표 악화 한계(예: Δ̂REV≥−g)·구조 제약(예: HHI≤h)을 함께 요구하는 다중 지표 게이트의 보호 지표 — 한계값 g·h 는 시연값(무교정, 본 레포 "제안" 지위 계승). 축 16. |
 | HHI (Herfindahl–Hirschman index) | HHI (영어 유지) | 점유율 제곱합 Σsᵢ² 로 정의되는 집중도 지표 — 본 레포에선 광고주별 기대 노출 점유율에 적용하며, π 가 기지이므로 **OPE 가 아니라 정확 계산**(결정적 arm — 오류율 0)이다. 축 16 (`src/ope/business.py` `hhi`). |
+
+## 8. GT-미상 레짐 (M8 — 축 17–20, 사전등록 PLAN §3.5)
+
+| EN 용어 | KO 표기(정본) | 한 줄 정의 |
+|---|---|---|
+| ground-truth-unknown regime | GT-미상 레짐 → 이후 "GT-미상" 허용 | 실무의 기본 상태: 손에 있는 것은 로그와 후보 정책 분포뿐이고 참값 V(π_e) 는 어떤 채점에도 쓸 수 없다 — M8 practitioner 트랙(축 17–20)의 무대. 반대 무대는 참값 보유 백스테이지. |
+| frontstage / backstage | 본편(frontstage) / 백스테이지(backstage) | 본편 = 실무자가 **로그 층만으로** 계산·판정하는 서사 층(산출 `NN_*_decision.csv` — `v_true` 류 컬럼 부재, 계약 테스트로 강제); 백스테이지 = 참값 보유 무대(합성 v_true·c2b 정확 라벨·OBD 근사 GT)에서 본편의 신호를 **사후 채점**하는 검증 층(reveal — `NN_*_reveal.csv`). |
+| logged layer / oracle layer | 로그 층 / oracle 층 | `SyntheticBanditData` 의 이중 구조(원산지: notebook 01) — 로그 층(context·action·reward·`pscore_logged`·π_e 분포)은 estimator·진단·battery 가 보는 전부, oracle 층(`q_true`·`pscore_true`·`v_true`)은 채점 전용이며 **실무에는 존재하지 않는다**. |
+| validity battery | validity battery (영어 유지) | GT-free **필요조건 검사(falsifier)** 배터리 — gate arm 4종(E[w]·harmonic·placebo·disagreement) + 보고 전용 4종(PLAN §3.5-1). **통과는 무결의 증명이 아니며**, marginally calibrated confounding 은 관측 동등성으로 원리적 무검출(축 18 이 경계를 구성적으로 전시). gate v1(`diagnostics.py` — 불가침)과 독립·병렬인 gate v2 **[제안]**. |
+| E[w] calibration | E[w] calibration (영어 유지) | mean(w) 통계 — 기록 propensity 가 참이면 E[w]=1 (Horvitz–Thompson 항등). <1 은 support 결핍 방향, ≠1 양방향은 misrecording. 기록값 기반인 한 calibrated confounding 에는 blind. |
+| harmonic (per-action) calibration | harmonic calibration (영어 유지) | T(a\*) = mean(1[a=a\*]/pscore) — 기록 pscore 와 경험적 행동 빈도의 비정합을 action 별로 검출(E[T]=1 항등). **naive A/A check 의 비-vacuous 대체**. 역시 기록값 기반 — calibrated confounding 에는 관측 동등성으로 원리적 무검출(축 18). |
+| A/A self-consistency check | A/A check (영어 유지) | π₀ 를 자기 평가해 mean(r) 재현을 확인하는 업계 folklore 검사 — 본 레포는 naive 형(π_e = π₀ 기록 분포)이 **w≡1 항등으로 vacuous** 임을 명기하고(PLAN §3.5-1) harmonic calibration 으로 대체 채택. confounding 에는 원리적 blind. |
+| estimator disagreement | estimator disagreement (영어 유지) | weighting 계열 {IPS·SNIPS·Clipped-IPS} 점추정 스프레드 — 필요조건 신호일 뿐이며 **agreement 는 validity 증거가 아니다**(모든 estimator 가 일관되게 틀릴 때 최소 — 축 18). |
+| placebo reward | placebo reward (영어 유지) | 분석가가 자체 생성한 독립 noise 보상(구성상 참값 0)에 대한 IPS 추정 — negative control 의 M8 채택형(§5 행 참조). weight 기계의 무신호 안정성 검사이며 confounding 알람이 아니다. |
+| blind-then-reveal | blind-then-reveal (영어 유지) | frontstage(로그만) 판정을 먼저 커밋하고 사후에 reveal(참값 채점)로 예보력을 실측하는 프로토콜 — 축 08 이 진단-층 선례, 축 17·19 가 프로토콜-층 일반화. |
+| decision card | decision card (영어 유지) | 단일 실로그에 대한 1-page 판정 카드(추정+CI·진단·battery — 적용불가/inconclusive 정직 표기·Λ-부채꼴 vs anchor·verdict) — 축 20. **reveal 없음**(시연 프레임·검증 주장 금지). |
+| truth_kind | truth_kind (영어 유지) | reveal 채점의 truth 등급 컬럼: `exact_synthetic` / `exact_c2b` / `approx_band_obd` / `none` — `none` 은 채점표가 없다는 사실 자체를 전시한다(축 20). |
+| joint bootstrap | joint bootstrap (영어 유지) | 같은 재표집 인덱스에서 estimator 7종 + battery 통계를 동시 계산하는 paired bootstrap(B=500) — practitioner 트랙 frontstage 전용(CLAUDE.md §2 예외; 기존 `bootstrap_ci` 는 불변). |
+| observational equivalence | 관측 동등성(observational equivalence) | 기록 pscore 가 참 marginal 인 confounded 세계와 어떤 unconfounded 세계가 관측 분포 (x,a,r,pscore) 를 동일하게 생성하되 V(π_e) 는 다른 구성 — **어떤 로그 통계(battery 포함)도 두 세계를 구별할 수 없다**. battery 의 넘을 수 없는 경계이자 Λ-감도 구간(§5 MSM)이 유일한 출구인 이유. 축 18. |
+| inconclusive / abstention | inconclusive(판단 불능) / abstention(판정 보류) | heavy-tail 실로그 등에서 battery CI 가 무정보일 때의 **정당한 출력** — "모른다"를 출력하는 것이 프로토콜의 실패가 아니라 기능이다(축 20 사전 설계 · disagreement 스케일 바닥 규칙 PLAN §3.5-1). |
+| co-exhibit | 함께 전시(co-exhibit) | battery·진단의 성과를 주장하는 문단마다 그 blind spot(관측 동등성 — 축 18; 진단은 축 09)을 반드시 병기하는 정직성 규율 — CLAUDE.md §5 가드레일로 기계 강제. |
+| Λ\*_flip | Λ\*_flip (영어 유지) | 후보 vs incumbent anchor(mean(r)) 비교의 결론이 뒤집히는 최소 Λ — breakdown Λ\*(§5)의 **결정-층 변형**(축 17–20 의 fragile flag 입력, PLAN §3.5-2). |

@@ -5,10 +5,11 @@
 > **decision gate 규칙은 본 레포의 제안(산발적 folklore 의 체계화 시도)이지 확립된 표준이 아니다**
 > ([Eligible Actions](https://arxiv.org/pdf/2207.00632) 등에서 ESS 관행이 산발적으로만 확인됨).
 > **경계 선언.** hidden confounding 의 proximal 본류는 연구 레포(decision-frontier) 소관 — 본 레포는 축 09
-> "진단이 못 보는 것" 대조표(+조건부 축 14 Λ-sweep)에서 **의도적으로 멈춘다**. OPL/CATE/slate/RL 은 범위 밖
+> "진단이 못 보는 것" 대조표(+조건부 축 14 Λ-sweep, M8 축 18 의 calibrated-confounding **경계 전시**)에서
+> **의도적으로 멈춘다** — GT-미상 트랙(축 17–20)도 confounding 교정을 주장하지 않는다. OPL/CATE/slate/RL 은 범위 밖
 > (OPL·CATE 는 `kr_segmentation_causal_targeting_dunnhumby`, CATE 카탈로그는 `causal-inference` 와 상호 링크).
 
-## 1. 마일스톤 M0–M5 + 최종 publish
+## 1. 마일스톤 M0–M8 + 최종 publish
 
 | 마일스톤 | 내용 | 기간(파트타임) | 게이트(§3 상세) |
 |---|---|---|---|
@@ -21,6 +22,7 @@
 | **M6** | 비즈니스 임팩트 층: funnel probe 선행 → `business.py` → 축 15(funnel 신뢰도 사다리)·16(다중 지표 guardrail+광고주 재분배) → PLAYBOOK·README KO/EN 통합 | 1–1.5주 | probe GO 게이트 + verify 지적 0 잔존 |
 | **최종** | portfolio-design Stage 6 적대검증(모든 수치 = LEDGER 삼각일치) → Stage 7 publish(GitHub) → 선택: lowellth-publish | 0.5–1주 | 검증 실패 항목 0 |
 | **M7** (publish 후 확장) | notebook 상세 분석 층 5권(00 로그 EDA → 04 결과 심층) — 파생·재현 층(정본 승격 금지), 실행 output 포함 커밋 | +0.5주 | 5권 실행 무오류 + verify(멱등·LEDGER 정합·데이터 보호) — **완료(2026-08-07, §4.8)** |
+| **M8** (publish 후 재정위) | **GT-미상(practitioner) 본편 트랙**: validity battery(17)·calibrated-confounding 경계(18)·end-to-end blind decision(19)·OBD decision card(20) — §2 확장 + §3.5 **사전등록** + `src/ope/validity.py`·`fitters.py` + 문서 역전(README 3막·PLAYBOOK — 실험 후 단일 패스, 그림 3 은 motivation 으로 전환) | +1.5–2.5주 | §3.5: **사전등록 커밋(수치 0)이 실험에 선행**(git 이력이 증거) · probe M8-A/M8-B GO 시에만 축 착수 · LEDGER ENTERED 전 문서 수치 저작 금지(M4 선례) — **진행 중(2026-08-10 착수, §4.9)** |
 
 **달력 정직성.** 연구(proximal OTR/DTR) 병행 파트타임이므로 달력 시간으로 **총 2–3개월**로 잡는 것이 정직하다.
 M2 종료 시점에 이미 레포가 성립하도록(부분 완성으로도 공개 가능) 설계했고, M5 는 drop 해도 코어 서사가 완결된다.
@@ -48,6 +50,10 @@ DGP 노브는 `src/ope/dgp.py` 의 `DGPConfig` 필드와 1:1 대응한다(기본
 | 14 | [스트레치] Λ-sweep + breakdown Λ* | MSM Λ 스윕(축 09 DGP 재사용) | `confounding_strength` (+ estimator 층 Λ) | 정책 순위가 뒤집히는 breakdown Λ* 리포트 ([Kallus & Zhou](https://arxiv.org/pdf/1805.08593)) |
 | 15 | funnel 신뢰도 사다리 (비즈니스 층) | 지표 벡터(CTR·CVR·REV) × n 스윕 — 같은 로그·같은 weight | — (`src/ope/business.py` `FunnelConfig` — 코어 DGP 아님) | 깊은 지표일수록 이벤트 희소(+price heavy tail)로 판별 한계 급증 · 진단은 지표 불변(게이트 trust ≠ 깊은 지표 판별력) · 리텐션 단 의도적 부재(RL OPE 소관) — probe M6 GO 선행(`results/tables/probe_funnel_dgp.json`) |
 | 16 | 다중 지표 비즈니스 게이트 (비즈니스 층) | 트레이드오프 시나리오 × guardrail(Δ̂CTR>0 ∧ Δ̂REV≥−g ∧ HHI≤h) 비교형 vs 절대형 | — (`FunnelConfig`; 광고주 매핑은 구조 rng) | 중첩 지표의 같은-weight 공유 → 결합 게이트 오류 군집(독립 곱 아님) · 노출 재분배·HHI 는 정확 계산(OPE 아님) · subgroup 매출 OPE 희소 시 not-estimable 정직 반환 — 비교형 원칙([Δ-OPE, RecSys'24](https://arxiv.org/abs/2405.10024))의 벡터 확장 |
+| 17 | validity battery (M8 — GT-미상 본편) | 오염 family 사전등록 목록(§3.5-3) × knob × S=40 | — (frontstage 는 로그 층만 — `experiments/_practitioner.py` 스키마) | GT-free **필요조건 검사** 배터리(E[w]·harmonic calibration·placebo·disagreement — §3.5-1)가 대오차(rel_err>0.10)를 family 별로 예보하는지/못 보는지 **blind-then-reveal** 채점 — 축 08 의 GT-미상 일반화 · pooled 단독 보고 금지(§3.5-3) · **calibrated confounding 은 관측 동등성으로 원리적 무검출**(축 18 co-exhibit 의무) |
+| 18 | calibrated-confounding 경계 (M8 — GT-미상 본편) | γ × 기록 방식 2종(as-recorded vs **U-주변화 calibrated**) | `confounding_strength` (+ 사후 marginal-pscore 순수함수 — 생성기 본체 불변) | 관측 동등성 하에서 battery 전항이 **원리적으로 null**·IPS bias 만 성장 — 잡히는 것(miscalibration)과 못 잡는 것(consistent confounding)의 **구성적 분리** 전시, 출구는 Λ-밴드(축 14 도구)로 이월 — 그림 3(축 09)의 GT-미상 세대교체 |
+| 19 | end-to-end blind decision (M8 — GT-미상 본편) | `split_log` → crossfit q̂ 후보(β ladder) × 로깅 regime | — (후보도 로그 유래 — oracle `q_true` 누수 금지) | 로그만으로 GO/NO-GO/AB 결정 → reveal 채점(regret·false-go/false-stop) — **naive(IPS 점추정·무게이트) 대비 프로토콜의 결정 가치** 정량화; 축 10 의 GT-미상 판 |
+| 20 | OBD decision card (M8 — GT-미상 본편) | OBD small 단일 프로토콜(축 12 계승 — 스윕 아님) | — (`datasets.py`) | **reveal 없는 완전 실전** 1-page 판정 카드(추정+CI·진단·battery — 적용불가/inconclusive 정직 표기·Λ-부채꼴 vs anchor·verdict) — 검증 주장 없음·**시연 프레임**, 근사 GT 대조는 축 12 LEDGER 행 참조만 |
 
 비고: `dim_context`·`seed`·`struct_seed` 는 스윕 축이 아니라 통제 변수다 — `struct_seed`(M1 추가 필드)는
 환경 구조(θ·b·d_a)를 고정하고 `seed` 만 바꿔 "같은 환경, 다른 로그" MC 반복을 만든다(구조 rng draw 순서는
@@ -59,8 +65,18 @@ probe M0-A(Bernoulli)와의 이탈은 dgp.py docstring 에 기록했다.
 `FunnelConfig`(funnel DGP: click~Bern(p_c)·conv|click~Bern(p_v)·revenue=click·conv·price_a — 정책은
 relevance 스코어 위 softmax, 기저율과 분리력을 구조적으로 분리) 위에서 돈다. CVR 은 **세션 기준**
 (click·conv — 업계 click-조건부와 다름, GLOSSARY §7), γ(confounding) 노브는 Bernoulli 비선형에서
-정확-GT 정리가 깨져 **영구 금지**(confounding 은 축 09 소관 경계), 리텐션·세션 간 지표는 single-step
+정확-GT 정리가 깨져 **영구 금지**(confounding 은 코어 DGP 의 축 09·18 소관 경계 — `FunnelConfig` 불변), 리텐션·세션 간 지표는 single-step
 bandit OPE 식별 불가로 범위 밖(RL OPE 소관 — PLAYBOOK §8.4 경계 선언, 세션 내 proxy 미채택).
+**M8 설계 결정(정본은 §3.5 사전등록):** practitioner 트랙(축 17–20)은 **frontstage(로그 층만)와
+reveal(백스테이지 채점)을 스키마·코드 경로 수준에서 분리**한다 — frontstage `*_decision.csv` 에는
+`v_true`·oracle 컬럼이 존재하지 않고(계약 테스트로 ban), reveal 은 committed CSV 를 파일로만 읽어
+채점하며(`truth_kind ∈ {exact_synthetic, exact_c2b, approx_band_obd, none}`), 축 20 은 reveal 파일
+자체가 없다. gate v1(`diagnostics.py`·`PROVISIONAL_THRESHOLDS`)·축 08 은 **불가침** — battery 는 별도
+모듈(`src/ope/validity.py`)의 gate v2 **[제안]**(M1 선례: 사전등록 → 평가 전용·무교정). 후보 정책은
+로그 유래(crossfit q̂ 위 softmax)로만 구축하고 `split_log` 로 후보구축/평가를 분리한다(winner's curse
+방어). 불확실성 병기: frontstage 는 합성 로그여도 **단일-로그 joint bootstrap**(실무자에게 로그는
+하나 — CLAUDE.md §2 예외 명문), seed-ensemble 은 reveal 집계 전용. seed-split threshold 교정은
+**미채택**(사전등록·무교정 문화와 이중 규범 — 축 08 선례 유지).
 
 ## 3. GO/NO-GO 게이트와 폴백
 
@@ -90,6 +106,90 @@ M5-13 **NO-GO**(축 13 drop — 폴백대로 코어 서사 무손상, LEDGER `m5
 ### 3.4 OBD small 근사 ground truth 규약 (M3)
 random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가진다(근사 정밀도 수치는 **[불확실]** — 축 12 에서
 실측 후 LEDGER 기록). 따라서 축 12 의 **모든 figure 에 bootstrap CI 병기, 점 비교 단정 금지**.
+
+### 3.5 M8 게이트 — GT-미상 practitioner 트랙 **사전등록** (2026-08-10, 실험 수치 0 상태에서 커밋)
+
+> **원칙.** GT-free 프로토콜의 타당성 주장은 그 자체로 GT-free 일 수 없다 — 주장 생성(frontstage)과
+> 검증(reveal)을 분리하고, 검증이 불가능한 곳(축 20 OBD)에서는 검증 부재를 그대로 전시한다.
+> battery 는 **필요조건 검사(falsifier)** 다 — 통과는 무결의 증명이 아니다. 특히 기록 propensity 가
+> marginally calibrated 인 confounding 은 **관측 동등성**(latent U 세계와 unconfounded 세계가 관측
+> 분포 (x,a,r,pscore) 를 동일하게 생성하되 V(π_e) 는 다름)에 의해 어떤 로그 통계로도 원리적으로
+> 구별 불가 — 축 18 이 이 경계를 구성적으로 전시하고, 그 몫은 Λ-감도 구간(축 14 도구)이 담당한다.
+
+**3.5-1. battery 통계 정의 (v2.0 — gate arm 4종 + 보고 전용 4종).** 입력은 로그 층
+(x, a, r, `pscore`) + 후보 π_e 분포뿐이다(구현: `src/ope/validity.py` — Stage 2).
+
+gate arm ([제안] 임계값 — 축 17 에서 **평가만 하고 교정하지 않는다**, 축 08 선례):
+- `mean_w` — E[w] calibration: mean(w), w=π_e(aᵢ|xᵢ)/pscoreᵢ. 기록이 참 propensity 면 E[w]=1
+  (HT 항등). **fail ⇔ joint bootstrap 95% CI 가 1 제외 ∧ |mean_w−1| > 0.10**(실질 허용 — 대표본
+  자명 기각 방지). 부호 해석 병기: <1 은 support 결핍 방향, ≠1 양방향은 misrecording.
+- `harmonic` — per-action HT calibration: T(a\*) = mean(1[aᵢ=a\*]/pscoreᵢ), 기록 pscore 가 참
+  marginal 이면 E[T(a\*)]=1. 대상은 로그 출현 nₐ ≥ 30 인 action 만(사전등록). **fail ⇔ 어느 대상
+  action 에서 95% CI 가 1 제외 ∧ |T(a\*)−1| > 0.25**. naive A/A(π_e=π₀ 기록 분포)는 w≡1 항등으로
+  **vacuous** — 채택하지 않는다(이 검사가 그 비-vacuous 대체다).
+- `placebo` — 음성 대조 보상: 분석가가 자체 생성한 독립 noise ε ~ N(0, std(r)) 를 보상으로 IPS
+  추정 — 구성상 참값 0. **fail ⇔ 95% CI 가 0 제외**(weight 기계가 무신호에서 신호를 제조).
+- `disagreement` — weighting 계열 {IPS, SNIPS, Clipped-IPS} 점추정의 (max−min)/max(|SNIPS|, 1e-12).
+  Clipped-IPS 의 λ 는 사전등록 hyperparam 정책 **λ = p90(w_clean)** 로 고정(`hyperparams_from_weights` —
+  `m1-crossval` 선례, 사후 조정 금지). **fail ⇔ > 0.50**. 스케일 바닥(사전등록): |SNIPS| <
+  0.01·max(|mean(r)|, 1e-12) 이면 이 arm 은 **inconclusive** 로 기록한다(발화도 통과도 아님 —
+  GLOSSARY §8 abstention; 희소 클릭 실로그의 통계 폭주 방지). 정의부 명문: **agreement 는 validity
+  증거가 아니다** — 모든 estimator 가 일관되게 틀릴 때(calibrated confounding — 축 18)
+  disagreement 는 가장 작다.
+
+보고 전용(비게이트): `refit_gap`(crossfit π̂₀ vs 기록 pscore 괴리 — 기록 자체가 같은 절차의 refit
+산물이면 준-null 이 되는 함정을 각주로 사전 문서화) · `dr_correction` = |mean(w·(r−q̂(x,aᵢ)))| ·
+`nc_covariate`(negative-control outcome: 표준화 공변량 xⱼ 에 대한 max_j |mean(w·xⱼ)−mean(xⱼ)| —
+x-상관 miscalibration 국소화) · `time_split`(타임스탬프 보유 로그 한정, 전/후반 추정 gap —
+nonstationarity 전용). CI 는 전부 **joint bootstrap**(B=500, 같은 재표집 인덱스에서 7종 estimator +
+battery 통계를 동시 계산 — paired). 기존 `bootstrap_ci`(estimators.py)는 불변.
+
+**3.5-2. protocol verdict 결합 규칙 (사전등록).**
+`ab_fallback` ⇐ gate_v1 = ab_fallback ∨ harmonic fail(기록 인프라 오염 신호) /
+`distrust` ⇐ gate_v1 = distrust ∨ mean_w fail ∨ placebo fail ∨ disagreement fail /
+그 외 `trust`. 동시 성립 시 **ab_fallback 라벨 우선**(최종 결정은 어차피 AB_TEST 로 동일 —
+라벨 규칙만 고정). 결정 estimator 는 **SNIPS 사전등록**(DR 은 companion 보고), incumbent anchor =
+mean(r)(같은-로그 on-policy — 축 10 규약 계승): trust 에서 GO ⇔ SNIPS CI 하한 > mean(r) ·
+NO-GO ⇔ CI 상한 < mean(r) · 그 외 AB_TEST; distrust·ab_fallback 은 무조건 AB_TEST.
+`fragile` flag ⇐ Λ\*_flip < 1.5 **[제안 — 라벨만, GO 강등 아님]**.
+
+**3.5-3. 실패 family 사전등록 (축 17 — 목록 고정, 사후 추가·삭제 금지, 불발 포함 전량 보고).**
+- control: `clean`(BASE_M2) · `small-n`(n ∈ {500, 2000} — 분산 regime, gate v1 ESS 소관)
+- detectable(예상): `low-overlap`(β_log ∈ {8, 16}) · `support-deficient`(δ ∈ {0.2, 0.4} 구조 mask) ·
+  `pscore-noised`(곱셈 log-normal s ∈ {0.5, 1.0} — mean_w 의 e^{s²/2} 기전)
+- partial(예상): `pscore-estimated`(in-sample LR 기록 — MLE 자동보정 준-null 함정 사전 문서화) ·
+  `confounded-as-recorded`(γ ∈ {1.0, 2.5} — 의도값 기록: **miscalibration 성분만** 검출 가능,
+  confounding 검출로 오독 금지 — 축 09 와 동일 장치)
+- impossible(예상): `confounded-calibrated`(U-주변화 기록 — 축 18 소관, 축 17 에서는 참조 전시)
+
+채점: **family 별 × arm 별** 발화율과 대오차율(rel_err > 0.10 — 축 08 기준 계승)을 분리 보고.
+reveal 채점의 rel_err 는 estimator×run 단위(7종 전부)로 계산하되, arm 발화와의 confusion **주 보고는
+SNIPS(§3.5-2 사전등록 결정 estimator) 기준**·7종 companion 병기(사후 estimator 선택 봉쇄).
+**pooled 단독 수치는 LEDGER 등재 불가**(family 구성비가 임의라 무의미). coverage-by-verdict
+(축 11 의 "bootstrap CI 는 구조적 bias 를 못 잡는다" 9/28 교훈의 일반화) 병기. "예상" 라벨은
+예측이며 결과가 반증하면 그대로 보고한다 — 발화 예상 family 의 불발도 발견이다.
+
+**3.5-4. probe 2종 GO/NO-GO 기준 (축 착수 게이트 — 각 1일, self-contained).**
+**발화(firing)의 정의(전 기준 공통):** 해당 arm 의 §3.5-1 fail 규칙이 **사전등록 임계 그대로**
+성립하는 것(CI 제외 ∧ 실질 tol 초과) — 방향 조건이 붙은 기준은 부호까지 일치해야 발화로 인정.
+probe JSON 만으로 기계 판독 가능해야 한다.
+- **probe M8-A**(validity battery — 축 17·19 게이트): GO ⇔ ① `pscore-noised`(s=1.0, n=10k)에서
+  mean_w 가 log-normal 예측 방향(e^{s²/2} > 1)으로 발화 ② `support-deficient`(δ=0.4, n=10k)에서
+  mean_w < 1 방향 발화(전역 support proxy 가 못 보던 컨텍스트-국소 결핍의 기대값 회복 —
+  **1순위 확인 항목**, 축 04 `m2-04-proxy-blind` 의 GT-미상 대응) ③ `clean` 에서 placebo CI 가
+  0 포함(오알람 없음) ④ joint bootstrap B=500 런타임 ≤ 3s/battery(n=10k). NO-GO 폴백: 불발 arm
+  drop(LEDGER 기록) 후 축소 battery 로 진행 — **전 arm 무예보여도 부정 결과로 등재·발행**
+  (`m5-probe-13` 선례). **축 20 은 별도 probe 없이 M8-A GO 를 전제로 착수한다**(battery·joint
+  bootstrap 기계 공유 — OBD 데이터·로딩·프로토콜은 축 12 에서 이미 검증).
+- **probe M8-B**(calibrated confounding — 축 18 게이트): GO ⇔ ① U-주변화 marginal pscore 의 사후
+  계산이 수치·메모리 안정(u-draw chunk 루프; n_u 400 vs 800 에서 pscore 상대차 < 1%)
+  ② calibrated 로그(γ ∈ {1.0, 2.5} — §3.5-3 family 와 동일 그리드)에서 mean_w·harmonic 이
+  **비발화**(위 발화 정의 기준 미성립 — null 정합) ③ IPS bias 는 γ 와 함께 성장 잔존(probe 는
+  백스테이지 채점 허용) ④ as-recorded 로그(같은 γ 그리드)의 arm 별 발화 여부 실측 기록(방향
+  무관 — 서사 분기 데이터). NO-GO kill-switch: 축 18 을 이론 각주 + 축 09 재해석("부분 검출"
+  서사)으로 축소하고, 축 17 의 impossible family 는 이론 참조로 대체.
+- **DGP 동결 보호**: marginal pscore 는 `make_synthetic_bandit_data` 본체 밖 **사후 순수함수·별도
+  rng** 로 구현 — 기존 축 01–16 산출 불변(Stage 2 에서 checksum 회귀 테스트로 기계화).
 
 ## 4. M0 체크리스트 (진행 표시)
 
@@ -242,6 +342,33 @@ random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가�
 - [x] 문서 동기: README KO/EN(레이어 표 행 + Notebooks 섹션 + Repository Structure) ·
   LEDGER `m7-gate` 행 · 커밋 1회 + push.
 
+## 4.9 M8 체크리스트 (GT-미상 practitioner 트랙 — 진행 중, 2026-08-10 착수)
+
+- [x] **Stage 0 사전등록 커밋(수치 0)**: §1 M8 행 · §2 축 17–20 행 + M8 설계 결정 ·
+  §3.5(battery 정의·[제안] 임계값·family 분할·probe GO/NO-GO 기준·폴백 — **실험 수치보다 먼저 커밋**) ·
+  experiments/README 축 표·probes 표 동기 · LEDGER(위생 2건: 헤더 카운트 M7·`m7-gate` 블록화 +
+  규칙 6/스키마 ID 확장 + **GT-의존성 분류 부속 블록**) · GLOSSARY §8 신설 ·
+  CLAUDE.md(§2 practitioner 예외 · §4 tier 註 · §5 co-exhibit 가드레일)
+- [ ] **Stage 1 probe 2종**(`probe_validity_battery.py`·`probe_calibrated_confounding.py`) →
+  JSON verdict → GO/NO-GO 분기 집행(§3.5-4 — NO-GO 도 등재·발행)
+- [ ] **Stage 2 src+테스트**: `src/ope/validity.py` · `src/ope/fitters.py` · dgp 최소 수정
+  (`pi_log_dist` 필드 + marginal-pscore 사후 순수함수 — rng draw 순서 불변) ·
+  `experiments/_practitioner.py`(DECISION/REVEAL 스키마·split_log·run_protocol·reveal 파일 경유) —
+  5장르 테스트 + **blindness**(v_true monkeypatch→NaN 산출 불변) + ban-encoding(`v_true` 부재·
+  oracle 심볼 grep·fitters 의 dgp import 금지) + **DGP checksum 회귀**, 기존 63 green 유지
+- [ ] **Stage 3 축 17·18**: figure+CSV 페어 + stdout PATTERN + LEDGER `m8-17-*`·`m8-18-*` 행
+  (+GT-분류 블록 동시 등재) — 17 detection matrix(family 분리)·18 2-패널(부분 검출 vs 원리적 불가)
+- [ ] **Stage 4 축 19·20**: 동일 규약 — 19 는 naive 대비 결정 가치(regret), 20 은 **reveal 파일
+  없음**(시연 프레임·검증 주장 금지·축 12 는 LEDGER id 참조만)
+- [ ] **Stage 5 문서 역전 단일 패스**: POSITIONING URL 스윕([불확실] 해소 전 novelty 문장 README
+  반입 금지) → `docs/COMMS_BRIEF_v2.md`(v1 동결 무접촉) → README KO 3막 역전 + EN twin 동일 커밋
+  (그림 3 → motivation 재캡션 · hero 재편 · 축표 2-tier: 본편 12·14·17–20 / 백스테이지 01–11·15–16) →
+  PLAYBOOK(GT-미상 레짐 선언·battery §·decision card 템플릿) → 축표 4벌 동기(`무대` 열) →
+  CONCEPT 말미 부록(본문 동결) → notebooks/README 1줄 註 →
+  verify(LEDGER 삼각일치·tier 일관·KO/EN parity·링크 무결)
+- [ ] **M9 이월 기록**: c2b 주입-실패 채점 축(ID 21 예약) · notebook 5권 재정박 + 신권 05(GT-미상
+  프로토콜 walkthrough) · frontstage/backstage 구조도 SVG ko/en · lowellth 재발행
+
 ## 5. 리듬 규약
 
 - **한 stage = 한 `/goal`.** M1 부터는 마일스톤(필요 시 마일스톤 내 소단계)을 `/goal` 로 잠그고 게이트 판정 후 해제.
@@ -252,7 +379,8 @@ random-policy 로그 기반 on-policy 근사 GT 는 자체 표본 오차를 가�
 
 ## 6. 실험 규율
 
-- **ID 불변**: 실험 ID 01–14 는 재부여·재정렬 금지. 축 추가는 새 번호로만.
+- **ID 불변**: 실험 ID 01–20 은 재부여·재정렬 금지(17–20 은 M8 GT-미상 practitioner 트랙 — §3.5
+  사전등록 선행·probe 게이트). 축 추가는 새 번호로만(다음 예약: 21 — M9 c2b 주입 후보).
 - **한 축 = 한 스크립트 = 한 figure**: `experiments/NN_slug.py` 가 해당 축의 유일한 진입점.
 - **figure ↔ 데이터 1:1 페어링**: `results/figures/NN_*.{png,svg}` 마다 `results/tables/NN_*.csv` 동반 커밋 — 페어 없는 figure 금지.
 - **모든 문서 수치는 LEDGER 경유**: committed 결과만 `docs/LEDGER.md` 에 등재하고, README·리포트는 LEDGER 만 인용
