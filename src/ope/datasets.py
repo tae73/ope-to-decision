@@ -42,14 +42,40 @@ class RealBanditData(NamedTuple):
     gt_ci: tuple | None        # c2b: None(정확) / OBD: bootstrap CI — 의미 분리(정직성 규약)
 
 
+def _c2b_support_mask(s: np.ndarray, deficiency: float) -> np.ndarray:
+    """per-row 하위-s ⌊δK⌋ 컬럼의 로깅 지지 제거 mask (True=지지) — M9 축 21 주입 장치.
+
+    dgp._support_mask 와 동일 의미론(구조적 — 랜덤 mask 는 proxy 를 원리적 blind 으로 만듦,
+    PLAN §3.6-2)을 LR-score 행렬 s 위에 적용한다.
+    """
+    n, k = s.shape
+    if not 0.0 <= deficiency < 1.0:
+        raise ValueError(f"support_deficiency must be in [0, 1), got {deficiency}")
+    m = int(np.floor(deficiency * k))
+    if m == 0:
+        return np.ones((n, k), dtype=bool)
+    if m >= k:
+        raise ValueError("support_deficiency removes all actions")
+    order = np.argsort(s, axis=1)
+    mask = np.ones((n, k), dtype=bool)
+    np.put_along_axis(mask, order[:, :m], False, axis=1)
+    return mask
+
+
 def classification_to_bandit(dataset_name: str, seed: int,
                              beta_log: float = 2.0, beta_eval: float = 6.0,
-                             data_home: str = "data/openml") -> RealBanditData:
+                             data_home: str = "data/openml",
+                             support_deficiency: float = 0.0) -> RealBanditData:
     """OpenML 데이터셋 → logged bandit feedback (정확 propensity·정확 참값).
 
     구조(split·정책)는 C2B_SPLIT_SEED 로 고정하고 `seed` 는 로깅 행동 표집에만 쓴다 —
     합성 트랙의 struct_seed/seed 분리 관례와 동일("같은 환경, 다른 로그").
     LabelEncoder 강제: satimage 라벨 {1..7}\\{6} 비연속·letter 문자 라벨 함정(Plan 검증).
+
+    `support_deficiency`(M9 축 21 — PLAN §3.6-2): per-row 하위-s ⌊δK⌋ 액션의 로깅 지지를
+    구조적으로 제거하고 π₀ 를 renormalize 한 뒤 **같은 rng 호출 순서로** 행동을 표집한다 —
+    기록 pscore 는 masked 세계의 **정확** propensity(기록 자체는 무결·진짜 식별 실패).
+    π_e·gt_value 는 불변. **δ=0 이면 기존 산출과 bit-identical**(tests 회귀 고정).
     """
     from sklearn.datasets import fetch_openml
 
@@ -74,6 +100,10 @@ def classification_to_bandit(dataset_name: str, seed: int,
 
     pi0 = softmax_policy(s, beta_log)
     pi_e = softmax_policy(s, beta_eval)
+    mask = _c2b_support_mask(s, support_deficiency)
+    if not mask.all():  # δ=0 이면 이 분기 자체를 건너뛰어 bit-항등 보장 (renormalize 부동소수 회피)
+        pi0 = np.where(mask, pi0, 0.0)
+        pi0 = pi0 / pi0.sum(axis=1, keepdims=True)
     rng = np.random.default_rng(seed)
     n = len(y_b)
     action = (pi0.cumsum(axis=1) > rng.random((n, 1))).argmax(axis=1)

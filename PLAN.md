@@ -278,6 +278,16 @@ bootstrap ≤ 3s/run(M8-A 예산 규칙 재사용). **부수 실측(게이트 �
 δ=0 bit-항등 회귀는 probe 소관이 아니라 **Stage 2 테스트** 소관(probe 는 src 미의존이라
 production 로더와 대조 불가 — 분업 명기).
 
+**판정(2026-08-10): probe M9-A VERDICT NO-GO — 폴백 ② 분기 집행.** ①(역학)·③(noised 방향
+5/5·e^{s²/2} 정합)·④(런타임 0.036s ≪ 3s) 통과, **②(support 방향)만 실패 — satimage 한정**:
+masked π_e 질량이 δ=0.4 에도 0.016 에 불과해(π_e = softmax(6·s)의 첨도 — 하위-s 액션에 질량이
+거의 없음) mean_w 이탈이 5-seed 표집 노이즈에 묻힌다(letter 는 질량 0.115·방향 5/5 명확).
+이는 §3.6-4 의 "비발화∧비오차 = true negative" 의미론이 예고한 바로 그 상황이며 —
+**주입의 실효 강도는 δ 가 아니라 데이터셋의 정책 기하(π_e 첨도 × 하위-s 질량)가 결정한다**는
+것이 이 probe 의 확정 발견이다(수치는 LEDGER `m9-probe-a`). 폴백 규정대로 축 21 은 예상 라벨
+무수정으로 실행하고, satimage 방향 반증을 확정 등재한다(축 PATTERN ③은 S=20 중앙값 기준 —
+probe 의 5-seed 점 스크린과 다른 해상도임을 병기).
+
 **3.6-6. 산출·채점·PATTERN.** 하네스 표준(`_decision.csv`·`_reveal.csv`) + companion
 `21_c2b_injection_matrix.csv`(**28행 = 4 dataset × 7 scenario — pooled 행 금지**, 축 17 컬럼
 계승 + `dataset` 열) + `_confusion.csv`((dataset, verdict) 그룹 — 단독 인용 금지). figure:

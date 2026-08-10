@@ -45,7 +45,7 @@
 | `등재일` | `YYYY-MM-DD`. |
 | `상태` | `RESERVED`(경로만 예약, 수치 미등재) / `ENTERED`(수치 등재 완료 — NO-GO 등 실패 결과 포함) / `SUPERSEDED`(재실험으로 대체됨). |
 
-## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 · M6 4행 · M5 2행 · M7 1행 · M8 6행 등재)
+## 수치 표 (현재: M0 4행 · M1 1행 · M2 6행 · M3 4행 · M6 4행 · M5 2행 · M7 1행 · M8 6행 · M9 1행 등재)
 
 M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 동반 commit** 되어 아래와 같이
 등재되었다(등재일 2026-08-06). `수치` 필드는 각 source JSON 의 값 verbatim 이다(규칙 3 — 반올림 금지).
@@ -106,6 +106,12 @@ M0 de-risk probe 2개(`M0-A`·`M0-B`)의 산출 JSON 4개가 **초기 커밋에 
 | `m8-18-boundary` | **관측 동등성 경계 전시**: calibration-arm(mean_w·harmonic) 발화 **0/240 · 0/240**(calibrated·as-recorded 기록 모드별, 전 γ∈{0…2.5} — mean_w 평균은 calibrated 0.998381–1.000449 · as-recorded 는 0.994518 까지, 전부 임계 ±0.10 원거리 내) 인데 백스테이지 bias(snips, calibrated) = −0.0009399423509673932(γ=0) → **−0.0732433001522501**(γ=2.5, se 0.0022330397191736994) · bias(ips)@γ=2.5 = −0.0731984442223309 · **Λ\*_flip 중앙값 1.310526(γ=0) → 1.050321(γ=2.5)** — bias 가 결론을 anchor 쪽으로 끌어 fragile 화(검출기 아님·취약성 보고서로 작동) · PATTERN 2/2 PASS | — | `results/tables/18_calibrated_boundary_summary.csv` (+`_decision.csv`·`_reveal.csv`) | `18` | 2026-08-10 | ENTERED |
 | `m8-19-decision-value` | **프로토콜의 결정 가치(로그 유래 후보·나쁜 후보 β=−2 포함 사다리)**: noised(s=1.0)×β−2 에서 **naive(IPS 점추정·무게이트) false-go = 0.9**(평균 regret\|go = 0.20787384343961055) vs **protocol false-go = 0.0**(battery 발화 → AB 회귀 1.0) · healthy 에선 결정적: 좋은 후보 go 0.95(β2·β8)·나쁜 후보 no_go 0.9 · **protocol false-go·false-stop 전 셀 최대 0.0/0.0**(9 셀 × S=40) · low_overlap 은 AB 유예 0.8–1.0(정직 — 판정 불능 regime) | — | `results/tables/19_blind_decision_summary.csv` (+`_decision.csv`·`_reveal.csv`) | `19` | 2026-08-10 | ENTERED |
 | `m8-20-card` | **실로그 1-page decision card(ZOZO OBD BTS → uniform 타깃 — reveal 파일 없음, 시연 프레임)**: gate v1 = distrust(축 12 선례 재현) · E[w] = 1.011109 pass · **harmonic worst T(a\*) = 2.676554 fail**(action-수준 기록 propensity↔경험 빈도 비정합 신호 — 위치 풀링 인공물 가능성 각주, 축 12 클러스터 불가 한계와 동근원) · placebo pass · disagreement = 0.285688 pass · Λ\*_flip = 1.342788(below·**fragile**) · time-split SNIPS gap = −0.001802(보고 전용 — 추정 스케일 대비 큰 drift 신호) · **protocol verdict = ab_fallback**(harmonic 우선 규칙 실발동) · decision = ab_test · 근사 GT 대조는 축 12(`m3-12-gate-demo`) 소관 | — | `results/tables/20_obd_decision_card_card.csv` (+`_decision.csv`) | `20` | 2026-08-10 | ENTERED |
+
+### M9 행 (이월분 — 2026-08-10)
+
+| id | 수치 | 단위 | source 파일 경로 | 생성 실험 ID | 등재일 | 상태 |
+|---|---|---|---|---|---|---|
+| `m9-probe-a` | VERDICT **`NO-GO`** (규칙 4 — 실패 등재·§3.6-5 폴백 ② 분기 집행) · 역학 ①/noised 방향 ③/런타임 ④ 통과(letter noised mean_w 5-seed = 1.612–1.732 — e^{s²/2}=1.6487 정합 · battery 런타임 중앙값 0.036s) · **support 방향 ② 실패 — satimage 한정**: masked π_e 질량 = 0.008074076629350417(δ=0.2)·0.016271926801459217(δ=0.4)로 mean_w 5-seed = 0.9614–1.0081(부호 혼재) vs **letter** 질량 = 0.05747280310271292·0.1150446274653389 로 mean_w = 0.8835–0.8924(방향 5/5) — **주입의 실효 강도는 δ 가 아니라 π_e 첨도 × 하위-s 질량이 결정**(확정 발견 — §3.6-4 true-negative 의미론의 실측) | — | `results/tables/probe_c2b_injection.json` | `M9-A` | 2026-08-10 | ENTERED |
 
 **M8 행 비고(규칙 3 반올림 조항):** `m8-18`(Λ\*_flip 중앙값·mean_w 범위 끝값)·`m8-20`(카드 수치
 6종)의 6자리 표기는 source CSV 원값의 반올림이다 — 원값·전체 정밀도는 각 CSV 가 정본.
@@ -182,3 +188,4 @@ verbatim 값(40행)에서 재도출한 요약 통계다(`m3-hero-map`·`m2-07-sl
 | `m8-18-boundary` | C | 발화 0/240·mean_w 범위·Λ\*_flip 중앙값 절(frontstage) | bias(snips·ips) 절(reveal — v_true 채점) |
 | `m8-19-decision-value` | C | 프로토콜 결정 구성(go/no_go/AB 비율)·naive go 판정 절(frontstage) | false-go/false-stop·regret·truly-better 절(reveal — oracle MC 채점) |
 | `m8-20-card` | A | 전 절(카드 전체 — 로그와 후보 분포만으로 계산, reveal 없음) | — |
+| `m9-probe-a` | C | mean_w·런타임 절(로그 층 통계) | masked π_e 질량·gt 불변 절(주입측 지식 — 벤치 구성 정보) |
