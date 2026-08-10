@@ -48,6 +48,9 @@ class SyntheticBanditData(NamedTuple):
     pi_e_dist: np.ndarray      # (n, K)
     q_true: np.ndarray         # (n, K) 참 기대보상 E[r|x,a,U=E[U]] = q(x,a) — GT/oracle 전용
     v_true: float              # V(π_e) ground truth (struct_seed 파생 대규모 MC)
+    pi_log_dist: np.ndarray = None  # (n, K) 기록된(의도·배포 설정) 로깅 정책 전체 분포 — **로그 층**
+    #   (M8 추가) 실무자의 "내가 배포한 정책은 스코어할 수 있다" 자산. pscore_logged 의 행렬판이며
+    #   oracle 이 아니다: pscore_logged = pi_log_dist[i, a_i] 항등(테스트 고정). rng 무영향(기계산 값 반환).
 
 
 def _stable_sigmoid(z: np.ndarray) -> np.ndarray:
@@ -128,6 +131,7 @@ def make_synthetic_bandit_data(config: DGPConfig) -> SyntheticBanditData:
         pi_e_dist=pi_e,
         q_true=q,
         v_true=true_policy_value(config),
+        pi_log_dist=pi_log_recorded,
     )
 
 
@@ -142,3 +146,32 @@ def true_policy_value(config: DGPConfig, n_mc: int = 200_000) -> float:
     q = _q_true(x, theta, b)
     pi_e = softmax_policy(q, config.beta_eval)
     return float((pi_e * q).sum(axis=1).mean())
+
+
+U_TRUNC = 8.0  # marginal_logging_dist 의 Gaussian 절단 반경 — ∫_{|u|>8} φ ≈ 1.2e-15 (행 정규화가 흡수)
+
+
+def marginal_logging_dist(config: DGPConfig, context: np.ndarray,
+                          n_nodes: int = 800) -> np.ndarray:
+    """U-주변화 실제 로깅 분포 P(a|x) = E_U[masked_softmax(β_log·q(x) + γ·U·d, mask)] — (n, K).
+
+    **M8 축 18 전용 사후 순수함수** (probe M8-B 에서 원형 검증 — GO). `make_synthetic_bandit_data`
+    의 rng 를 일절 소비하지 않아 기존 축 01–16 산출이 불변이다(tests/test_dgp.py checksum 고정).
+    구적은 Gauss–Legendre × φ(u)(절단 ±U_TRUNC) — rng 자체가 불필요한 결정적 계산.
+    numpy `hermegauss` 는 degree ≥ ~400 에서 overflow 하므로 쓰지 않는다(probe M8-B 실측).
+
+    이 분포를 기록 pscore 로 쓰면 "기록 = 참 marginal" 인 **관측 동등성 세계**가 된다 —
+    그 세계에서 어떤 로그 통계도 confounding 을 구별할 수 없다(PLAN §3.5 원칙).
+    """
+    theta, b, d = _make_structure(config)
+    q = _q_true(context, theta, b)
+    mask = _support_mask(q, config.support_deficiency)
+    logits = config.beta_log * q
+    nodes, wts = np.polynomial.legendre.leggauss(n_nodes)
+    u_nodes = nodes * U_TRUNC
+    wts = wts * U_TRUNC * np.exp(-0.5 * u_nodes ** 2) / np.sqrt(2.0 * np.pi)
+    acc = np.zeros_like(q)
+    for u, wt in zip(u_nodes, wts):
+        acc += wt * _masked_softmax(
+            logits + config.confounding_strength * u * d[None, :], mask)
+    return acc / acc.sum(axis=1, keepdims=True)

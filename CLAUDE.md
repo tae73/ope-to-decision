@@ -54,6 +54,8 @@
 | `diagnostics.py` | ESS·max-weight·support 진단(`DiagnosticsReport`) + `decision_gate` 3-way 판정(`GateVerdict`) | 없음 (numpy 만) |
 | `datasets.py` | 실데이터 2트랙 로더: classification-to-bandit(OpenML)·OBD small(ZOZO) | 없음 (numpy/sklearn) |
 | `business.py` | 비즈니스 층(M6): funnel DGP·지표 벡터(CTR/CVR/REV)·노출/HHI 정확 계산·subgroup 매출 IPS — **γ(confounding) 노브 영구 금지** | `policies`·`dgp`(`_stable_sigmoid`) |
+| `validity.py` | GT-free validity battery(M8 — **필요조건 검사·[제안]**, PLAN §3.5-1): `run_validity_checks`(gate arm 4+보고 4)·`bootstrap_joint`(paired)·`lambda_star_vs_anchor`(Λ\*_flip) — oracle 인자 없음(소스 ban 테스트) | `estimators` 만 |
+| `fitters.py` | 로그 적합 모델 층(M8): crossfit q̂·π̂₀·로그 유래 후보(`make_log_derived_candidate`) — **dgp import 금지**(ban 테스트) | `policies` (+sklearn) |
 
 - 조립(데이터 → estimator → 진단 → figure)은 **`experiments/` 스크립트에서만** 한다.
   src 모듈은 결과 파일을 직접 쓰지 않는다(입출력 없음·순수 계산).

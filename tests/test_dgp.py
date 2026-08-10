@@ -88,3 +88,63 @@ def test_v_true_invariant_to_confounding_and_noise():
     v0 = true_policy_value(BASE)
     v1 = true_policy_value(BASE._replace(confounding_strength=2.0, reward_noise=1.5))
     assert v0 == v1
+
+
+# ── M8 추가분 (PLAN §3.5) ──────────────────────────────────────────────────────
+
+
+def test_pi_log_dist_is_logged_layer_matrix(data):
+    """M8 필드 계약: pi_log_dist 는 기록 로깅 분포의 행렬판 — 행합 1,
+    pscore_logged = pi_log_dist[i, a_i] 정확 항등(로그 층 자산, oracle 아님)."""
+    n = BASE.n
+    assert data.pi_log_dist.shape == (n, BASE.n_actions)
+    np.testing.assert_allclose(data.pi_log_dist.sum(axis=1), 1.0, rtol=1e-12)
+    np.testing.assert_array_equal(
+        data.pscore_logged, data.pi_log_dist[np.arange(n), data.action])
+
+
+def test_dgp_output_frozen_checksums():
+    """DGP 동결 보호(M8 — PLAN §3.5-4): 대표 config 2종의 산출 checksum 을 리터럴로 고정.
+    marginal_logging_dist 등 사후 함수 추가·리팩터가 생성기 rng draw 순서를 건드리면
+    여기서 즉시 깨진다 — 축 01–16 committed 결과의 재현성 배리어."""
+    cfg = DGPConfig(n=10_000, n_actions=10, dim_context=5, beta_log=1.0, beta_eval=3.0,
+                    support_deficiency=0.0, reward_noise=0.5, confounding_strength=0.0,
+                    seed=12345, struct_seed=7)
+    d = make_synthetic_bandit_data(cfg)
+    assert int(d.action.sum()) == 45243
+    assert float(d.reward.sum()) == pytest.approx(5985.649106063735, rel=1e-12)
+    assert float(d.pscore_logged.sum()) == pytest.approx(1079.8742437535548, rel=1e-12)
+    assert float(d.v_true) == pytest.approx(0.7153918288961995, rel=1e-12)
+    cfg2 = cfg._replace(support_deficiency=0.4, confounding_strength=2.5, seed=777)
+    d2 = make_synthetic_bandit_data(cfg2)
+    assert int(d2.action.sum()) == 44640
+    assert float(d2.reward.sum()) == pytest.approx(7371.39925462877, rel=1e-12)
+    assert float(d2.pscore_logged.sum()) == pytest.approx(1708.5045560528035, rel=1e-12)
+    assert float(d2.pscore_true.sum()) == pytest.approx(2997.9107306683977, rel=1e-12)
+
+
+def test_marginal_logging_dist_gamma0_identity(data):
+    """γ=0 이면 U-주변화 분포 == 기록 분포 정확 항등(mask 유무 모두) — probe M8-B 재현."""
+    from ope.dgp import marginal_logging_dist
+    p = marginal_logging_dist(BASE, data.context, n_nodes=200)
+    np.testing.assert_allclose(p, data.pi_log_dist, atol=1e-12)
+    cfg4 = BASE._replace(support_deficiency=0.4)
+    d4 = make_synthetic_bandit_data(cfg4)
+    p4 = marginal_logging_dist(cfg4, d4.context, n_nodes=200)
+    np.testing.assert_allclose(p4, d4.pi_log_dist, atol=1e-12)
+
+
+def test_marginal_logging_dist_calibrated_world(data):
+    """γ>0 관측 동등성 세계: 주변화 pscore 를 기록으로 쓰면 E[w]≈1 (HT 항등 — k·SE 검정)
+    + 행합 1 + 구적 수렴(200 vs 400 노드)."""
+    from ope.dgp import marginal_logging_dist
+    cfg = BASE._replace(confounding_strength=1.5)
+    d = make_synthetic_bandit_data(cfg)
+    p = marginal_logging_dist(cfg, d.context, n_nodes=400)
+    np.testing.assert_allclose(p.sum(axis=1), 1.0, rtol=1e-12)
+    p200 = marginal_logging_dist(cfg, d.context, n_nodes=200)
+    assert float(np.max(np.abs(p - p200) / p)) < 1e-8
+    idx = np.arange(BASE.n)
+    w = d.pi_e_dist[idx, d.action] / p[idx, d.action]
+    se = float(w.std(ddof=1) / np.sqrt(BASE.n))
+    assert abs(float(w.mean()) - 1.0) < 4 * se

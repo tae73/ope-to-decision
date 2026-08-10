@@ -362,11 +362,11 @@ probe JSON 만으로 기계 판독 가능해야 한다.
 - [x] **Stage 1 probe 2종**(`probe_validity_battery.py`·`probe_calibrated_confounding.py`) →
   **M8-A GO · M8-B GO**(§3.5-4 판정 기록·LEDGER `m8-probe-a`/`m8-probe-b` ENTERED) — 부수 실측:
   as-recorded 비발화 0/5(정직 기록, 축 18 서사 강화)·hermegauss overflow → GL×φ 구적 교체
-- [ ] **Stage 2 src+테스트**: `src/ope/validity.py` · `src/ope/fitters.py` · dgp 최소 수정
-  (`pi_log_dist` 필드 + marginal-pscore 사후 순수함수 — rng draw 순서 불변) ·
+- [x] **Stage 2 src+테스트 (2026-08-10)**: `src/ope/validity.py` · `src/ope/fitters.py` · dgp 최소
+  수정(`pi_log_dist` 필드 + `marginal_logging_dist` 사후 순수함수 — rng draw 순서 불변) ·
   `experiments/_practitioner.py`(DECISION/REVEAL 스키마·split_log·run_protocol·reveal 파일 경유) —
-  5장르 테스트 + **blindness**(v_true monkeypatch→NaN 산출 불변) + ban-encoding(`v_true` 부재·
-  oracle 심볼 grep·fitters 의 dgp import 금지) + **DGP checksum 회귀**, 기존 63 green 유지
+  **테스트 63 → 96 green**: 5장르 + blindness(oracle NaN 오염+`true_policy_value` 폭파 하 산출
+  불변) + ban-encoding(스키마·소스 텍스트 2중) + DGP checksum 회귀(대표 config 2종 리터럴 고정)
 - [ ] **Stage 3 축 17·18**: figure+CSV 페어 + stdout PATTERN + LEDGER `m8-17-*`·`m8-18-*` 행
   (+GT-분류 블록 동시 등재) — 17 detection matrix(family 분리)·18 2-패널(부분 검출 vs 원리적 불가)
 - [ ] **Stage 4 축 19·20**: 동일 규약 — 19 는 naive 대비 결정 가치(regret), 20 은 **reveal 파일
