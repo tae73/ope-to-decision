@@ -23,7 +23,7 @@
 | **최종** | portfolio-design Stage 6 적대검증(모든 수치 = LEDGER 삼각일치) → Stage 7 publish(GitHub) → 선택: lowellth-publish | 0.5–1주 | 검증 실패 항목 0 |
 | **M7** (publish 후 확장) | notebook 상세 분석 층 5권(00 로그 EDA → 04 결과 심층) — 파생·재현 층(정본 승격 금지), 실행 output 포함 커밋 | +0.5주 | 5권 실행 무오류 + verify(멱등·LEDGER 정합·데이터 보호) — **완료(2026-08-07, §4.8)** |
 | **M8** (publish 후 재정위) | **GT-미상(practitioner) 본편 트랙**: validity battery(17)·calibrated-confounding 경계(18)·end-to-end blind decision(19)·OBD decision card(20) — §2 확장 + §3.5 **사전등록** + `src/ope/validity.py`·`fitters.py` + 문서 역전(README 3막·PLAYBOOK — 실험 후 단일 패스, 그림 3 은 motivation 으로 전환) | +1.5–2.5주 | §3.5: **사전등록 커밋(수치 0)이 실험에 선행**(git 이력이 증거) · probe M8-A/M8-B GO 시에만 축 착수 · LEDGER ENTERED 전 문서 수치 저작 금지(M4 선례) — **완료(2026-08-10, §4.9 — M9 이월분 별도)** |
-| **M9** (이월분 실행) | **축 21 c2b 주입 replication**(§3.6 사전등록·probe M9-A 게이트·`datasets.py` δ keyword 최소 수정) + **notebook 5권 재정박 + 신권 05**(GT-미상 프로토콜 walkthrough — 무대 라벨·stale 수정·전 6권 재실행) + **frontstage/backstage 구조도 SVG ko/en** + **lowellth 첫 발행**(greenfield — projects 엔트리 + 리포트 노트) | +1–2주 | §3.6 사전등록 커밋(수치 0)이 실험에 선행 · probe M9-A GO 시에만 축 21 착수 · notebook 재실행 무오류+assert PASS · lowell `npm run 발행` 은 **사용자 확인 게이트 후에만** — **진행 중(2026-08-10 착수, §4.10)** |
+| **M9** (이월분 실행) | **축 21 c2b 주입 replication**(§3.6 사전등록·probe M9-A 게이트·`datasets.py` δ keyword 최소 수정) + **notebook 5권 재정박 + 신권 05**(GT-미상 프로토콜 walkthrough — 무대 라벨·stale 수정·전 6권 재실행) + **frontstage/backstage 구조도 SVG ko/en** + **lowellth 첫 발행**(greenfield — projects 엔트리 + 리포트 노트) | +1–2주 | §3.6 사전등록 커밋(수치 0)이 실험에 선행 · probe M9-A GO 시에만 축 21 착수 · notebook 재실행 무오류+assert PASS · lowell `npm run 발행` 은 **사용자 확인 게이트 후에만** — **완료(2026-08-13, §4.10 — 6 stage 전량)** |
 
 **달력 정직성.** 연구(proximal OTR/DTR) 병행 파트타임이므로 달력 시간으로 **총 2–3개월**로 잡는 것이 정직하다.
 M2 종료 시점에 이미 레포가 성립하도록(부분 완성으로도 공개 가능) 설계했고, M5 는 drop 해도 코어 서사가 완결된다.
@@ -513,10 +513,13 @@ median dr_correction(clean)(전 dataset). LEDGER: `m9-probe-a`(ID `M9-A`)·`m9-2
   서두 삽입) + README KO/EN 동기(Tier1 축 21 행·notebook 6권·배지 axes 01–12·14–21·tests 100 —
   EN 미러 에이전트가 KO 잔재 3곳 역적발·교정) + 기계 검사(LEDGER id 17종 KO/EN 동수·경로 29종
   무결·tests 100 green) + repo push
-- [ ] **Stage 6 lowellth 첫 발행**(greenfield 풀 스코프 — 사용자 확정: 엔트리+리포트 노트·order 3):
-  에셋(public/projects·diagrams — sync-safe) → projects/projects-en 엔트리 → 리포트 노트
-  (vault KO publish:true + notes-en EN twin) → gotcha 체크리스트(통화 `\$`·`_ko/_en` SVG·
-  file://→GitHub·leak gate) → sync+build+leak+프리뷰 verify → **사용자 확인 후에만 `npm run 발행`**
+- [x] **Stage 6 lowellth 첫 발행 (2026-08-13)**: greenfield 풀 스코프 완료 — 에셋 8종
+  (`public/projects/ope-*.png` 4 + `public/diagrams/{decision_gate_flowchart,frontstage_backstage}_{ko,en}.svg`)
+  · projects/projects-en 엔트리(order 3·featured false·editorial 큐레이션 — README dump 아님)
+  · 리포트 노트 twin(vault KO `publish:true` + `notes-en` EN 수기 twin — `ope-decision-gate-playbook`)
+  · verify 게이트 전량 통과(sync+build 318 페이지·leak gate 클린·KaTeX 오류 0·EN `_ko` 누출 0·
+  에셋 dist 실재·깨진 이미지 참조 0·Projects 인덱스 노출·EN twin 수치 drift 0) ·
+  **사용자 확인 후 `npm run 발행`** → lowell `60d175f..3d9034f`(12 파일) → Cloudflare 배포
 
 ## 5. 리듬 규약
 
